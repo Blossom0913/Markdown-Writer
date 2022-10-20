@@ -1,0 +1,551 @@
+\pgfplotsset{
+  layers/axis lines on top/.define layer set={
+    axis background,
+    axis grid,
+    axis ticks,
+    axis tick labels,
+    pre main,
+    main,
+    axis lines,
+    axis descriptions,
+    axis foreground,
+  }{/pgfplots/layers/standard},
+}
+
+\pgfkeys{
+	/pgfplots/unit circle/.style={
+		set layers=axis lines on top,
+		width=9cm, height=9cm,
+		axis x line=middle,
+		axis y line=middle,
+		xlabel=$x$,
+		ylabel=$y$,
+		every axis x label/.style={
+			at={(ticklabel* cs:1.01)},
+			anchor=west,
+		},
+		every axis y label/.style={
+			at={(ticklabel* cs:1.01)},
+			anchor=south,
+		},
+		axis line style={stealth-stealth, thick},
+		label style={font=\Large},
+		tick label style={font=\Large},
+		samples=100,
+		xmin=-1.25, xmax=1.25,
+		ymin=-1.25, ymax=1.25,
+		xtick={-1,0,1},
+		ytick={-1,0,1},
+		xticklabels={},
+		yticklabels={},
+		domain=-1.5:1.5,
+		grid=both,
+		major grid style={black!5},
+	},
+}
+
+\section{Trigonometric functions}\label{section:trigonometry}
+\subsection{Basic Definitions}
+Consider a \emph{right triangle} $\triangle ABC$ with sides $a,b$, and Hypotenuse $c$, where the angle $\angle ACB$ is $\ang{90}$, and the angle $\angle BAC$ is denoted as $\alpha$:
+
+\centering
+\begin{tikzpicture}[node distance=3mm]
+		\coordinate (A) at (0,0);
+		\coordinate (B) at (4,3);
+		\coordinate (C) at (4,0);
+
+		\node[left of=A] {$A$};
+		\node[above of=B] {$B$};
+		\node[right of=C] {$C$};
+
+		\draw[fill=xblue!30] (A) -- node (c) [midway, above, rotate=36.87] {$c$ (Hypotenuse)} (B) -- node (a) [midway, right] {$a$ (Opposite)} (C) -- node (b) [midway, below] {$b$ (Adjacent)} cycle;
+		\draw[thick] ($(C)+(0,0.3)$) rectangle ($(C)-(0.3,0)$);
+		\draw[thick, xpurple!50!black, fill=xpurple!45] (A) -- ($(A)+(1,0)$) arc (0:36.87:1) node [midway, xshift=-3mm, yshift=-2pt] {$\alpha$} -- cycle;
+		%\draw[thick, xblue!50!black, fill=xblue!45] (B) -- ($(B)+(0,-0.8)$) arc (270:216.97:0.8) node [midway, above, xshift=5pt] {$\beta$} -- cycle;
+		\draw[thick] (A) -- (B) -- (C) -- cycle;
+	\end{tikzpicture}
+\flushleft
+
+We use the ratios between the three sides of the triangle to define three functions of $\alpha$:
+\vspace{5mm}
+\begin{itemize}
+	\item The \emph{sine} of the angle $\alpha$ is $\sin(\alpha)=\frac{a}{c}$,
+	\item the \emph{cosine} of the angle $\alpha$ is $\cos(\alpha)=\frac{b}{c}$, and
+	\item the \emph{tangent} of the angle $\alpha$ is $\tan(\alpha)=\frac{a}{b}$, which in turn is equal to $\frac{\sin(\alpha)}{\cos(\alpha)}$.
+\end{itemize}
+
+We can rearrange the above definitions:
+\begin{align}
+	a &= c\sin(\alpha),\nonumber\\
+	b &= c\cos(\alpha).
+	\label{eq:basic_trig_rearrange}
+\end{align}
+
+Normally, the Hypotenuse is the longest side of a right triangle. We will consider here the two edge cases where one of the sides $a$ or $b$ is equal to the Hypotenuse (and the other side is thus $0$):
+\begin{itemize}
+	\item if $a=c$ then $\alpha=\ang{90}$,\
+	\item if $b=c$ then $\alpha=\ang{0}$.
+\end{itemize}
+
+The possible length of $a$ is therefore in the range $0\leq a \leq c$, which means that $0\leq \frac{a}{c} \leq 1$. Since $\sin(\alpha)=\frac{a}{c}$ this means that the image of $\sin(\alpha)$ is $[0,1]$. The same idea is also true for $b$, and therefore $[0,1]$ is the image of $\cos(\alpha)$ as well.
+
+As a reminder, the \emph{Pythagorean theorem}\footnote{It's worth mentioning that no three positive integers $a, b$, and $c$ satisfy the equation $a^{n}+b^{n}=c^{n}$ for any integer value of $n>2$. \href{https://en.wikipedia.org/wiki/Fermat\%27s_Last_Theorem}{This can be proven, however the proof is too large to fit in the footnotes}.} states that for a right triangle with sides $a, b$ and $c$,
+\begin{equation}
+	a^{2} + b^{2} = c^{2}.
+	\label{eq:pythagorean_theorem}
+\end{equation}
+By substituting \xref[eq]{basic_trig_rearrange} into the Pythagorean theorem we get
+\begin{align*}
+	c^{2} &= a^{2}+b^{2}\\
+	&= \left[ c\sin(\alpha) \right]^{2} + \left[ c\cos(\alpha) \right]^{2}\\
+	&= c^{2}\sin^{2}(\alpha) + c^{2}\cos^{2}(\alpha)\\
+	&= c^{2}\left[ \sin^{2}(\alpha) + \cos^{2}(\alpha) \right],
+\end{align*}
+and therefore
+\begin{equation}
+	\sin^{2}(x) + \cos^{2}(x) = 1.
+	\label{eq:sin sqr plus cos sqr equals 1}
+\end{equation}
+
+\subsection{The Unit Circle}
+We defined $\sin(\alpha)$ and $\cos(\alpha)$ so far in way such that their domains are both $[\ang{0},\ang{90}]$, and their images are both $[0,1]$. However, there is a simple way to extend these functions such that both their domains are $\mathbb{R}$, and both their images are $[-1,1]$: by using a \emph{unit circle}.
+
+\autoref{fig:unit_circle} depicts a unit circle: it is simply a circle of radius $R=1$, which is placed such that its center lies at the origin of a 2-dimensional axis system (i.e. at the point $\bm{O}=(0,0)$. We then draw a line from $\bm{O}$ to a point $\bm{P}=(x,y)$ on the circumference of the unit circle. We call the angle between the line $\bm{OP}$ and the $x$-axis $\theta$. We then draw another line, this time from the point $\bm{P}$ to a point $\bm{D}$ on the $x$-axis, such that $\bm{PD}$ is perpendicular to the $x$-axis.
+
+The triangle $\triangle OPD$ is a right triangle. Therefore, we can use the trigonometric functions to calculate the coordinates of the point $\bm{P}=(x,y)$:
+\begin{align}
+	x &= R\cos(\theta) = \cos(\theta),\nonumber\\
+	y &= R\sin(\theta) = \sin(\theta).
+	\label{eq:xy_P}
+\end{align}
+
+We then define $\cos(\theta)$ and $\sin(\theta)$ as a function of $\theta$:
+\begin{align}
+	\sin(\theta) &= y,\nonumber\\
+	\cos(\theta) &= x.
+	\label{eq:unit circle definition of sin and cos}
+\end{align}
+
+Using this definition, the angle $\theta$ can take any value between $\ang{0}$ and $\ang{360}$. In fact, the values of $\theta$ can be extended to any real number in degrees: any real value of degrees is equivalent to some value in the range $[\ang{0},\ang{360}]$, the first and most obvious example is that $\ang{360}$ is equivalent to $\ang{0}$. Similarly, $\ang{-30}\equiv\ang{330}$, $-\ang{180}\equiv\ang{180}$, $-\ang{90}\equiv\ang{270}$, etc (see \autoref{fig:angles equivalency}). In fact, this property makes the trigonometric functions periodic, with a period $T=\ang{360}$.
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[every node/.style={font=\small}]
+		\def\R{3}
+		\draw[very thick, fill=xpurple!15] (0,0) circle (\R);
+		\foreach \th in {0, 45, 90, 135, 180, 200, 270, 330}{
+			\draw[ultra thick, densely dashed, white] (0,0) -- ({1.05*\R*cos(\th)},{1.05*\R*sin(\th)});
+			\draw[very thick] ({0.95*\R*cos(\th)},{0.95*\R*sin(\th)}) -- ({1.05*\R*cos(\th)},{1.05*\R*sin(\th)});
+			\node at ({1.075*\R*cos(\th)},{1.075*\R*sin(\th)}) (\th) {};
+		}
+		\fill[black] (0,0) circle (0.15);
+		\node[right] at (0) {$\ang{0}\equiv\ang{360}\equiv\ang{720}\equiv\ang{-360}\equiv\dots$};
+		\node[right] at (45) {$\ang{45}\equiv\ang{-315}\equiv\ang{395}\equiv\dots$};
+		\node[right] at (90) {$\ang{90}\equiv\ang{-270}\equiv\ang{450}\equiv\dots$};
+		\node[left] at (135) {$\ang{135}\equiv\ang{-225}\equiv\dots$};
+		\node[left] at (180) {$\ang{180}\equiv\ang{-180}\equiv\ang{540}\equiv\dots$};
+		\node[left] at (200) {$\ang{200}\equiv\ang{-160}\equiv\ang{560}\equiv\dots$};
+		\node[right] at (270) {$\ang{270}\equiv\ang{-90}\equiv\dots$};
+		\node[right] at (330) {$\ang{330}\equiv\ang{-30}\equiv\dots$};
+	\end{tikzpicture}
+	\caption{Angles equivalency on a circle.}
+	\label{fig:angles equivalency}
+\end{figure}
+
+\subsection{Radians}
+Using degrees to measure angles in a sphere creates an inconvenience: the domain and image of the trigonometric functions have different units. In order to measure both these magnitudes using the same unit we switch to measuring angles on a circle using \emph{radians} instead of degrees. One radian equals the length of a single radius $R$ of the circle (in the case of the unit circle this is always $R=1$). We define an inner angle $\theta$ to equal one radian if the arc length it represents is equal to $R$ (see \autoref{fig:radians}).
+
+How much is a radian in degrees? The full circumference of any circle with radius $R$ equals $2\pi R$, which means that a single radian $R$ is equivalent to $\frac{\ang{180}}{\pi} \approx \ang{57.3}$. \autoref{tab:rad_degs} shows some common angles and their equivalent value in radians.
+
+\begin{table}
+	\caption{Common angles in radians, and their respective images for the three main trigonometric functions.}
+	\label{tab:rad_degs}
+	\centering
+	\begin{NiceTabular}{lcccc}[
+			cell-space-limits=5pt, code-before=\rowcolors{2}{\tabcol!15}{\tabcol!10} \rowcolor{\tabcol!50}{1}
+		]
+		\toprule
+		$\theta [\si{\degree}]$ & $\theta[\si{\radian}]$ & $\sin(\theta)$ & $\cos(\theta)$ & $\tan(\theta)$ \\
+		\midrule
+		\RowStyle[bold=true]{} $0$   & $0$								 & $0$									& $1$									 & $0$\\
+		$30$  & $\frac{\pi}{6}$	 & $\frac{1}{2}$				& $\frac{\sqrt{3}}{2}$ & $\frac{1}{\sqrt{3}}$\\
+		$45$  & $\frac{\pi}{4}$  & $\frac{\sqrt{2}}{2}$ & $\frac{\sqrt{2}}{2}$ & $1$\\
+		$60$  & $\frac{\pi}{3}$  & $\frac{\sqrt{3}}{2}$ & $\frac{1}{2}$				 & $\sqrt{3}$\\
+		$90$  & $\frac{\pi}{2}$  & $1$									& $0$									 & undefined\\
+		$180$ & $\pi$						 & $0$									& $-1$								 & $0$\\
+		$270$ & $\frac{3\pi}{2}$ & $-1$									& $0$									 & undefined\\
+		$360$ & $2\pi$					 & $0$									& $1$ 								 & $0$\\
+		\bottomrule
+	\end{NiceTabular}
+\end{table}
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[scale=0.9]
+		\pgfmathsetmacro{\ax}{4.5}
+		\pgfmathsetmacro{\un}{3.5}
+		\pgfmathsetmacro{\th}{35}
+		\coordinate (D) at ({\un*cos(\th)},0);
+
+		\def\xcol{xred}
+		\draw[thick, fill=\xcol!5] (A) circle (\un);
+		\draw[vector, <->] (-\ax,0) -- (\ax,0) node [right] {\Large$x$};
+		\draw[vector, <->] (0,-\ax) -- (0,\ax) node [above] {\Large$y$};
+		\draw[ultra thick, \xcol, rotate=\th] (A) -- node [midway, above, rotate=\th] {$R=1$} (\un,0) node (B) {};
+		\draw[very thick, densely dotted, black!50] (B.center) -- ({\un*cos(\th)},0);
+		\draw[thick] ($(A)+(1.1,0)$) arc (0:\th:1.1) node [midway, xshift=-2mm, yshift=-2pt] {$\theta$};
+		\draw[thick] ($(D)+(0,0.3)$) -- ++(-0.3,0) -- ++(0,-0.3);
+
+		\filldraw (A) circle (2pt) node[below left] {$(0,0)=\bm{O}$};
+		\filldraw (\un,0) circle (2pt) node[below right] {$(1,0)$};
+		\filldraw (0,\un) circle (2pt) node[above right] {$(0,1)$};
+		\filldraw (-\un,0) circle (2pt) node[below left] {$(-1,0)$};
+		\filldraw (0,-\un) circle (2pt) node[below right] {$(0,-1)$};
+		\filldraw (D) circle (2pt) node[below, anchor=north east, xshift=2mm] {$(x,0)=\bm{D}$};
+		\filldraw (B) circle (2pt) node[right, xshift=1mm, yshift=1mm] {$\bm{P}=(x,y)$};
+	\end{tikzpicture}
+	\caption{A unit circle with a point $\bm{P}=(x,y)$ on its circumference. The triangle $\triangle \bm{OPD}$ is a right triangle with sides $\bm{OD}=x$, $\bm{OP}=y$ and an angle $\theta$ opposing the side $\bm{DP}$.}
+	\label{fig:unit_circle}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[node distance=5mm, every node/.style={font=\large}]
+		\begin{axis}[
+			unit circle,
+		]
+			\def\xcol{xpurple}
+			\def\sr{0.3}
+			\def\rad{57.3}
+			\coordinate (O) at (0,0);
+			\coordinate (A) at (1,0);
+			\coordinate (B) at ({cos(\rad)},{sin(\rad)});
+			\coordinate (C) at ({\sr*cos(\rad)},{\sr*sin(\rad)});
+			\coordinate (T) at ({\sr/1.5*cos(\rad/2)},{\sr/1.5*sin(\rad/2)});
+			\coordinate (L1) at ({0.8*cos(\rad/2)},{0.8*sin(\rad/2)});
+			\coordinate (L2) at ({0.35*cos(\rad/2)},{0.35*sin(\rad/2)});
+			
+			\draw[very thick, fill=\xcol!5] (A) arc (0:360:1);
+			%\draw[line width=5mm, xpurple!75] (A) arc (0:\rad:1);
+			\def\outershift#1{\raisebox{1ex}}
+			\draw[very thick, fill=\xcol!50, postaction={decorate, decoration={text along path, text align=center, text={|\large\outershift|arc length=$R$}}}] (O) -- node[midway, above, rotate=\rad] {$R$} (B) arc (\rad:0:1) -- node[midway, below] {$R$} cycle;
+			\def\innershift#1{\raisebox{-2.5ex}}
+			\draw[postaction={decorate, decoration={text along path, text align=center, text={|\large\innershift|$1$ radians}}}] (B) arc (\rad:0:1);
+			\draw[very thick, fill=\xcol!20] (O) -- (C) arc (\rad:0:\sr) -- cycle;
+			
+			\addplot+[only marks, black] coordinates {(0,0) (1,0) ({cos(\rad)},{sin(\rad)})};
+			\node[below left of=O] {$\bm{O}$};
+			\node[below right of=A] {$\bm{A}$};
+			\node[above of=B] {$\bm{B}$};
+			\node at (T) {$\theta$};
+			\draw[vector, thin] (L1) -- (L2);
+		\end{axis}
+	\end{tikzpicture}
+	\caption{In this figure the arc $\bm{AB}$ has the same length of the radii $\bm{OA}$ and $\bm{OB}$ (all are equal to $R$), and therefore $\theta=1$ radians.}
+	\label{fig:radians}
+\end{figure}
+
+\subsection{Graphs}
+As seen previously, the functions $\sin(x)$ and $\cos(x)$ are periodic, having both the period $T=2\pi$. Their graphs are depicted in \autoref{fig:sin and cos graphs}. The value of $\sin(x)$ is always equal to that of $\cos\left(x-\frac{\pi}{2}\right)$: we say that the two functions have a \emph{phase difference} of $\pi/2$. The graph of $\tan(x)$ is depicted in \autoref{fig:tan graph}.
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+				graph2d,
+				width=15cm, height=4cm,
+				xmin=-10, xmax=10,
+				ymin=-1.2, ymax=1.2,
+				xtick={-9.425,-7.854,...,9.425,10.996},
+				xticklabels={$-3\pi$, $-\frac{5}{2}\pi$, $-2\pi$, $-\frac{3}{2}\pi$, $-\pi$, $-\frac{1}{2}\pi$, , $\frac{1}{2}\pi$, $\pi$, $\frac{3}{2}\pi$, $2\pi$, $\frac{5}{2}\pi$, $3\pi$},
+				domain=-10:10,
+			]
+			\addplot[function, xred] {sin(deg(\x))};
+			\addplot[function, xgreen] {cos(deg(\x))};
+		\end{axis}
+	\end{tikzpicture}
+	\caption{The graphs of \textcolor{xdarkred}{$\sin(x)$} and \textcolor{xdarkgreen}{$\cos(x)$} for $x\in[-10,10]$. Note how the graph of \textcolor{xdarkgreen}{$\cos(x)$} is ``lagging'' behind the graph of \textcolor{xdarkred}{$\sin(x)$} by $\pi/2$.}
+	\label{fig:tan graph}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+				graph2d,
+				width=15cm, height=8cm,
+				xmin=-10, xmax=10,
+				ymin=-4, ymax=4,
+				xtick={-9.425,-7.854,...,9.425,10.996},
+				xticklabels={$-3\pi$, $-\frac{5}{2}\pi$, $-2\pi$, $-\frac{3}{2}\pi$, $-\pi$, $-\frac{1}{2}\pi$, , $\frac{1}{2}\pi$, $\pi$, $\frac{3}{2}\pi$, $2\pi$, $\frac{5}{2}\pi$, $3\pi$},
+				domain=-10:10,
+				restrict y to domain=-5:5,
+				samples=500,
+			]
+			\addplot[function, xblue] {tan(deg(\x))};
+		\end{axis}
+	\end{tikzpicture}
+	\caption{The graphs of $\tan(x)$ on the domain $[-3\pi,3\pi]$.}
+	\label{fig:sin and cos graphs}
+\end{figure}
+
+\subsection{Identities}
+The following are some useful facts and connections between trigonometric functions:
+\begin{itemize}
+	\item Pythagorean identity:
+		\begin{equation}
+			\sin^{2}(\theta) + \cos^{2}(\theta) = 1
+		\end{equation}
+	
+	\item Symmetry/Antisymmetry:
+		\begin{align}
+			\sin(-\theta) &= -\sin(\theta).\\
+			\cos(-\theta) &= \cos(\theta).\\
+			\tan(-\theta) &= -\tan(\theta).
+		\end{align}
+	
+	\item Tangent from sine and cosine:
+		\begin{equation}
+			\tan(\theta)=\frac{\sin(\theta)}{\cos(\theta)}.
+		\end{equation}
+	
+	\item Phase between sine and cosine:
+		\begin{align}
+			\sin\left(\theta\pm\frac{\pi}{2}\right) &= \pm\cos(\theta).\\
+			\cos\left(\theta\pm\frac{\pi}{2}\right) &= \mp\sin(\theta).
+		\end{align}
+	
+	\item Half-period shift:
+		\begin{align}
+			\sin(\theta+\pi) &= -\sin(\theta).\\
+			\cos(\theta+\pi) &= -\cos(\theta).
+		\end{align}
+	
+	\item Angle sum:
+		\begin{align}
+			\sin(\alpha\pm\beta) &= \sin(\alpha)\cos(\beta)\pm\cos(\alpha)\sin(\beta).\\
+			\cos(\alpha\pm\beta) &= \cos(\alpha)\cos(\beta)\mp\sin(\alpha)\sin(\beta).
+		\end{align}
+	
+	\item Double angle:
+		\begin{align}
+			\sin(2\theta) &= 2\sin(\theta)\cos(\theta) = \frac{2\tan \left( \theta \right)}{1+\tan^{2} \left( \theta \right)}.\\
+			\cos(2\theta) &= 1-2\sin^{2}(\theta) = \frac{1-\tan^{2} \left( \theta \right) }{1+\tan^{2} \left( \theta \right)}.
+			\label{eq:tan_double_angles}
+		\end{align}
+	
+	\item Half angle:
+		\begin{align}
+			\sin\left( \frac{\theta}{2} \right) &= \pm\sqrt{\frac{1-\cos(\theta)}{2}}.\\
+			\cos\left( \frac{\theta}{2} \right) &= \pm\sqrt{\frac{1+\cos(\theta)}{2}}.\\
+			\tan\left( \frac{\theta}{2} \right) &= \frac{\sin(\theta)}{1+\cos(\theta)}.
+		\end{align}
+	
+	\item Product to sum:
+		\begin{align}
+			\sin(\theta)\sin(\varphi) &= \frac{1}{2}\left[ \cos(\theta-\varphi)-\cos(\theta+\varphi) \right].\\
+			\cos(\theta)\cos(\varphi) &= \frac{1}{2}\left[ \cos(\theta-\varphi)+\cos(\theta+\varphi) \right].\\
+			\sin(\theta)\cos(\varphi) &= \frac{1}{2}\left[ \sin(\theta+\varphi) + \sin(\theta-\varphi) \right].\\
+			\tan(\theta)\tan(\varphi) &= \frac{\cos(\theta-\varphi)-\cos(\theta+\varphi)}{\cos(\theta-\varphi)+\cos(\theta+\varphi)}.
+			\label{eq:trig product to sum}
+		\end{align}
+
+	\item Sum to product:
+		\begin{align}
+			\sin(\theta)\pm\sin(\varphi) &= 2\sin\left( \frac{\theta\pm\varphi}{2} \right)\cos\left( \frac{\theta\mp\varphi}{2} \right).\\
+			\cos(\theta)+\cos(\varphi) &= 2\cos\left( \frac{\theta+\varphi}{2} \right)\cos\left( \frac{\theta-\varphi}{2} \right).\\
+			\cos(\theta)-\cos(\varphi) &= -2\cos\left( \frac{\theta+\varphi}{2} \right)\cos\left( \frac{\theta-\varphi}{2} \right).\\
+			\tan(\theta)\pm\tan(\varphi) &= \frac{\sin(\theta\pm\varphi)}{\cos(\theta)\cos(\varphi)}.
+			\label{eq:trig sum to product}
+		\end{align}
+\end{itemize}
+
+\subsection{Useful theorems}
+The area $S$ of a triangle $\triangle ABC$ can be calculated using the length $L$ any side of the triangle (in this context called a \emph{base}) and the height $h$ to its opposing vertex (see \autoref{fig:area of a triangle}):
+\begin{equation}
+	S = \frac{1}{2}Lh.
+	\label{eq:area of a triangle}
+\end{equation}
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\coordinate (A) at (-2,1);
+		\coordinate (B) at (1,3.5);
+		\coordinate (C) at (2,1);
+		\coordinate (D) at (B|-C);
+		\draw[very thick, fill=xblue!20] (A) node[left] {$A$} -- (B) node[above] {$B$} node[midway, above left] {$c$} -- node[midway, right] {$a$} (C) node[right] {$C$} -- cycle node[midway, below] {$b$};
+		\draw[thick, dashed] (B) -- (D) node[midway, left] {$h$};
+		\draw[thick] (D) -- ++(0.2,0) -- ++(0,0.2) -- ++(-0.2,0);
+		\pic[draw, thick, angle radius=11mm, angle eccentricity=0.7, "$\alpha$"] {angle=C--A--B};
+	\end{tikzpicture}
+	\caption{The area of a triangle using the side $b$ as a base, and its corresponding height to the point $B$. The angle opposing the side $A$ is marked as $\alpha$.}
+	\label{fig:area of a triangle}
+\end{figure}
+
+The triangle with sides $cbh$ is a right triangle, $c$ being its hypotenuse. We can therefore infer the size of $h$ using $\alpha$:
+\begin{equation}
+	h = c\sin(\alpha).
+	\label{eq:first equation in law of sines}
+\end{equation}
+Substituting this back to \autoref{eq:area of a triangle} yields that the area of the triangle is
+\begin{equation}
+	S = \frac{1}{2}bc\sin(\alpha).
+	\label{eq:area using sin theta}
+\end{equation}
+There is nothing special about choosing the side $b$ as a base: we can also use $a$ or $c$ for the calculation. This will yield, respectively,
+\begin{align}
+	S &= \frac{1}{2}ac\sin(\gamma),\\
+	S &= \frac{1}{2}ac\sin(\beta),
+	\label{eq:}
+\end{align}
+where $\beta$ is the angle opposing $b$ and $\gamma$ is the angle opposing $c$. Since $S$ is the same in all cases, we simply multiply each of the area equations by $2$ and divide by $abc$, which yields
+\begin{equation}
+	\frac{\sin(\alpha)}{a} = \frac{\sin(\beta)}{b} = \frac{\sin(\gamma)}{c},
+	\label{eq:law of sines}
+\end{equation}
+i.e. in a triangle, the ratio between any side and the sine of its opposing angle is always the same no matter which side we choose. This theorem is called the \emph{law of sines}.
+
+\begin{example}{Law of sines}{}
+	Given the triangle $\triangle ABC$ below, what are $\beta$ and $b$?
+
+	\vspace{2em}
+	\centering
+	\begin{tikzpicture}
+		\coordinate (A) at (2,-1);
+		\coordinate (B) at (2,3);
+		\coordinate (C) at (-1,4);
+		% a=3.15, b=5.83, c=4
+		% α=30.79 β=108.67 γ=40.54
+		\draw[very thick, fill=xpurple!40] (A) -- (B) node[midway, right] {$c$} -- node[midway, above right] {$a=3.15$} (C) -- cycle node[midway, below left] {$b$};
+
+		% "local bounding box" gives the pic its label
+		\pic[local bounding box=alpha, draw, thick, angle radius=11mm, angle eccentricity=0.7, "$\alpha$"] {angle=B--A--C};
+		\pic[local bounding box=beta, draw, thick, angle radius=7mm, angle eccentricity=0.6, "$\beta$"] {angle=C--B--A};
+		\pic[local bounding box=gamma, draw, thick, angle radius=11mm, angle eccentricity=0.7, "$\gamma$"] {angle=A--C--B};
+
+		\node[above right of=alpha, xshift=2mm] (alphatxt) {$\ang{30.79}$};
+		\node[below left of=gamma, xshift=-2mm] (gammatxt) {$\ang{40.54}$};
+		\draw[vector, thick] (alphatxt.south) to [out=-90, in=0] (alpha);
+		\draw[vector, thick] (gammatxt.north) to [out=90, in=180] (gamma);
+	\end{tikzpicture}
+
+	\vspace{1em}
+	\flushleft
+	Since all angles in a triangle must add up to $\ang{180}$,
+	\[
+		\beta=\ang{180}-\ang{30.79}-\ang{40.54}=\ang{108.67}.
+	\]
+
+	Using the law of sines,
+	\[
+		b = \frac{a}{\sin(\alpha)}\cdot\sin(\beta) = \frac{3.15}{\sin(\ang{30.79})}\cdot\sin(\ang{108.67}) \approx 5.83,
+	\]
+	and
+	\[
+		c = \frac{a}{\sin(\alpha)}\cdot\sin(\gamma) = \frac{3.15}{\sin(\ang{30.79})}\cdot\sin(\ang{40.54}) \approx 4.
+	\]
+\end{example}
+
+\begin{note}{Ambiguity of solutions}{}
+	The above example reveals an issue that might arise due to the symmetrical nature of $\sin(x)$ around $x=\pi$ ($\ang{180}$): say we wanted to calculate $\beta$ using the law of sines instead of by using $\beta=\ang{180}-\alpha-\gamma$. In this case we would solve the equation
+	\[
+		\frac{\sin(\alpha)}{a} = \frac{\sin(\beta)}{b},
+	\]
+	which would result in $\beta=\arcsin\left( \frac{b\sin(\alpha)}{a}  \right)=\arcsin\left( 0.95 \right)$. However, two angles can fit this requirement: the sines of $\ang{71.34}$ and $\ang{108.67}$ are both equal to $0.95$! Therefore, we must be careful when using the law of sine and make sure we always choose values that make sense (e.g. such that all angles add up to $\ang{180}$).
+\end{note}
+
+Of course, the sine function is not unique in having its own named ``Law'': another useful theorem is the so-called \emph{law of cosines} (also \emph{al-Kashi's theorem}). This theorem states that given a triangle with sides $a,b,c$ and an angle $\gamma$ opposing $c$,
+\begin{equation}
+	c^{2} = a^{2} + b^{2} - 2ab\cos(\gamma).
+	\label{eq:law of cosines}
+\end{equation}
+
+Much like the law of sines, the choice of angle does not matter, as long as we plug the correct sides to the equation: for $\alpha$ and $\beta$ being the angles opposing to $a$ and $b$ respectively,
+\begin{align}
+	a^{2} &= b^{2} + c^{2} - 2bc\cos(\alpha),\nonumber\\
+	b^{2} &= a^{2} + c^{2} - 2ac\cos(\beta).
+\end{align}
+
+If the triangle in question is a right triangle then one of the angles is equal to $\ang{90}$. Without loss of generality, let us assume that this is $\gamma$. Since $\cos(\ang{90})=0$ we get that in the case of a right triangle
+\begin{equation}
+	c^{2} = a^{2} + b^{2},
+	\label{eq:pythagorean theorem from law of cosines}
+\end{equation}
+i.e. we retrieve back the Pythagorean theorem.
+
+\begin{example}{Law of cosines}{}
+	Calculate all angles in the following triangle:
+
+	\vspace{2em}
+	\centering
+	\begin{tikzpicture}
+		\coordinate (A) at (-3,0);
+		\coordinate (B) at (2,-1);
+		\coordinate (C) at (-1,3);
+		% a=5 b=3.61 c=5.1
+		% α=70.55 β=67.58 γ=41.87
+		\draw[very thick, fill=xgreen!50] (A) -- (B) node[midway, below left] {$c=5.1$} -- node[midway, above right] {$a=5$} (C) -- cycle node[midway, above left] {$b=3.61$};
+
+		% "local bounding box" gives the pic its label
+		\pic[local bounding box=alpha, draw, thick, angle radius=9mm, angle eccentricity=0.6, "$\alpha$"] {angle=B--A--C};
+		\pic[local bounding box=beta, draw, thick, angle radius=11mm, angle eccentricity=0.7, "$\beta$"] {angle=C--B--A};
+		\pic[local bounding box=gamma, draw, thick, angle radius=9mm, angle eccentricity=0.6, "$\gamma$"] {angle=A--C--B};
+	\end{tikzpicture}
+
+	\vspace{1em}
+	\flushleft
+	Using the law of cosines:
+	\begin{align*}
+		\cos(\gamma) &= \frac{c^{2}-b^{2}-a^{2}}{-2ab} = \frac{5.1^{2}-3.61^{2}-5^{2}}{-2\cdot5\cdot3.61} \approx 0.33302\Rightarrow \gamma=\ang{70.54},\\
+		\cos(\beta) &= \frac{b^{2}-a^{2}-c^{2}}{-2ac} = \frac{3.61^{2}-5^{2}-5.1^{2}}{-2\cdot5\cdot5.1} \approx 0.74466\Rightarrow \beta=\ang{41.87},\\
+		\cos(\alpha) &= \frac{a^{2}-b^{2}-c^{2}}{-2cb} = \frac{5^{2}-3.61^{2}-5.1^{2}}{-2\cdot5.1\cdot3.61} \approx 0.38135\Rightarrow \alpha=\ang{67.58}.
+	\end{align*}
+\end{example}
+
+%\begin{figure}
+%	\centering
+%	\begin{tikzpicture}
+%		\pgfmathsetmacro{\ax}{4.5}
+%		\pgfmathsetmacro{\un}{3.5}
+%		\pgfmathsetmacro{\th}{35}
+%		\coordinate (D) at ({\un*cos(\th)},0);
+%
+%		\filldraw[xred!35] (A) -- (\un,0) arc (0:90:\un);
+%		\filldraw[xblue!35] (A) -- (0,\un) arc (90:180:\un);
+%		\filldraw[xgreen!35] (A) -- (-\un,0) arc (180:270:\un);
+%		\filldraw[xorange!35] (A) -- (0,-\un) arc (270:360:\un);
+%		\node at ({ \un/2.5},{ \un/2.5}) {\Huge$1$};
+%		\node at ({-\un/2.5},{ \un/2.5}) {\Huge$2$};
+%		\node at ({-\un/2.5},{-\un/2.5}) {\Huge$3$};
+%		\node at ({ \un/2.5},{-\un/2.5}) {\Huge$4$};
+%		
+%		\draw[thick] (A) circle (\un);
+%		\draw[vector, <->] (-\ax,0) -- (\ax,0) node [right] {\Large$x$};
+%		\draw[vector, <->] (0,-\ax) -- (0,\ax) node [above] {\Large$y$};
+%		\filldraw (A) circle (2pt) node[below right] {$(0,0)$};
+%		\filldraw (\un,0) circle (2pt) node[below right] {$(1,0)$};
+%		\filldraw (0,\un) circle (2pt) node[above right] {$(0,1)$};
+%		\filldraw (-\un,0) circle (2pt) node[below left] {$(-1,0)$};
+%		\filldraw (0,-\un) circle (2pt) node[below right] {$(0,-1)$};
+%	\end{tikzpicture}
+%	\caption{The different quadrants of the unit circle.}
+%	\label{fig:unit_circle_quadrants}
+%\end{figure}
+
+%\begin{table}
+%	\caption{Text}
+%	\label{tab:quadrants_trig_vals}
+%	\centering
+%	\begin{tabular}{lll}
+%		\toprule
+%		Quadrant & $\cos(\theta)=x$ & $\sin(\theta)=y$\\
+%		\midrule
+%		\rowcolor{xred!35}1 & $\left[ 0,1 \right]$ & $\left[ 0,1 \right]$\\
+%		\rowcolor{xblue!35}2 & $\left[-1,0 \right]$ & $\left[ 0,1 \right]$\\
+%		\rowcolor{xgreen!35}3 & $\left[-1,0 \right]$ & $\left[-1,0 \right]$\\
+%		\rowcolor{xorange!35}4 & $\left[ 0,1 \right]$ & $\left[-1,0 \right]$\\
+%		\bottomrule
+%	\end{tabular}
+%\end{table}
+

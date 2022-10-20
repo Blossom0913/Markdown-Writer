@@ -1,0 +1,1986 @@
+\section{Matrices}
+In the previous section we described linear transformations in a rather abstract way: what they are, how they behave qualitatively and how they look like in 2- and 3-dimensions. In this section we introduce a numerical method of representing linear transformations: matrices.
+
+\subsection{Linear transformation of basis vectors}
+Recall that any vector $\vec{v}\in\Rs[n]$ can be written as a linear combination of basis vectors $\vec{b}_{1}, \vec{b}_{2}, \dots, \vec{b}_{n}$:
+\begin{equation}
+	\vec{v} = \sum\limits_{i=1}^{n}\alpha_{i}\vec{b}_{i} = \alpha_{1}\vec{b}_{1} + \alpha_{2}\vec{b}_{2} + \cdots + \alpha_{n}\vec{b}_{n}.
+\end{equation}
+
+Applying a linear transformation $T$ on $\vec{v}$ yields, using the properties of linear transformations,
+\begin{align}
+	T\left(\vec{v}\right) &= T\left(\alpha_{1}\vec{b}_{1} + \alpha_{2}\vec{b}_{2} + \cdots + \alpha_{n}\vec{b}_{n}\right)\nonumber\\
+	\tikz[baseline=-0.5ex]{\draw[-stealth, xred] (0,0) -- (1,0) node[pos=-0.1, anchor=east] {additivity}}
+						  &= T\left(\alpha_{1}\vec{b}_{1}\right) + T\left(\alpha_{2}\vec{b}_{2}\right) + \cdots + T\left(\alpha_{n}\vec{b}_{n}\right)\nonumber\\
+    \tikz[baseline=-0.5ex]{\draw[-stealth, xblue] (0,0) -- (1,0) node[pos=-0.1, anchor=east] {scalability}}
+						  &= \alpha_{1}T\left(\vec{b}_{1}\right) + \alpha_{2}T\left(\vec{b}_{2}\right) + \cdots + \alpha_{n}T\left(\vec{b}_{n}\right).
+	\label{eq:transfom_by_basis}
+\end{align}
+
+This result is pretty neat: it means that by knowing how a linear transformation $T$ changes the basis vectors, we know exactly how any vector is transformed by $T$. This true for any basis, and thus specifically to the standard basis, where the coefficients $\alpha_{1},\alpha_{2},\dots,\alpha_{n}$ are actually the components of the vector, i.e. $v_{1},v_{2},\dots,v_{n}$. Thus in the standard basis:
+\begin{equation}
+	T\left(\vec{v}\right) = v_{1}T\left(\eb{1}\right) + v_{2}T\left(\eb{2}\right) + \cdots + v_{n}T\left(\eb{n}\right).
+\end{equation}
+
+\begin{example}{Vector transformation via a basis}{}
+	Applying the transformation $T:\Rs[3]\to\Rs[3]$, defined as
+	\[
+		T\left(\colvec{x;y;z}\right)=\colvec{x+y-2z;2x+z;-x-y-z}
+	\]
+	on the vector $\vec{v}=\colvec{2;-1;3}$ yields the following vector:
+	\[
+		T\left(\vec{v}\right) = T\left(\colvec{2;-1;3}\right) = \colvec{2+(-1)-2\cdot3;2\cdot2+3;-2-(-1)-3} = \colvec{2-1-6;4+3;-2+1-3} = \colvec{-5;7;-4}.
+	\]
+
+	Now, let us apply $T$ first to the three standard basis vectors $\hat{x},\hat{y},\hat{z}$:
+	\begin{align*}
+		T\left( \hat{x} \right) &= T\left(\colvec{1;0;0}\right) = \colvec{1+0-\cancel{2\cdot0};2\cdot1+0;-1-0-0} = \colvec{1;2;-1},\\
+		T\left( \hat{y} \right) &= T\left(\colvec{0;1;0}\right) = \colvec{0+1-\cancel{2\cdot0};\cancel{2\cdot0}+0;-0-1-0} = \colvec{1;0;-1},\\
+		T\left( \hat{z} \right) &= T\left(\colvec{0;0;1}\right) = \colvec{0+0-2\cdot1;\cancel{2\cdot0}+1;-0-0-1} = \colvec{-2;1;-1}.
+	\end{align*}
+
+	Taking these results and applying \autoref{eq:transfom_by_basis} yields
+	\begin{align*}
+		T\left( \vec{v} \right) &= 2T \left( \hat{x} \right) -T \left( \hat{y} \right) + 3T \left( \hat{z} \right)\\
+								&= 2\colvec{1;2;-1} - \colvec{1;0;-1} + 3\colvec{-2;1;-1}\\
+								&= \colvec{2;4;-2} - \colvec{1;0;-1} + \colvec{-6;3;-3}\\
+								&= \colvec{2-1-6;4-0+3;-2-(-1)+(-3)}\\
+								&= \colvec{-5;7;-4},
+	\end{align*}
+	which is indeed what we got when we applied $T$ directly to $\vec{v}$.
+\end{example}
+
+\subsection{From transformations to matrices}
+The most general linear transformation $T:\Rs[2]\to\Rs[2]$ has the following form:
+\begin{equation}
+	T \left( \colvec{x;y} \right) = \colvec{ax+by;cx+dy},
+	\label{eq:generic_R2_LT}
+\end{equation}
+where $a,b,c,d\in\mathbb{R}$. If we apply this transformation to $\hat{x}$ and $\hat{y}$ we get, respectively,
+\begin{equation}
+	T \left( \hat{x} \right) = \colvec{a;c},\quad T \left( \hat{y} \right) = \colvec{b;d}.
+	\label{eq:}
+\end{equation}
+We can now collect these two vectors to form a new structure, which we call a \emph{matrix} (in this specific casr a $2\times2$ matrix):
+\begin{equation}
+	A = \begin{bNiceMatrix} a&b\\c&d \end{bNiceMatrix}.
+	\label{eq:matrix}
+\end{equation}
+
+We then define the product of $M$ with a vector $\vec{v}=\colvec{x;y}$ to yield $T \left( \vec{v} \right)$, i.e.
+\begin{equation}
+	A\vec{v} = \begin{bNiceMatrix} a&b\\c&d \end{bNiceMatrix} \cdot\colvec{x;y} = \colvec{ax+by;cx+dy}.
+	\label{eq:matrix_vector_product_2x2}
+\end{equation}
+This defintion can be re-written as following:
+\begin{equation}
+	A\vec{v} = \begin{bNiceMatrix} a&b\\c&d \end{bNiceMatrix} \cdot\colvec{x;y} = \colvec{A_{1}\cdot\vec{v};A_{2}\cdot\vec{v}},
+	\label{eq:matrix_vector_product_as_dot_product}
+\end{equation}
+i.e. the $i$-th component of the resulting vector is the scalar product of the $i$-th \textbf{row} of the matrix with the vector $\vec{v}$.
+
+\begin{example}{Matrix-vector product}{}
+	Some matrix-vector products:
+
+	\begin{align*}
+		\begin{bNiceMatrix}
+			1 & -2 \\
+			0 & 5
+		\end{bNiceMatrix}\colvec{-3;2} &= \colvec{1\cdot(-3) + (-2)\cdot2;\cancel{0\cdot(-3)}+5\cdot2} = \colvec{-7;10},\\[5mm]
+		\begin{bNiceMatrix}
+			1 & 2 \\
+			1 & 2
+		\end{bNiceMatrix}\colvec{5;-4} &= \colvec{1\cdot5+2\cdot(-4);1\cdot5+2\cdot(-4)} = \colvec{-3;-3},\\[5mm]
+		\begin{bNiceMatrix}
+			1 & 0 \\
+			0 & 2
+		\end{bNiceMatrix}\colvec{2;-2} &= \colvec{2\cdot2+\cancel{0\cdot(-2)};\cancel{0\cdot2}+2\cdot(-2)} = \colvec{4;-4}.
+	\end{align*}
+\end{example}
+
+\begin{challenge}{Proof of linearity}{}
+	Prove that the transformation $T$ in \autoref{eq:generic_R2_LT} is indeed linear.
+\end{challenge}
+
+The most general form of a linear transformation is $T:\Rs[n]\to\Rs[m]$, i.e. a transformation which takes $n$-dimensional vectors as input and returns $m$-dimensional vectors as output:
+\begin{equation}
+	T \left( \colvec{\tikzmark{N}x_{1};x_{2};\vdots;x_{n}} \right) = \colvec{
+		\Ma{1}{1}x_{1}+\Ma{1}{2}x_{2}+\cdots+\Ma{1}{n}x_{n};
+		\Ma{2}{1}x_{1}+\Ma{2}{2}x_{2}+\cdots+\Ma{2}{n}x_{n}\tikzmark{M};
+		\vdots;
+		\Ma{m}{1}x_{1}+\Ma{m}{2}x_{2}+\cdots+\Ma{m}{n}x_{n}
+	},
+	\label{eq:}
+\end{equation}
+\begin{tikzpicture}[overlay, remember picture]
+	\node[xblue] (Ntxt) at ($(pic cs:N)+(-1.5cm,-2mm)$) {$\Rs[n]\ni$};
+	\draw[-stealth, xblue] (Ntxt) to [out=45, in=90] ($(pic cs:N)+(1mm,2.5mm)$);
+	\node[xred] (Mtxt) at ($(pic cs:M)+(2.5cm,5mm)$) {$\in\Rs[m]$};
+	\draw[-stealth, xred] (Mtxt) to [out=180, in=0] ($(pic cs:M)+(2.5mm,0)$);
+\end{tikzpicture}
+
+where $\Ma{i}{j}\in\mathbb{R},\ \textcolor{xred}{i}=1,2,3,\dots,m$ and $\textcolor{xblue}{j}=1,2,3,\dots,n$.
+
+\begin{challenge}{Proof of linearity}{}
+	Prove that the above transformation $T$ is indeed linear.
+\end{challenge}
+
+Respectively, we define an $\textcolor{xred}{m}\times \textcolor{xblue}{n}$ matrix (\textcolor{xred}{$m$} rows by \textcolor{xblue}{$n$} columns) by collecting all the coefficients $\Ma{i}{j}$ into a single structure:
+\begin{equation}
+	A =
+	\begin{bNiceMatrix}
+		\Ma{1}{1} & \Ma{1}{2} & \cdots & \Ma{1}{n}\\
+		\Ma{2}{1} & \Ma{2}{2} & \cdots & \Ma{2}{n}\\
+		\vdots & \vdots & \Ddots & \vdots\\
+		\Ma{m}{1} & \Ma{m}{2} & \cdots & \Ma{m}{n}
+	\end{bNiceMatrix}. 
+	\label{eq:mxn_matrix}
+\end{equation}
+The product $M\vec{v}$ (where $\vec{v}\in\Rs[n]$) is then defined as
+\begin{equation}
+	A\vec{v} =
+	\begin{bNiceMatrix}
+		\Ma{1}{1} & \Ma{1}{2} & \cdots & \Ma{1}{n}\\
+		\Ma{2}{1} & \Ma{2}{2} & \cdots & \Ma{2}{n}\\
+		\vdots & \vdots & \Ddots & \vdots\\
+		\Ma{m}{1} & \Ma{m}{2} & \cdots & \Ma{m}{n}
+	\end{bNiceMatrix}\colvec{x_{1};x_{2};\vdots;x_{n}} = \colvec{
+	\Ma{1}{1}x_{1}+\Ma{1}{2}x_{2}+\cdots+\Ma{1}{n}x_{n};
+	\Ma{2}{1}x_{1}+\Ma{2}{2}x_{2}+\cdots+\Ma{2}{n}x_{n};
+	\vdots;
+	\Ma{m}{1}x_{1}+\Ma{m}{2}x_{2}+\cdots+\Ma{m}{n}x_{n}
+	}.
+	\label{eq:matrix_vector_product}
+\end{equation}
+Again, note that the $i$-th component of the resulting vector is the scalar product $A_{i}\cdot\vec{v}$.
+
+\begin{note}{When is a matrix-vector product defined}{}
+	In order for a matrix-vector product to be defined, the vector must be of the same dimension as the number of \textbf{columns} in the matrix - i.e. given an $a\times b$ matrix, a vector must be $b$-dimensional for the product to be defined.
+\end{note}
+
+\begin{example}{Some matrix-vector products}{}
+	\blindtext[2]
+\end{example}
+
+The structure of an $m\times n$ matrix $A$ has a nice property: given that the transformation in represented in some basis $B=\left\{ \vec{b}_{1},\vec{b}_{2},\dots,\vec{b}_{n} \right\}$, the $i$-th column of the matrix always shows how $\vec{b}_{i}$ is transformed by the product $A\vec{b}_{n}$. This is easy to see in the case of the standard basis, which we anyway use througout this chapter:
+
+\vspace{1cm}
+\begin{equation*}
+	\setlength{\arraycolsep}{2.7mm}
+	A =
+	\begin{bNiceMatrix}
+		\tikzmark{A1}\Ma{1}{1} & \tikzmark{B1}\Ma{1}{2} & \cdots & \tikzmark{N1}\Ma{1}{n}\\
+	    \Ma{2}{1} & \Ma{2}{2} & \cdots & \Ma{2}{n}\\
+		\vdots & \vdots & \ddots & \vdots\\
+		\Ma{m}{1}\tikzmark{A2} & \Ma{m}{2}\tikzmark{B2} & \cdots & \Ma{m}{n}\tikzmark{N2}
+	\end{bNiceMatrix}.
+\end{equation*}
+\tikzset{
+	highlight/.style={thick, draw=#1, rounded corners, draw opacity=1, fill=#1, fill opacity=0.2},
+	hltxt/.style={highlight=#1, draw opacity=1, text=black, text opacity=1, above, yshift=1.5cm},
+	nrtxt/.style={black, opacity=1, text opacity=1},
+	hlarrow/.style={-stealth, thick, #1},
+}
+\tikz[overlay, remember picture, blend mode=multiply]{
+	\draw[highlight={xgreen}]  ($(pic cs:A1)+(-2pt,7pt)$) rectangle node[hltxt={xgreen} ](Atxt){$T \left( \eb{1} \right)$}($(pic cs:A2)+(2pt,-5pt)$);
+	\draw[highlight={xpurple}] ($(pic cs:B1)+(-2pt,7pt)$) rectangle node[hltxt={xpurple}](Btxt){$T \left( \eb{2} \right)$}($(pic cs:B2)+(2pt,-5pt)$);
+	\draw[highlight={xorange}] ($(pic cs:N1)+(-2pt,7pt)$) rectangle node[hltxt={xorange}](Ntxt){$T \left( \eb{n} \right)$}($(pic cs:N2)+(2pt,-5pt)$);
+
+	\draw[hlarrow={xgreen}]  (Atxt.south) -- ++(0,-5mm);
+	\draw[hlarrow={xpurple}] (Btxt.south) -- ++(0,-5mm);
+	\draw[hlarrow={xorange}] (Ntxt.south) -- ++(0,-5mm);
+}
+
+\begin{example}{Matrices}{}
+	The product of the following matrix $A$ with each of the vectors $\eb{1},\eb{2},\eb{3}$ (i.e. $\hat{x},\hat{y}$ and $\hat{z}$, respectively) returns the respective column of the matrix:
+	\begin{align*}
+		A\eb{1}=
+		\begin{bNiceMatrix}
+			 1 & 2 & 0\\
+			-1 & 3 & 4\\
+			 0 & 1 & 3\\
+		 \end{bNiceMatrix}\colvec{1;0;0} &= \colvec{1\cdot1+\cancel{2\cdot0}+\cancel{\cancel{0\cdot0}};-1\cdot1+\cancel{3\cdot0}+\cancel{4\cdot0};\cancel{0\cdot1}+\cancel{1\cdot0}+\cancel{3\cdot0}} = \colvec{1;-1;0},\\[3mm]
+		A\eb{2}=
+		\begin{bNiceMatrix}
+			 1 & 2 & 0\\
+			-1 & 3 & 4\\
+			 0 & 1 & 3\\
+		\end{bNiceMatrix}\colvec{0;1;0} &= \colvec{\cancel{1\cdot0}+2\cdot1+\cancel{\cancel{0\cdot0}};-\cancel{1\cdot0}+3\cdot1+\cancel{4\cdot0};\cancel{\cancel{0\cdot0}}+1\cdot1+\cancel{3\cdot0}} = \colvec{2;3;1},\\[3mm]
+		A\eb{3}=
+		\begin{bNiceMatrix}
+			 1 & 2 & 0\\
+			-1 & 3 & 4\\
+			 0 & 1 & 3\\
+		\end{bNiceMatrix}\colvec{0;0;1} &= \colvec{\cancel{1\cdot0}+\cancel{2\cdot0}+\cancel{0\cdot1};-\cancel{1\cdot0}+\cancel{3\cdot0}+4\cdot1;\cancel{\cancel{0\cdot0}}+\cancel{1\cdot0}+3\cdot1} = \colvec{0;4;3}.
+	\end{align*}
+\end{example}
+
+\subsection{Matrix representation of the basic linear transformations (2D)}
+We can now represent all of the basic linear transformations in $\Rs[2]$ mentioned in the previous section (\autoref{fig:basicLinearTrans}) as $2\times2$ matrices. We do this by observing how the basis vectors $\hat{x}$ and $\hat{y}$ change after the application of each transformation.
+
+\begin{descitemize}
+	\item[Identity] both basis vectors remain the same: $\colvec{1;0}\to\colvec{1;0},\ \colvec{0;1}\to\colvec{0;1}$. Therefore the matrix $I$ representing the identity transformation is
+		\begin{equation}
+			I = \begin{bNiceMatrix} 1&0 \\ 0&1 \end{bNiceMatrix}.
+		\end{equation}
+
+	\item[Scaling by $\bm{s}$ in the $\bm{x}$-direction] the basis vector $\hat{x}$ is streched by $s$: $\colvec{1;0}\to\colvec{s;0}$. The basis vector $\hat{y}=\colvec{0;1}$ stays the same. Therefore the matrix $S_{x}$ representing the transformation is
+		\begin{equation}
+			S_{x} = \begin{bNiceMatrix} s&0 \\ 0&1 \end{bNiceMatrix}.
+			\label{eq:}
+		\end{equation}
+	
+	\item[Scaling by $\bm{s}$ in the $\bm{y}$-direction] much like with $S_{x}$, now the basis vector $\hat{y}$ is the one getting streched, by $\beta$: $\colvec{0;1}\to\colvec{0;s}$. The basis vector $\hat{x}=\colvec{1;0}$ stays the same. Therefore the matrix $S_{y}$ representing the transformation is
+		\begin{equation}
+			S_{y} = \begin{bNiceMatrix} 1&0 \\ 0&s \end{bNiceMatrix}.
+			\label{eq:}
+		\end{equation}
+
+	\item[Rotating by $\bm{\theta}$ counter-clockwise about the origin] \autoref{fig:rotationT} shows how do $\hat{x}$ and $\hat{y}$ transformed by the rotation. In the case of $\hat{x}$, the resulting vector is $R_{\theta} \left( \hat{x} \right)=\colvec{\cos(\theta),\sin(\theta)}$, since thiese are the respective sides of a right triangle of hypotenous $1$ and angle $\theta$. The components of $R_{\theta}\left(\hat{y}\right)$ can be calculated by rotating $\hat{x}$ by $\theta+\frac{\pi}{2}$ ($\theta+\ang{90}$): $\cos \left( \theta+\frac{\pi}{2} \right) = -\sin(\theta)$, and $\sin \left( \theta+\frac{\pi}{2} \right) = \cos \left( \theta \right)$. Therefore we get
+		\begin{equation}
+			\colvec{1;0} \to \colvec{\cos(\theta);\sin(\theta)},\ \colvec{0;1} \to \colvec{-\sin(\theta);\cos(\theta)}.
+			\label{eq:}
+		\end{equation}
+
+		Altogether the rotation matrix $R_{\theta}$ is
+		\begin{equation}
+			R_{\theta} = \begin{bNiceMatrix} \cos(\theta)&-\sin(\theta) \\ \sin(\theta)&\cos(\theta) \end{bNiceMatrix}.
+			\label{eq:2D_rotation_matrix}
+		\end{equation}
+
+		\begin{figure}
+			\centering
+			\begin{tikzpicture}
+				\begin{axis}[
+					vector plane,
+					width=10cm, height=10cm,
+					xmin=-1.3, xmax=1.3,
+					ymin=-1.3, ymax=1.3,
+					xtick={-1,0,1},
+					ytick={-1,0,1},
+					yticklabel pos=right,
+					yticklabel style={anchor=west},
+				]
+				\pgfmathsetmacro{\t}{30};
+				\draw[black!20] (1,0) arc (0:360:1);
+				\tikzset{point/.style={circle, fill=#1, inner sep=0pt, minimum size=3pt}}
+
+				% x
+				\draw[vector, xred] (0,0) -- (1,0) node[midway, below] {$\hat{x}$};
+				\draw[vector, xred, dashed] (0,0) -- ({cos(\t)},{sin(\t)}) node[midway, above, rotate=\t] {$R_{\theta} \left( \hat{x} \right)$};
+				\fill[xpurple, opacity=0.15] (0,0) -- (1,0) arc (0:\t:1) -- cycle;
+				\draw[vector, xpurple, dashed] (1,0) arc (0:\t:1) node[point={xred}] (rx) {};
+				\node[text=xpurple] at ({1.1*cos(\t/2)},{1.1*sin(\t/2)}) {$\theta$};
+				
+				% y
+				\draw[vector, xblue] (0,0) -- (0,1) node[midway, right] {$\hat{y}$};
+				\draw[vector, xblue, dashed] (0,0) -- ({-sin(\t)},{cos(\t)}) node[midway, below, rotate={\t-90}] {$R_{\theta} \left( \hat{y} \right)$};
+				\fill[xpurple, opacity=0.15] (0,0) -- (0,1) arc (90:{90+\t}:1) -- cycle;
+				\draw[vector, xpurple, dashed] (0,1) arc (90:{90+\t}:1) node[point={xblue}] (ry) {};
+				\node[text=xpurple] at ({-1.1*sin(\t/2)},{1.1*cos(\t/2)}) {$\theta$};
+				\end{axis}
+				\node[xred, anchor=west, yshift=5pt]  at (rx) {$\left(  \Ctrig,\Strig \right)$};
+				\node[xblue, anchor=east, xshift=-4pt] at (ry) {$\left( -\Strig,\Ctrig \right)$};
+			\end{tikzpicture}
+			\caption{Rotation of $\textcolor{xred}{\hat{x}}$ and $\textcolor{xblue}{\hat{y}}$ by an angle $\textcolor{xpurple}{\theta}$ counter-clockwise about the origin. The notations $\Ctrig,\Strig$ stand for $\cos(\textcolor{xpurple}{\theta})$ and $\sin(\textcolor{xpurple}{\theta})$, respectively.}
+			\label{fig:rotationT}
+		\end{figure}
+	
+	\item[Skew by $\bm{k}$ in the $\bm{x}$-direction] what differentiates this transformation from scaling in the $x$-direction is that a skew changes only $\hat{y}$ by adding to it some horizontal displacement $\vec{K}=k\hat{x}$ (see \autoref{fig:skew_in_x}). Therefore $\hat{x}$ remains the same while $\hat{y}$ is transformed as $\hat{y}\to\hat{y}+\vec{k}=\hat{y}+k\hat{x}=\colvec{0;1}+\colvec{k;0}=\colvec{k;1}$, and altogether the matrix is
+		\begin{equation}
+			K_{x} = \begin{bNiceMatrix} 1&k \\ 0&1 \end{bNiceMatrix}.
+			\label{eq:}
+		\end{equation}
+		
+		\begin{figure}
+			\centering
+			\begin{tikzpicture}
+				\begin{axis}[
+					vector plane,
+					width=10cm, height=10cm,
+					xmin=-1.3, xmax=1.3,
+					ymin=-1.3, ymax=1.3,
+					ticks=none,
+				]
+				\draw[vector, xred]  (0,0) -- (1,0) node[midway, below] {$\hat{x}, K_{x}\left(\hat{x}\right)$};
+				\draw[vector, xblue] (0,0) -- (0,1) node[midway, right] {$\hat{y}$};
+				\draw[vector, xblue, dashed] (0,0) -- (0.5,1) node[midway, right] {$K_{x}\left( \hat{y} \right)$};
+				\draw[vector, xpurple, dashed] (0,1) -- (0.5,1) node [midway, above] {$\vec{k}=k\hat{x}$};
+				\end{axis}
+			\end{tikzpicture}
+			\caption{Skew in the $x$-direction.}
+			\label{fig:skew_in_x}
+		\end{figure}
+
+	\item[Skew by $\bm{k}$ in the $\bm{y}$-direction] same idea, except the roles of the axes are reveresed:
+		\[
+			\colvec{1;0}\to\colvec{1;k},\ \colvec{0;1}\to\colvec{0;1}.
+		\]
+		Thus the matrix is
+		\begin{equation}
+			K_{y} = \begin{bNiceMatrix} 1&0 \\ k&1 \end{bNiceMatrix}.
+			\label{eq:}
+		\end{equation}
+
+	\item[Reflections across a line going through the origin] in the case of reflections across the $x$-axis, $\hat{x}$ stays the same, while $\hat{y}$ is flipped (see \autoref{fig:ref_x_axis}), i.e. $\colvec{0;1}\to-\colvec{0;1}=\colvec{0;-1}$. Therefore the matrix is
+		\begin{equation}
+			\Refl_{x} = \begin{bNiceMatrix} 1&0 \\ 0&-1 \end{bNiceMatrix}.
+		\end{equation}
+		
+		Similarily, a reflection across the $y$-axis flipps $\hat{x}$ while keeping $\hat{y}$ the same (see \autoref{fig:ref_y_axis}), i.e.
+		\begin{equation}
+			\Refl_{y} = \begin{bNiceMatrix} -1&0 \\ 0&1 \end{bNiceMatrix}. 
+		\end{equation}
+		
+		Another special case of these kinds of reflections is done across the line rotated by $\frac{\pi}{4}=\ang{45}$ relative to the $x$-axis, i.e the line $y=x$. In this case $\hat{x}$ and $\hat{y}$ are swapped, giving
+		\begin{equation}
+			\Refl_{\frac{\pi}{4}} = \begin{bNiceMatrix} 0&1 \\ 1&0 \end{bNiceMatrix}. 
+		\end{equation}
+
+		The most general reflection is made across a line of angle $\theta$ relative to the $x$-axis (see \autoref{fig:ref_line}):
+		\begin{equation}
+			\Refl_{\theta} = \begin{bmatrix} \cos \left( 2\theta \right) & \sin \left( 2\theta \right) \\ \sin \left( 2\theta \right) & -\cos \left( 2\theta \right) \end{bmatrix}.
+			\label{eq:reflect_general_2x2}
+		\end{equation}
+		A way to calculate this matrix will be shown later in the chapter.
+
+		We can translate the matrix to be based on the slope $m$ of the line instead of its angle $\theta$ relative to the $x$-axis by using the relation $m=\tan\left(\theta\right)$ and the two trigonomentric identities for double angles (\autoref{eq:tan_double_angles}):
+		\begin{align*}
+			\begin{bmatrix} \cos \left( 2\theta \right) & \sin \left( 2\theta \right) \\ \sin \left( 2\theta \right) & -\cos \left( 2\theta \right) \end{bmatrix} &= \begin{bmatrix} \frac{1-\tan^{2} \left( \theta \right) }{1+\tan^{2} \left( \theta \right) } & \frac{2\tan \left( \theta \right) }{1+\tan^{2} \left( \theta \right) } \\ \frac{2\tan \left( \theta \right) }{1+\tan^{2} \left( \theta \right) } & \frac{\tan^{2} \left( \theta \right)-1 }{1+\tan^{2} \left( \theta \right) } \end{bmatrix}\\
+														&= \frac{1}{1+\tan^{2} \left( \theta \right)}\begin{bmatrix} 1-\tan^{2} \left( \theta \right) & 2\tan \left( \theta \right) \\ 2\tan \left( \theta \right) & \tan^{2} \left( \theta \right) -1  \end{bmatrix}\\
+														&= \frac{1}{1+m^{2}} \begin{bmatrix} 1-m^{2} & 2m \\ 2m & m^{2}-1 \end{bmatrix}.
+		\end{align*}	
+
+		\begin{figure}
+			\centering
+			\begin{subfigure}[c]{0.45\textwidth}
+			\begin{center}
+				\begin{tikzpicture}
+					\begin{axis}[
+						vector plane,
+						width=8cm, height=8cm,
+						xmin=-1.5, xmax=1.5,
+						ymin=-1.5, ymax=1.5,
+						ticks=none,
+					]
+					\draw[vector, xred]  (0,0) -- (1,0) node[below] {$\hat{x},\ \Refl_{x}\left(\hat{x}\right)$};
+					\draw[vector, xblue] (0,0) -- (0,1) node[right] {$\hat{y}$};
+					\draw[vector, xblue, dashed] (0,0) -- (0,-1) node[right] {$\Refl_{x}\left(\hat{y}\right)$};
+					\end{axis}
+				\end{tikzpicture}	
+			\end{center}
+			\caption{Reflection across the $x$-axis.}
+			\label{fig:ref_x_axis}
+			\end{subfigure}
+			\hfill
+			\begin{subfigure}[c]{0.45\textwidth}
+			\begin{center}
+				\begin{tikzpicture}
+					\begin{axis}[
+						vector plane,
+						width=8cm, height=8cm,
+						xmin=-1.5, xmax=1.5,
+						ymin=-1.5, ymax=1.5,
+						ticks=none,
+					]
+					\draw[vector, xred]  (0,0) -- (1,0) node[below] {$\hat{x}$};
+					\draw[vector, xred, dashed] (0,0) -- (-1,0) node[below] {$\Refl_{y}\left(\hat{x}\right)$};
+					\draw[vector, xblue] (0,0) -- (0,1) node[right] {$\hat{y},\ \Refl_{y}\left(\hat{y}\right)$};
+					\end{axis}
+				\end{tikzpicture}	
+			\end{center}
+			\caption{Reflection across the $y$-axis.}
+			\label{fig:ref_y_axis}
+			\end{subfigure}
+			\begin{subfigure}[c]{0.45\textwidth}
+			\begin{center}
+				\begin{tikzpicture}
+					\begin{axis}[
+						vector plane,
+						width=8cm, height=8cm,
+						xmin=-1.5, xmax=1.5,
+						ymin=-1.5, ymax=1.5,
+						ticks=none,
+					]
+					% original vectors
+					\draw[vector, xred]  (0,0) -- (1,0) node[below] {$\hat{x}$};
+					\draw[vector, xblue] (0,0) -- (0,1) node[right] {$\hat{y}$};
+					
+					% reflection line
+					\draw[thick, black!75, dashed] (-1.5,-0.5) -- (1.5,0.5);
+
+					% reflected vectors
+					\draw[vector, xred, dashed]  (0,0) -- (0.8,0.6) node[below, anchor=west, yshift=5pt] {$\Refl_{\theta}\left(\hat{x}\right)$};
+					\draw[vector, xblue, dashed, anchor=west] (0,0) -- (0.6,-0.8) node[right] {$\Refl_{\theta}\left(\hat{y}\right)$};
+
+					% angles
+					\fill[xpurple, opacity=0.2] (0,0) -- (0.5,0) arc (0:18.435:0.5) node (A) {} -- cycle;
+					\fill[xgreen, opacity=0.2]  (0,0) -- (A) arc (18.435:36.87:0.5) -- (0,0);
+					\fill[xpurple, opacity=0.2] (0,0) -- (0,0.5) arc (90:198.435:0.5) node (B) {} -- cycle;
+					\fill[xgreen, opacity=0.2]  (0,0) -- (B) arc (198.435:306.87:0.5) -- (0,0);
+					\end{axis}
+				\end{tikzpicture}	
+			\end{center}
+			\caption{Reflection across a line going through the origin. Notice how in both cases the purple and green angles are the same: this shows that both $\hat{x}$ and $\hat{y}$ are reflected across the line.}
+			\label{fig:ref_line}
+			\end{subfigure}
+			\caption{Reflections across different lines going through the origin.}
+			\label{fig:reflections}
+		\end{figure}
+		
+	\item[Reflection across the origin] in this case both $\hat{x}$ and $\hat{y}$ are flipped, i.e.
+		\[
+			\colvec{1;0}\to\colvec{-1;0},\ \colvec{0;1}\to\colvec{0;-1},
+		\]
+		and the matrix is essentially a rotation by $\pi$ ($\ang{180}$) around the origin:
+		\begin{equation}
+			R = \begin{bNiceMatrix} -1&0 \\ 0&-1 \end{bNiceMatrix}.
+			\label{eq:}
+		\end{equation}
+\end{descitemize}
+
+Table \autoref{tab:matrix_basic_LTs} summarizes all the matrices of the basic linear transformations.
+
+\begin{longtable}{lcccc}
+	% !!! vvv MUST FIND WHY THESE DON'T WORK vvv !!! %
+	% \caption{my caption}\\
+	% \label{tab:matrix_basic_LTs}
+	% !!! ^^^ THESE TWO LINES ^^^ !!! %
+	\toprule
+	Transformation & Trans Tapir & $T \left( \hat{x} \right)$ & $T \left( \hat{y} \right)$ & Matrix\\
+	\midrule
+	Identity & \tikz[baseline=-0.5ex]{\tapirTransComp{1}{0}{0}{1}{0}{0}{}} & $\colvec{1;0}$ & $\colvec{0;1}$ & $\begin{bNiceMatrix} 1&0 \\ 0&1 \end{bNiceMatrix}$\\
+	Scale in $x$ & \tikz[baseline=-0.5ex]{\tapirTransComp{1.3}{0}{0}{1}{0}{0}{}} & $\colvec{s;0}$ & $\colvec{0;1}$ & $\begin{bNiceMatrix} s&0 \\ 0&1 \end{bNiceMatrix}$\\
+	Scale in $y$ & \tikz[baseline=-0.5ex]{\tapirTransComp{1}{0}{0}{1.4}{0}{0}{}} & $\colvec{1;0}$ & $\colvec{0;s}$ & $\begin{bNiceMatrix} 1&0 \\ 0&s \end{bNiceMatrix}$\\
+	Rotation & \tikz[baseline=-0.5ex]{\tapirTransComp{0.866}{0.5}{-0.5}{0.866}{0}{0}{}} & $\colvec{\Ctrig;-\Strig}$ & $\colvec{\Strig;\Ctrig}$ & $\begin{bNiceMatrix} \Ctrig & -\Strig \\ \Strig & \Ctrig \end{bNiceMatrix}$\\
+	Skew in $x$ & \tikz[baseline=-0.5ex]{\tapirTransComp{1}{0}{0.5}{1}{0}{0}{}} & $\colvec{1;0}$ & $\colvec{k;1}$ & $\begin{bNiceMatrix} 1&0 \\ k&1 \end{bNiceMatrix}$\\
+	Skew in $y$ & \tikz[baseline=-0.5ex]{\tapirTransComp{1}{0.35}{0}{1}{0}{0}{}} & $\colvec{1;k}$ & $\colvec{0;1}$ & $\begin{bNiceMatrix} 1&k \\ 0&1 \end{bNiceMatrix}$\\
+	Reflection by $x$ & \tikz[baseline=-0.5ex]{\tapirTransComp{1}{0}{0}{-1}{0}{0}{}} & $\colvec{1;0}$ & $\colvec{0;-1}$ & $\begin{bNiceMatrix} 1&0 \\ 0&-1 \end{bNiceMatrix}$\\
+	Reflection by $y$ & \tikz[baseline=-0.5ex]{\tapirTransComp{-1}{0}{0}{1}{0}{0}{}} & $\colvec{-1;0}$ & $\colvec{0;1}$ & $\begin{bNiceMatrix} -1&0 \\ 0&1 \end{bNiceMatrix}$\\
+	Reflection by line & \tikz[baseline=-0.5ex]{\tapirTransComp{0.882}{0.471}{0.471}{-0.882}{0}{0}{};\draw[very thick, dashed, xpurple](-2,-0.5)--(2,0.5)node[pos=-0.05, anchor=east] {$y=mx$}} & $\colvec{\Ctrig_{2};\Strig_{2}}$ & $\colvec{\Strig_{2};-\Ctrig_{2}}$ & $\begin{bNiceMatrix} \Ctrig_{2}&\Strig_{2} \\ \Strig_{2}&-\Ctrig_{2} \end{bNiceMatrix}$\\
+	Reflection about origin & \tikz[baseline=-0.5ex]{\tapirTransComp{-1}{0}{0}{-1}{0}{0}{}} & $\colvec{-1;0}$ & $\colvec{0;-1}$ & $\begin{bNiceMatrix} -1&0 \\ 0&-1 \end{bNiceMatrix}$\\
+	\bottomrule
+\end{longtable}
+
+\subsection{Matrix representation of the basic linear transformations (3D)}
+In 3-dimensions, the respective matrices are very similar. For example, the matrix for scaling by $\alpha$ in the $x$-direction, $\beta$ in the $y$-direction and $\gamma$ in the $z$-direction is
+\begin{equation}
+	S = 
+	\begin{bNiceMatrix}
+		\alpha & 0 & 0\\
+		0 & \beta & 0\\
+		0 & 0 & \gamma
+	\end{bNiceMatrix}.
+	\label{eq:3d_scale_matrix}
+\end{equation}
+
+As mentioned in the previous section, in 3-dimensions there are infinitely many rotations: the axis of rotation can be any line going through the origin (i.e. any vector except $\vec{0}$ can represent an axis of rotation). Let us start with constructing rotations around the three axes $x,y$ and $z$ first. When rotating around the $x$ axis it stays stationary, while the rotation itself is done in the $yz$-plane. This means that we can take the $2\times2$ rotation matrix (\autoref{eq:2D_rotation_matrix}) and expand it such that it affects only the $yz$-plane:
+
+\vspace{2em}
+\begin{equation}
+	R^{x}_{\theta} =
+	\begin{bNiceMatrix}
+		\tikzmark{D1}1 & 0 & 0\\
+		0 & \tikzmark{E1} \cos \left( \theta \right) & -\sin \left( \theta \right) \\
+		0\tikzmark{D2} & \sin \left( \theta \right) & \cos \left( \theta \right)\tikzmark{E2}
+	\end{bNiceMatrix}.
+	\label{eq:rotation_matrix_x}
+\end{equation}
+\begin{tikzpicture}[overlay, remember picture, blend mode=multiply]
+	\small
+	\draw[highlight={xred}] ($(pic cs:D1)+(-4pt,9pt)$) rectangle node[hltxt={xred}, above right, anchor=east, xshift=-1cm] (Atxt) {$\hat{x}$ doesn't change} ($(pic cs:D2)+(4pt,-5pt)$);
+	\draw[hlarrow={xred}] (Atxt.east) to [out=0, in=90] ($(pic cs:D1) + (3pt,10pt)$);
+	\draw[highlight={xgreen}] ($(pic cs:E1)+(-4pt,9pt)$) rectangle node[hltxt={xgreen}, below left, anchor=west, yshift=-3cm, xshift=9mm] (Btxt) {2D rotation matrix} ($(pic cs:E2)+(4pt,-5pt)$);
+	\draw[hlarrow={xgreen}] (Btxt.west) to [out=180, in=-90] ($(pic cs:E1) + (35pt,-20pt)$);
+\end{tikzpicture}
+
+\vspace{3em}
+A graphical representation of the rotation can be seen in \autoref{fig:rotation_in_yz}.
+
+\begin{figure}
+	\centering
+	\def\angThe{75}
+	\def\angPhi{45}
+	\tdplotsetmaincoords{\angThe}{\angPhi}
+	\begin{tikzpicture}[tdplot_main_coords]
+		\draw[stealth-, very thick] (-3,0,0) -- (0,0,0);
+		\begin{scope}[canvas is yz plane at x=0]
+			\fill[fill=xgreen, fill opacity=0.2] (-2,2) -- (2,2) -- (2,-2) -- (-2,-2) -- cycle;
+			\draw[step=0.5, xdarkgreen!30] (-2,-2) grid (2,2);
+			\draw[vector, xgreen] (-1,0) arc (180:350:1);
+			\draw[vector, xgreen] (1,0) arc (0:170:1);
+		\end{scope}
+		\draw[stealth-stealth, very thick] (0,-3,0) -- (0,3,0) node[pos=1.05] {$y$};
+		\draw[stealth-stealth, very thick] (0,0,-3) -- (0,0,3) node[pos=1.05] {$z$};
+		\begin{scope}[canvas is yz plane at x=2]
+			\draw[vector, xgreen] (-0.5,0) arc (180:350:0.5);
+		\end{scope}
+		\draw[-stealth, very thick] (0,0,0) -- (3,0,0) node[pos=1.05] {$x$};
+		\begin{scope}[canvas is yz plane at x=2]
+			\draw[vector, xgreen] (0.5,0) arc (0:170:0.5);
+		\end{scope}
+	\end{tikzpicture}
+	\caption{In $\Rs[3]$, rotation around the $x$-axis is a rotation in the $yz$-plane (i.e. $x=0$).}
+	\label{fig:rotation_in_yz}
+\end{figure}
+
+The rotation matrices around the $y$- and $z$-axes follow the same structure:
+\begin{align}
+	R^{y}_{\varphi} &=
+		\begin{bNiceMatrix}
+			\cos \left( \varphi \right) & 0 & \sin \left( \varphi \right)\\
+			0 & 1 & 0 \\
+			-\sin \left( \varphi \right) & 0 & \cos \left( \varphi \right)
+		\end{bNiceMatrix},\\
+	R^{z}_{\psi} &=
+		\begin{bNiceMatrix}
+			\cos \left( \psi \right) & -\sin \left( \psi \right) & 0\\
+			\sin \left( \psi \right) & \cos \left( \psi \right)  & 0\\
+			0 & 0 & 1
+		\end{bNiceMatrix}.
+	\label{eq:rotation_y_z}
+\end{align}
+
+\begin{note}{Direction of the $y$-axis}{}
+	The signs of $\sin \left( \varphi \right)$ in $R^{y}_{\varphi}$ are flipped compared to $R^{x}_{\theta}$ and $R^{z}_{\psi}$, for the same reason a similar thing happens in the $y$-component of the cross product: it is due to the use of a right-handed system.
+\end{note}
+
+The most general rotation in $\Rs[3]$, i.e. around an axis represented by the unit vector $\hat{u}=\colvec{u_{x};u_{y};u_{z}}$ counter-clockwise by an angle $\theta$, is given in matrix form as
+\begin{equation}
+	R_{\theta}=
+	\begin{bNiceMatrix}
+		\cos \left( \theta \right) +u_{x}^{2}\left[1-\cos \left( \theta \right) \right] & u_{x}u_{y}\left[1-\cos \left( \theta \right) \right]-u_{z}\sin \left( \theta \right)  & u_{x}u_{z}\left[1-\cos \left( \theta \right) \right]+u_{y}\sin \left( \theta \right) \\
+		u_{y}u_{x}\left[1-\cos \left( \theta \right) \right]+u_{z}\sin \left( \theta \right)  & \cos \left( \theta \right) +u_{y}^{2}\left[1-\cos \left( \theta \right) \right] & u_{y}u_{z}\left[1-\cos \left( \theta \right) \right]-u_{x}\sin \left( \theta \right) \\
+		u_{z}u_{x}\left[1-\cos \left( \theta \right) \right]-u_{y}\sin \left( \theta \right)  & u_{z}u_{y}\left[1-\cos \left( \theta \right) \right]+u_{x}\sin \left( \theta \right)  & \cos \left( \theta \right) +u_{z}^{2}\left[1-\cos \left( \theta \right) \right]\end{bNiceMatrix}.
+	\label{eq:}
+\end{equation}
+For the moment the derivation of this matrix is not presented.
+
+\tbw{REFLECTIONS IN 3D.}
+
+\subsection{Matrix operations}
+An important operation that can be performed on a matrix is the \emph{transpose}: this operation "rotates" all rows of the matrix to columns, and wise-versa:
+\begin{equation}
+	\begin{bNiceMatrix}
+		\Ma{1}{1} & \Ma{1}{2} & \cdots & \Ma{1}{n}\\
+		\Ma{2}{1} & \Ma{2}{2} & \cdots & \Ma{2}{n}\\
+		\vdots & \vdots & \Ddots & \vdots\\
+		\Ma{m}{1} & \Ma{m}{2} & \cdots & \Ma{m}{n}
+	\end{bNiceMatrix}
+	\xrightarrow[] {\text{transpose}}
+	\begin{bNiceMatrix}
+		\Ma{1}{1} & \Ma{2}{1} & \cdots & \Ma{n}{1}\\
+		\Ma{1}{2} & \Ma{2}{2} & \cdots & \Ma{n}{2}\\
+		\vdots & \vdots & \Ddots & \vdots\\
+		\Ma{1}{m} & \Ma{2}{m} & \cdots & \Ma{n}{m}
+	\end{bNiceMatrix}.
+	\label{eq:transpose}
+\end{equation}
+Mathematically, the transpose takes any element $\Ma{i}{j}$ of the matrix and exchanges its indeces, yielding $\Ma{j}{i}$. If the original matrix has dimensions $\rhl{m}\times \bhl{n}$, then the transposed matrix has dimensions $\rhl{n}\times \bhl{m}$. The notation for the transpose of a matrix $A$ is $A^{\top}$.
+
+\begin{example}{Transposing matrices}{}
+	The following presents three matrices each with its transpose. The elements in each matrix on the left hand side are highlighted column-wise, and these colors remain with the elements after the transpose. That way, the effect of the transpose is clear: columns in the original matrix become rows in the transposed matrix and vice-versa. In addition, the dimensions of each matrix are written below it.
+
+	\begin{align*}
+		\begin{bNiceMatrix}[name=T1]
+			1 & 2 & 3\\
+			4 & 5 & 6\\
+			7 & 8 & 9\\
+		\end{bNiceMatrix}^{\top} &=
+		\begin{bNiceMatrix}[name=T2]
+			1 & 4 & 7\\
+			2 & 5 & 8\\
+			3 & 6 & 9\\
+		\end{bNiceMatrix}\\[10mm]
+		\begin{bNiceMatrix}[name=T3]
+			0 & 1 & -1\\
+			2 & -3 & 5\\
+		\end{bNiceMatrix}^{\top} &=
+		\begin{bNiceMatrix}[name=T4]
+			0  & 2\\
+			1  & -3\\
+			-1 & 5\\
+		\end{bNiceMatrix}\\[10mm]
+		\begin{bNiceMatrix}[name=T5]
+			1\\
+			2\\
+			-1\\
+			0\\
+			7\\
+			-4\\
+		\end{bNiceMatrix}^{\top} &=
+		\begin{bNiceMatrix}[name=T6]
+			1 & 2 & -1 & 0 & 7 & -4\\
+		\end{bNiceMatrix}
+	\end{align*}
+\begin{tikzpicture}[overlay, remember picture, blend mode=multiply, node distance=15pt]
+	% ---- T1 ---- %
+	\MatHL{(T1-1-1),(T1-2-1),(T1-3-1)}{xred!20}
+	\MatHL{(T1-1-2),(T1-2-2),(T1-3-2)}{xorange!20}
+	\MatHL{(T1-1-3),(T1-2-3),(T1-3-3)}{xgreen!20}
+	\node[below of=T1-3-2] {$3\times3$};
+	% ---- T2 ---- %
+	\MatHL{(T2-1-1),(T2-1-2),(T2-1-3)}{xred!20}
+	\MatHL{(T2-2-1),(T2-2-2),(T2-2-3)}{xorange!20}
+	\MatHL{(T2-3-1),(T2-3-2),(T2-3-3)}{xgreen!20}
+	\node[below of=T2-3-2] {$3\times3$};
+	
+	% ---- T3 ---- %
+	\MatHL{(T3-1-1),(T3-2-1)}{xred!20}
+	\MatHL{(T3-1-2),(T3-2-2)}{xorange!20}
+	\MatHL{(T3-1-3),(T3-2-3)}{xgreen!20}
+	\node[below of=T3-2-2] {$2\times3$};
+	% ---- T4 ---- %
+	\MatHL{(T4-1-1),(T4-1-2)}{xred!20}
+	\MatHL{(T4-2-1),(T4-2-2)}{xorange!20}
+	\MatHL{(T4-3-1),(T4-3-2)}{xgreen!20}
+	\node[below of=T4-3-1, xshift=10pt] {$3\times2$};
+	
+	% ---- T5 ---- %
+	\MatHL{(T5-1-1),(T5-2-1),(T5-3-1),(T5-4-1),(T5-5-1),(T5-6-1)}{xred!20}
+	\node[below of=T5-6-1] {$6\times1$};
+	% ---- T6 ---- %
+	\MatHL{(T6-1-1),(T6-1-2),(T6-1-3),(T6-1-4),(T6-1-5),(T6-1-6)}{xred!20}
+	\node[below of=T6-1-3, xshift=10pt] {$1\times6$};
+\end{tikzpicture}
+\end{example}
+
+Since for the main diagonal elements of a matrix the row and column have equal indeces, the transpose operation does not affect their position in the matrix, i.e. $\Ma{i}{i}\xrightarrow[] {\text{transpose}}\Ma{i}{i}$. This means that $\tr{A}=\tr{A^{\top}}$. Also, diagonal matrices are not affected by a transpose. The transpose of a transposed matrix is the original matrix, i.e. $\left(A^{\top}\right)^{\top} = A$.
+
+Much like vectors, a matrix can be scaled by a real number, and two matrices can be added together if their dimensions are identical. The rules for scaling a matrix by a scalar and the addition of two matrices are the same as with vectors, namely everything is dome element wise:
+\begin{descitemize}
+	\item[Scaling] given a matrix
+		\[
+			A = 
+			\begin{bNiceMatrix}
+				\Ma{1}{1} & \Ma{1}{2} & \cdots & \Ma{1}{n}\\
+				\Ma{2}{1} & \Ma{2}{2} & \cdots & \Ma{2}{n}\\
+				\vdots & \vdots & \Ddots & \vdots\\
+				\Ma{m}{1} & \Ma{m}{2} & \cdots & \Ma{m}{n}
+			\end{bNiceMatrix}
+		\]
+		and a scalar $\gamma\in\mathbb{R}$, their product is
+		\begin{equation}
+			\gamma A = 
+			\begin{bNiceMatrix}
+				\gamma\cdot\Ma{1}{1} & \gamma\cdot\Ma{1}{2} & \cdots & \gamma\cdot\Ma{1}{n}\\
+				\gamma\cdot\Ma{2}{1} & \gamma\cdot\Ma{2}{2} & \cdots & \gamma\cdot\Ma{2}{n}\\
+				\vdots & \vdots & \Ddots & \vdots\\
+				\gamma\cdot\Ma{m}{1} & \gamma\cdot\Ma{m}{2} & \cdots & \gamma\cdot\Ma{m}{n}
+			\end{bNiceMatrix}.
+			\label{eq:matrix_scaling}
+		\end{equation}
+
+	\item[Addition] given two matrices,
+		\[
+			A = 
+			\begin{bNiceMatrix}
+				\Ma{1}{1} & \Ma{1}{2} & \cdots & \Ma{1}{n}\\
+				\Ma{2}{1} & \Ma{2}{2} & \cdots & \Ma{2}{n}\\
+				\vdots & \vdots & \Ddots & \vdots\\
+				\Ma{m}{1} & \Ma{m}{2} & \cdots & \Ma{m}{n}
+			\end{bNiceMatrix},\quad
+			B = 
+			\begin{bNiceMatrix}
+				\Mb{1}{1} & \Mb{1}{2} & \cdots & \Mb{1}{n}\\
+				\Mb{2}{1} & \Mb{2}{2} & \cdots & \Mb{2}{n}\\
+				\vdots & \vdots & \Ddots & \vdots\\
+				\Mb{m}{1} & \Mb{m}{2} & \cdots & \Mb{m}{n}
+			\end{bNiceMatrix}, 
+		\]
+		their sum is
+		\begin{equation}
+			A+B = 
+			\begin{bNiceMatrix}
+				\Ma{1}{1}+\Mb{1}{1} & \Ma{1}{2}+\Mb{1}{2} & \cdots & \Ma{1}{n}+\Mb{1}{n}\\
+				\Ma{2}{1}+\Mb{2}{1} & \Ma{2}{2}+\Mb{2}{2} & \cdots & \Ma{2}{n}+\Mb{2}{n}\\
+				\vdots & \vdots & \Ddots & \vdots\\
+				\Ma{m}{1}+\Mb{m}{1} & \Ma{m}{2}+\Mb{m}{2} & \cdots & \Ma{m}{n}+\Mb{m}{n}
+			\end{bNiceMatrix}.
+			\label{eq:}
+		\end{equation}
+\end{descitemize}
+
+\begin{note}{Matrix addition}{}
+	Since matrix addition is done \textbf{element wise} it is comutative, i.e. for any two $m\times n$ matrices $A$ and $B$,
+	\[
+		A+B = B+A.
+	\]
+\end{note}
+
+\subsection{Types of matrices}
+Any matrix $A$ which represents a transformation of the type $\Rs[n]\to\Rs[n]$ (i.e. from a space onto itself) has the same number of rows and columns (i.e. its dimension is $n\times n$):
+\begin{equation}
+	A =
+	\begin{bNiceMatrix}
+		\Ma{1}{1} & \Ma{1}{2} & \cdots & \Ma{1}{n}\\
+		\Ma{2}{1} & \Ma{2}{2} & \cdots & \Ma{2}{n}\\
+		\vdots & \vdots & \Ddots & \vdots\\
+		\Ma{n}{1} & \Ma{n}{2} & \cdots & \Ma{n}{n}
+	\end{bNiceMatrix}. 
+	\label{eq:square_matrix}
+\end{equation}
+
+Due to their shape, such matrices are called \emph{square matrices}. The elements $\Ma{1}{1},\Ma{2}{2},\Ma{3}{3},\dots,\Ma{n}{n}$ of a square matrix jointly form its \emph{main diagonal} (also: \emph{principal diagonal}):
+
+\vspace{1em}
+\begin{equation}
+	A =
+	\begin{bNiceMatrix}[name=A_diag]
+		\Ma{1}{1} & \Ma{1}{2} & \Ma{1}{3} & \cdots & \Ma{1}{n}\\
+		\Ma{2}{1} & \Ma{2}{2} & \Ma{2}{3} & \cdots & \Ma{2}{n}\\
+		\Ma{3}{1} & \Ma{3}{2} & \Ma{2}{3} & \cdots & \Ma{2}{n}\\
+		\vdots & \vdots & \vdots & \Ddots & \vdots\\
+		\Ma{n}{1} & \Ma{n}{2} & \Ma{n}{3} & \cdots & \Ma{n}{n}
+	\end{bNiceMatrix}. 
+	\label{eq:square_matrix_main_diag}
+\end{equation}
+\begin{tikzpicture}[overlay, remember picture, blend mode=multiply]
+	\foreach \k in {1,...,3,5}{
+		\node[fill=xgreen!25, rectangle, minimum width=13pt, minimum height=10pt] at (A_diag-\k-\k) {};
+	}
+\end{tikzpicture}
+
+The sum of the main diagonal elements is called the \emph{trace} of the matrix:
+\begin{equation}
+	\tr \left( A \right) = \sum\limits_{i=1}^{n}\Ma{i}{i}.
+	\label{eq:trace}
+\end{equation}
+
+\emph{Triangular matrices} are matrices in which the elements above or below the main diagonal are all zeros, e.g.
+
+\begin{center}
+	\def\bperc{25}
+	\begin{tabular}{p{-1mm}cp{5mm}p{-1mm}c}
+		$U=$ &
+		$\begin{bmatrix}
+			1 & 6 & 6 & -3 \\
+			\textcolor{black!\bperc}{0} & 2 & 7 & 1 \\
+			\textcolor{black!\bperc}{0} & \textcolor{black!\bperc}{0} & 3 & 5 \\
+			\textcolor{black!\bperc}{0} & \textcolor{black!\bperc}{0} & \textcolor{black!\bperc}{0} & -4
+		\end{bmatrix},$
+			 & &
+		$L=$ &
+		$\begin{bmatrix}
+			1 & \textcolor{black!\bperc}{0} & \textcolor{black!\bperc}{0} & \textcolor{black!\bperc}{0} \\
+			\tikzmark{LT1} 2 & 3 & \textcolor{black!\bperc}{0} & \textcolor{black!\bperc}{0} \\ 
+			5 & 1 & -5 & \textcolor{black!\bperc}{0} \\
+			-4 & 1 & 2\tikzmark{LT2} & -3
+		\end{bmatrix}.$
+		\\[2.5em]
+			 & upper triangular & & & lower triangular
+	\end{tabular}
+\end{center}
+
+A somewhat formal way of defining the elements "above" the main diagonal is all elements $\Ma{i}{j}$ for which $j<i$. Similarily, when $j>i$ the element $\Ma{i}{j}$ is "below" the main diagonal. Note that the transpose of an upper triangular matrix is a lower triangular matrix and vice-versa.
+
+\begin{challenge}{Upper/lower triangular matrices}{}
+	Show that if $A$ is an upper triangular matrix then $A^{\top}$ is a lower triangular matrix, and if $B$ is a lower triangular matrix then $B^{\top}$ is an upper triangular matrix.
+\end{challenge}
+
+A \emph{diagonal matrix} $A$ is a matrix in which all the non-main diagonal elements, i.e. $\Ma{i}{j}$ where $\textcolor{xred}{i}\neq \textcolor{xblue}{j}$, equal zero. These matrices can be thought of as scaling matrices: each entry $\Ma{i}{i}$ tells us how the sapce is scaled in the $i$-th dimension.
+
+\begin{example}{Diagonal matrices}{}
+	Text.
+\end{example}
+As we saw in the cases of $\Rs[2]$ and $\Rs[3]$, diagonal matrices are \emph{scaling matrices}: each entry $a_{ii}$ tells us by how much space is scaled in the $i$-th direction.
+
+A very important family of \textbf{square} matrices are the \emph{identity matrices}. These matrices have a unique structure: their main diagonal elements are all $1$, while the rest of the elements (the \emph{off-diagonal elements}) are all $0$:
+
+\vspace{1em}
+\begin{equation}
+	I_{n} =
+	\begin{bNiceMatrix}
+		\tikzmark{I11} 1 & 0 & 0 & \cdots & 0\tikzmark{I1n}\\
+		0 & 1 & 0 & \cdots & 0\\
+		0 & 0 & 1 & \cdots & 0\\
+		\vdots & \vdots & \vdots & \Ddots & \vdots\\
+		\tikzmark{In1}0 & 0 & 0 & \cdots & 1\tikzmark{Inn}
+	\end{bNiceMatrix}
+	\label{eq:}
+\end{equation}
+\begin{tikzpicture}[overlay, remember picture]
+	  \draw [xred, thick, decorate, decoration={brace, amplitude=3pt, raise=7pt}] (pic cs:I1n) -- (pic cs:Inn) node[midway, right, xshift=10pt]{$n$ rows};
+	  \draw [xblue, thick, decorate, decoration={brace, amplitude=3pt, raise=10pt}] (pic cs:I11) -- (pic cs:I1n) node[midway, above, yshift=13pt]{$n$ columns};
+\end{tikzpicture}
+
+Sometimes for clarity large areas of zero-value elements in a matrix are depicted together. In that form, the identity matrix is written as
+\[
+	I_{n} =
+	\begin{bNiceMatrix}
+	1   &       & \Block{2-3}<\huge>{0} \\
+		&   1   &        &      &       \\
+		&       &   1    &      &       \\
+	\Block{2-3}<\huge>{0}
+		&       &       & \Ddots    &   \\
+		&       &       &      &   1   \\
+	\end{bNiceMatrix}.
+\]
+In such a depiction, the off-diagonal elements are each written using a single zero. This kind of notation will come in handy in later sections. Yet another way of defining the identity matrix is by using the \emph{Kronecker delta}, which takes two integers $i,j$ and returns $1$ if they are equal, otherwise it returns $0$:
+\begin{equation}
+	\delta_{ij} =
+	\begin{cases}
+		1 & i=j,\\
+		0 & i\neq j.
+	\end{cases}
+	\label{eq:kronecker_delta}
+\end{equation}
+Using the Kronecker delta, each element $a_{ij}$ of the identity matrix $I_{n}$ simply equals $\delta_{ij}$.
+
+An identity matrix of dimension $n$ represents the identity transformation in $\Rs[n]$: each standard basis vector $\eb{i}$ is left unchanged by the transformation.
+
+\begin{example}{Identity matrices}{}
+	The following are the identity matrices of $\Rs[2],\Rs[3],\dots,\Rs[6]$, where in each matrix the main diagonal is highlighted:
+
+	\centering
+	\setlength\tabcolsep{3pt}
+	\begin{tabular}{ccccc}
+		\IdentityHl{2}{I2}{xred!30} & \IdentityHl{3}{I3}{xblue!30} & \IdentityHl{4}{I4}{xgreen!30} & \IdentityHl{5}{I5}{xpurple!30} & \IdentityHl{6}{I6}{xorange!30} \\
+		$I_{2}$ & $I_{3}$ & $I_{4}$ & $I_{5}$ & $I_{6}$
+	\end{tabular}
+\end{example}
+In the next section we will see the importance of the identity matrices.
+
+Another important family of matrices are the \emph{orthogonal matrices} (also \emph{orthonormal matrices}): we say that a matrix $Q$ is an orthogonal matrix if all of its columns, when viewed as column vectors, form an orthonormal set. For example, the identity matrices are all orthogonal matrices. Another orthogonal matrix is the matrix
+\begin{equation}
+	B = \frac{1}{\sqrt{2}}\begin{bmatrix}1&1\\1&-1\end{bmatrix},
+	\label{eq:}
+\end{equation}
+since both $\frac{1}{\sqrt{2}}\colvec{1;1}$ and $\frac{1}{\sqrt{2}}\colvec{1;-1}$ are unit vectors, and they are orthogonal to each other (as seen in REF).
+
+A \emph{symmetric matrix} is a square matrix for which
+\begin{equation}
+	A^{\top} = A.
+	\label{eq:symmetric_matrix}
+\end{equation}
+"Graphically", the symmetry of such matrices can be seen in respect to their main diagonal: if we imagine placing a mirror on the main diagonal, each element $\Ma{i}{j}$ would be "reflected" across the mirror, and thus be equal to $\Ma{j}{i}$ (see example below).
+
+
+\begin{example}{Symmetric matrix}{}
+	The following matrix $S$ is a symmetric $4\times4$ matrix, in which the elements $a_{ij},a_{ji}$ are higlighted with the same color:
+
+	\centering
+	\begin{tikzpicture}[node distance=1.6cm]
+		\node (Seq) {$S=$};
+		\matrix (S) [matrix of nodes, right of=Seq, left delimiter={[}, right delimiter={]}]{
+			1 & 3 & 5 & 7\\
+			3 & 0 & 1 & 3\\
+			5 & 1 & 4 & 2\\
+			7 & 3 & 2 & 6\\
+		};
+		\tikzset{every node/.style={inner sep=0}}
+		\scoped[on background layer]{
+			\foreach \k in {1,...,4}
+				\node[fill=white, fit=(S-\k-\k)(S-\k-\k)] {};
+			\node[fill=xred!20, fit=(S-1-2)(S-1-2)] {};
+			\node[fill=xred!20, fit=(S-2-1)(S-2-1)] {};
+			\node[fill=xblue!20, fit=(S-1-3)(S-1-3)] {};
+			\node[fill=xblue!20, fit=(S-3-1)(S-3-1)] {};
+			\node[fill=xgreen!20, fit=(S-1-4)(S-1-4)] {};
+			\node[fill=xgreen!20, fit=(S-4-1)(S-4-1)] {};
+			\node[fill=xpurple!20, fit=(S-2-3)(S-2-3)] {};
+			\node[fill=xpurple!20, fit=(S-3-2)(S-3-2)] {};
+			\node[fill=xorange!20, fit=(S-2-4)(S-2-4)] {};
+			\node[fill=xorange!20, fit=(S-4-2)(S-4-2)] {};
+			\node[fill=xpink!20, fit=(S-3-4)(S-3-4)] {};
+			\node[fill=xpink!20, fit=(S-4-3)(S-4-3)] {};
+		}
+	\end{tikzpicture}
+\end{example}
+\begin{note}{Transpose of a symmetric matrix}{}
+	A symmetric matrix is its own transpose, i.e. if $A$ is a symmetric matrix then $A^{\top}=A$.
+\end{note}
+
+A rather non-interesting family of matrices are the \emph{zero matrices}: these are matrices which have only zero-elements, i.e.
+\begin{equation}
+	\bm{0}_{n} =
+	\begin{bNiceMatrix}
+		\tikzmark{z1}0 & 0 & \cdots & 0\tikzmark{z2}\\
+		0 & 0 & \cdots & 0\\
+		\vdots & \vdots & \Ddots & \vdots\\
+		0 & 0 & \cdots & 0\tikzmark{z3}
+	\end{bNiceMatrix}.
+	\label{eq:}
+\end{equation}
+\begin{tikzpicture}[overlay, remember picture]
+	  \draw [xred, thick, decorate, decoration={brace, amplitude=3pt, raise=7pt}] (pic cs:z2) -- (pic cs:z3) node[midway, right, xshift=10pt]{$m$ rows};
+	  \draw [xblue, thick, decorate, decoration={brace, amplitude=3pt, raise=10pt}] (pic cs:z1) -- (pic cs:z2) node[midway, above, yshift=13pt]{$n$ columns};
+\end{tikzpicture}
+The zero matrices are called that way since for a given matrix $A$,
+\begin{align}
+	A + \bm{0} &=
+	\begin{bNiceMatrix}
+		\Ma{1}{1} & \Ma{1}{2} & \cdots & \Ma{1}{n}\\
+		\Ma{2}{1} & \Ma{2}{2} & \cdots & \Ma{2}{n}\\
+		\vdots & \vdots & \Ddots & \vdots\\
+		\Ma{m}{1} & \Ma{m}{2} & \cdots & \Ma{m}{n}
+	\end{bNiceMatrix}
+	+
+	\begin{bNiceMatrix}
+		0 & 0 & \cdots & 0\\
+		0 & 0 & \cdots & 0\\
+		\vdots & \vdots & \Ddots & \vdots\\
+		0 & 0 & \cdots & 0
+	\end{bNiceMatrix}\nonumber\\
+			   &=
+	\begin{bNiceMatrix}
+		\Ma{1}{1}+0 & \Ma{1}{2}+0 & \cdots & \Ma{1}{n}+0\\
+		\Ma{2}{1}+0 & \Ma{2}{2}+0 & \cdots & \Ma{2}{n}+0\\
+		\vdots & \vdots & \Ddots & \vdots\\
+		\Ma{m}{1}+0 & \Ma{m}{2}+0 & \cdots & \Ma{m}{n}+0
+	\end{bNiceMatrix}\nonumber\\
+			   &=
+	\begin{bNiceMatrix}
+		\Ma{1}{1} & \Ma{1}{2} & \cdots & \Ma{1}{n}\\
+		\Ma{2}{1} & \Ma{2}{2} & \cdots & \Ma{2}{n}\\
+		\vdots & \vdots & \Ddots & \vdots\\
+		\Ma{m}{1} & \Ma{m}{2} & \cdots & \Ma{m}{n}
+	\end{bNiceMatrix}
+	= A.
+\end{align}
+I.e. much like the number zero and the zero vector, the zero matrix is neutral in respect to addition.
+
+\subsection{The determinant}
+As mentioned in \autoref{sec:LS_developing_intuition}, linear transformation scale all volumes by the same amount\footnote{remember that 2-dimensional volumes are areas.}. This scaling factor is encapsulated in the matrix representing the transformation by a number called the \emph{determinant} of the matrix. The determinant of a matrix $A$ is written as $|A|$ and sometimes $\det(A)$.
+
+\begin{example}{The determinant as a scaling factor}{}
+	In the following transformation, represented by the matrix $A=\begin{bmatrix}\frac{1}{2}&0\\0&1\end{bmatrix}$, areas are scaled by a factor of $\frac{1}{2}$ and therefore $|A|=\frac{1}{2}$ (the number inside each shapes is its area):
+
+	\center
+	\begin{tikzpicture}
+		\begin{axis}[
+			vector plane,
+			width=7cm, height=7cm,
+			xmin=-5, xmax=5,
+			ymin=-5, ymax=5,
+			minor tick num=1,
+			ticklabel style={font=\tiny},
+		]
+			\draw[thick, xred, fill=xred!20] (-4,-4) rectangle (-3,-3) node[shnode] {$1$};
+			\draw[thick, xgreen, fill=xgreen!20] (-4,4) rectangle (-2,1) node[shnode] {$6$};
+			\draw[thick, xpurple, fill=xpurple!20] (4,2) arc (0:360:1.2616) node[black, xshift=-7mm] {$5$};
+		\end{axis}
+		\pgftransformcm{1}{0}{0}{1}{\pgfpoint{7cm}{0}}
+		\begin{axis}[
+			vector plane,
+			width=7cm, height=7cm,
+			xmin=-10, xmax=10,
+			ymin=-5, ymax=5,
+			minor x tick num=2,
+			minor y tick num=1,
+			xtick={-8,-4,...,8},
+			xticklabels={-4,-2,2,4},
+			ticklabel style={font=\tiny},
+		]
+		\draw[thick, xred, fill=xred!20] (-4,-4) rectangle (-3,-3) node[shnode] {$\frac{1}{2}$};
+		\draw[thick, xgreen, fill=xgreen!20] (-4,4) rectangle (-2,1) node[shnode] {$3$};
+		\draw[thick, xpurple, fill=xpurple!20] (4,2) arc (0:360:0.8921) node[black, xshift=-2.5mm] {$\frac{5}{2}$};
+		\end{axis}
+		\draw[vector] (-1.3cm,3.5cm) -- ++(1cm,0) node[midway, above] {$A$} node[midway, below] {$|A|=\frac{1}{2}$};
+	\end{tikzpicture}
+\end{example}
+
+Since there is not much sense in discussing volume changes between different spaces (e.g. $\Rs[5]\to\Rs[7]$), only square matrices, which as you recall represent linear transformations from a space onto itself, have determinants. Determinants can take any real number as values, including zero and negative numbers.
+
+What does a zero determinant mean? Since in $\Rs[2]$ determinants tells us the scaling factor of areas by the transformation, if the matrix representing the linear transformation has a zero determinant, it means that somehow all areas are "squashed" by the transformation to zero. There are two possible relevant shapes of zero area: a line going through the origin, or the origin itself which is a point. See \autoref{fig:zero_det_R2} for a visualization.
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			vector plane,
+			width=6cm, height=6cm,
+			xmin=-2, xmax=2,
+			ymin=-2, ymax=2,
+			xticklabels={,},
+			yticklabels={,},
+		]
+			\fill[xpurple, opacity=0.2] (0,0) rectangle (1,1) node[midway, anchor=center, opacity=1] {$S=1$};
+			\draw[vector, xred] (0,0) -- (1,0) node[midway, below] {$\hat{x}$};
+			\draw[vector, xblue] (0,0) -- (0,1) node[midway, left] {$\hat{y}$};
+		\end{axis}
+		\pgftransformcm{1}{0}{0}{1}{\pgfpoint{7cm}{0}}
+		\begin{axis}[
+			vector plane,
+			width=6cm, height=6cm,
+			xmin=-2, xmax=2,
+			ymin=-2, ymax=2,
+			xticklabels={,},
+			yticklabels={,},
+		]
+			\draw[vector, xred] (0,0) -- (2,1) node[midway, above] {$\hat{x}$};
+			\draw[vector, xblue] (0,0) -- (-1,-0.5) node[midway, below] {$\hat{y}$};
+		\end{axis}
+		\draw[vector] (-2cm,3cm) -- ++(1.6cm,0) node[midway, above] {$|A|=0$};
+	\end{tikzpicture}
+	\caption{A transformation which "squashes" all areas into a line is represented by a matrix $A$ with $|A|=0$. Note how the unit volume defined by $\cxhat$ and $\cyhat$ is transformed into a shape of zero area: a line going through the origin. Also note that $\cxhat$ and $\cyhat$ are linearly dependent, since they lie on the same line. Cf. \autoref{fig:det_2x2}.}
+	\label{fig:zero_det_R2}
+\end{figure}
+
+Similarily, in $\Rs[3]$ the determinant tells us how volumes are scaled by a linear transformation, and thus a $3\times3$ matrix with zero determinant means that all the transformation represented by the matrix "squashes" all volumes to one of three relevant shapes with zero volume: a plane going through the origin, a line going through the origin, or the origin point itself. See \autoref{fig:zero_det_R3} for a visualization.
+
+DISCUSSION OF NEGATIVE DETERMINANTS\ldots
+
+To calculate the determinant of a matrix, we start with the simplest case: $2\times2$ matrices. Since all areas are equaly scaled by a linear transformation, we look at the unit sqaure defined by $\hat{x}$ and $\hat{y}$ (see \autoref{fig:det_2x2}). After the application of the transformation represented by the generic matrix $A=\begin{bmatrix}a&c\\b&d\end{bmatrix}$ (where $a,b,c,d\in\mathbb{R}$), these basis vectors are transformed into the vectors 
+\begin{equation}
+	A\hat{x}=\colvec{a;b} \mkern9mu \text{and} \mkern9mu A\hat{y}=\colvec{c;d},
+	\label{eq:}
+\end{equation}
+respectively.
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			vector plane,
+			width=6cm, height=6cm,
+			xmin=-1, xmax=3,
+			ymin=-1, ymax=3,
+			xticklabels={,},
+			yticklabels={,},
+		]
+			\fill[xpurple, opacity=0.2] (0,0) rectangle (1,1);
+			\node[xpurple, anchor=center] at (0.5,0.5) {$S=1$};
+			\draw[vector, xred] (0,0) -- (1,0) node[midway, below] {$\hat{x}$};
+			\draw[vector, xblue] (0,0) -- (0,1) node[midway, left] {$\hat{y}$};
+			\draw[vector, xred!50, dashed] (0,1) -- (1,1);
+			\draw[vector, xblue!50, dashed] (1,0) -- (1,1);
+		\end{axis}
+		
+		\pgftransformcm{1}{0}{0}{1}{\pgfpoint{7cm}{0}}
+		\begin{axis}[
+			vector plane,
+			width=6cm, height=6cm,
+			xmin=-1, xmax=3,
+			ymin=-1, ymax=3,
+			xticklabels={,},
+			yticklabels={,},
+		]
+			\coordinate (Ax) at (0.5,1.5);
+			\coordinate (Ay) at (1.5,0.5);
+			\coordinate (Axy) at (2,2);
+			\fill[xpurple, opacity=0.2] (0,0) -- (Ax) -- (Axy) -- (Ay) -- cycle;
+			\node[xpurple, anchor=center] at (1,1) {$S=|A|$};
+			\draw[vector, xred] (0,0) -- (Ax) node[pos=1.1, xshift=-6pt] {$A\hat{x}$};
+			\draw[vector, xblue] (0,0) -- (Ay) node[pos=1.1, xshift=5pt, yshift=-3pt] {$A\hat{y}$};
+			\draw[vector, xred!50, dashed] (Ay) -- (Axy);
+			\draw[vector, xblue!50, dashed] (Ax) -- (Axy);
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Unit area defined by the vectors $\hat{x}$ and $\hat{y}$ before application of a linear transformation represented by the matrix $A$ (left) and the parallelogram defined by the vectors $A\hat{x}$ and $A\hat{y}$ after application of the transformation (right).}
+	\label{fig:det_2x2}
+\end{figure}
+
+The unit square defined by $\hat{x}$ and $\hat{y}$ is therefore transformed into the parallelogram defined by $A\hat{x}$ and $A\hat{y}$. \autoref{eq:cross_product_2d_algebraic} tells us that the area of the parallelogram is $S=ad-bc$. Therefore, the determinant - which equals the change in area after application of $A$, is
+\begin{equation}
+	|A| = ad-bc
+	\label{eq:determinant_2x2}
+\end{equation}
+as well.
+
+\begin{example}{Determinants of $\bm{2\times2}$ matrices}{}
+	Some $2\times2$ matrices and their determinants:
+
+	\begin{align*}
+		\begin{bmatrix} 1&-2\\0&3 \end{bmatrix} &\longrightarrow 1\cdot3-(-2)\cdot0 = 3.\\
+		\begin{bmatrix} 1&5\\1&3 \end{bmatrix} &\longrightarrow 1\cdot3-1\cdot5 = -2.\\
+		\begin{bmatrix} 1&2\\1&2 \end{bmatrix} &\longrightarrow 1\cdot2-1\cdot2 = 0.\\
+		\begin{bmatrix} 1&2\\2&4 \end{bmatrix} &\longrightarrow 1\cdot4-2\cdot2 = 0.\\
+		\begin{bmatrix} 0&7\\0&-3 \end{bmatrix} &\longrightarrow \cancel{0\cdot(-3)}-\cancel{0\cdot7} = 0.\\
+	\end{align*}
+\end{example}
+
+Calculating the determinant of a $3\times3$ matrix is based on the calculation of the determinant of a $2\times2$ matrix. First, we should define an idea called a \emph{minor} of a matrix. The $ij$-minor of a $3\times3$ matrix $A$ is the determinant of the $2\times2$ matrix resulting by the removal of the $i$-th row and $j$-th column of $A$, e.g. let
+\newcommand{\Aminor}[1]{
+	\begin{bNiceMatrix}[name=#1]
+		2 & -5 & 4\\
+		-3 & 0 & 2\\
+		3 & 3 & 2\\
+	\end{bNiceMatrix}
+}
+\[
+	A = \Aminor{A00},
+\]
+then \autoref{tab:minors_of_A} shows all the minors of $A$.
+
+\begin{table}
+	\centering
+	\caption{All the minors of the matrix $A$.}
+	\label{tab:minors_of_A}
+	\begin{tabular}{lcccr}
+		\toprule
+		$i$ & $j$ & $3\times3$-matrix & $2\times2$ determinant & value\\
+		\midrule
+		$1$ & $1$ & $\Aminor{A11}$ & $\begin{vmatrix}0&2\\3&2\end{vmatrix}$   & $-6 $\\[10mm]
+		$1$ & $2$ & $\Aminor{A12}$ & $\begin{vmatrix}-3&2\\3&2\end{vmatrix}$  & $-12$\\[10mm]
+		$1$ & $3$ & $\Aminor{A13}$ & $\begin{vmatrix}-3&0\\3&3\end{vmatrix}$  & $-9 $\\[10mm]
+		$2$ & $1$ & $\Aminor{A21}$ & $\begin{vmatrix}-5&4\\3&2\end{vmatrix}$  & $-22$\\[10mm]
+		$2$ & $2$ & $\Aminor{A22}$ & $\begin{vmatrix}2&4\\3&2\end{vmatrix}$   & $-8 $\\[10mm]
+		$2$ & $3$ & $\Aminor{A23}$ & $\begin{vmatrix}2&-5\\3&3\end{vmatrix}$  & $ 21$\\[10mm]
+		$3$ & $1$ & $\Aminor{A31}$ & $\begin{vmatrix}-5&4\\0&2\end{vmatrix}$  & $-10$\\[10mm]
+		$3$ & $2$ & $\Aminor{A32}$ & $\begin{vmatrix}2&4\\-3&2\end{vmatrix}$  & $ 16$\\[10mm]
+		$3$ & $3$ & $\Aminor{A33}$ & $\begin{vmatrix}2&-5\\-3&0\end{vmatrix}$ & $-15$\\
+		\bottomrule
+	\end{tabular}
+	\begin{tikzpicture}[overlay, remember picture]
+		\MatMinor{A11}{3}{1}{1}
+		\MatMinor{A12}{3}{1}{2}
+		\MatMinor{A13}{3}{1}{3}
+		\MatMinor{A21}{3}{2}{1}
+		\MatMinor{A22}{3}{2}{2}
+		\MatMinor{A23}{3}{2}{3}
+		\MatMinor{A31}{3}{3}{1}
+		\MatMinor{A32}{3}{3}{2}
+		\MatMinor{A33}{3}{3}{3}
+	\end{tikzpicture}
+\end{table}
+
+Using the its minors, the determinant of a $3\times3$ matrix can be calculated using the following formula:
+\begin{equation}
+	|A| = a_{11}m_{11} - a_{12}m_{12} + a_{13}m_{13},
+	\label{eq:determinant_3x3}
+\end{equation}
+where $a_{ij}$ and $m_{ij}$ are the elements and minors of the matrix, respectively. For example, using the above matrix $A$, we get that
+\begin{align*}
+	|A| &= a_{11}m_{11} - a_{12}m_{12} + a_{13}m_{13}\\
+		&= 2\begin{vmatrix}0&2\\3&2\end{vmatrix} - (-5)\begin{vmatrix}-3&2\\3&2\end{vmatrix} + 4\begin{vmatrix}-3&0\\3&3\end{vmatrix}\\
+		&= 2\cdot(-6) - (-5)\cdot(-12) + 4\cdot(-9)\\
+		&= -12 - 60 - 36 = -108.
+\end{align*}
+
+\begin{example}{Determinants of $3\times3$ matrices}{}
+	\ldots
+\end{example}
+
+The determinant of a $4\times4$ matrix follows the same pattern, i.e.
+\begin{equation}
+	|A| = a_{11}m_{11} - a_{12}m_{12} + a_{13}m_{13} - a_{14}m_{14},
+	\label{eq:}
+\end{equation}
+where again $a_{ij}$ and $m_{ij}$ are, respectively, the elements and minors of a matrix. Much like with the case of a minor of a $3\times3$ matrix being a determinant of a $2\times2$ matrix, the minor of a $4\times4$ matrix is a determinant of a $3\times3$ matrix, itself calculated using determinants of $2\times2$ matrices. This pattern continues to higher dimensions, i.e. the calculation of the determinant of a $5\times5$ matrix uses determinants of $5$ $4\times4$ matrices, the calculation of the determinant of a $6\times6$ matrix uses $6$ determinants of $5\times5$ matrices, and so forth. Therefore, the total number of $2\times2$ determinants needed for the calculation of the determinant of an $n\times n$ matrix is
+\begin{equation}
+	d = n\times(n-1)\times(n-2)\times\cdots\times5\times4\times3 = \frac{n!}{2}.
+	\label{eq:num_of_2x2_dets_in_n_dim_matrix}
+\end{equation}
+
+Some properties of determinants:
+\begin{itemize}
+	\item In any case where the columns of a matrix form a linearly dependent set, the determinant is zero. This is due to the loss of dimensionality (i.e. at least one basis vector is mapped to a vector which can be written as a linear combination of the other vectors). One obvious case is where there is one or more columns of zeros in the matrix.
+	\item The determinant of the transpose of a matrix is the same as the determinant of the original matrix, i.e. $|A|=|A^{\top}|$. This is due to the fact that all ideas discussed here can be applied directly to row vectors (as mentioned in the previous sections), and the transpose operation essentially switches between these forms: the columns of the original matrix become the rows in its transposed format. Therefore, the previous property applies to the rows of a matrix as well: e.g. a row of zeros means that the determinant is zero.
+\end{itemize}
+
+\subsection{Matrix-vector products}
+As discussed in the first part of this section, matrices represent linear transformations - in fact, we define a matrix in such a way that its product with a vector gives the result of applying the transformation the matrix represents on the vector (see \autoref{eq:matrix_vector_product}). Let us now review this idea and elaborate a bit on the process of calculating matrix-vector products.
+
+Given an $m\times n$ matrix $A$ and an $n$-dimensional vector $\vec{v}$, the product $A\vec{v}$ is an $m$-dimensional vector, in which each element $v_{i}$ is the scalar product between the $i$-th \textbf{row} of $A$ (interpreted as a vector) and the vector $\vec{v}$ itself. To illustrate this, we use the following $4\times3$ matrix $A$ and $3$-dimensional vector $\vec{v}$:
+\newcommand{\Amatv}[1]{
+	\begin{bNiceMatrix}[name=#1]
+		1 & 0 & 2\\
+		-1 & 3 & -1\\
+		2 & 4 & 0\\
+		6 & 1 & -3\\
+	\end{bNiceMatrix}
+}
+\newcommand{\Vvec}[1]{
+	\begin{bNiceMatrix}[name=#1]
+		2\\
+		5\\
+		-3\\
+	\end{bNiceMatrix}
+}
+\[
+	A=\Amatv{A0},\quad\vec{v}=\Vvec{v0}
+\]
+(note that the number of \textbf{columns} in $A$ is the same as the number of elements of $\vec{v}$, namely $3$).
+
+The resulting vector $\vec{u}$ is then given by the following formula:
+\[
+	u_{i} = \tikzmark{A}A^{i}\cdot \vec{v}.
+\]
+\tikz[overlay, remember picture, node distance=15pt]{
+	\coordinate (Anode) at ($(pic cs:A)+(5pt,-2pt)$);
+	\node[below of=Anode, anchor=center, draw=xgreen, fill=xgreen!20, rounded corners, font=\small] (Atxt) {$i$-th row of $A$};
+	\draw[-stealth, xgreen] (Atxt) -- (Anode);
+}
+
+\vspace{1em}
+In the following illustration, each row of $A$ is scalar multiplied with the vector $\vec{v}$, yielding the respective element of $\vec{u}$. The respective rows of $A$ and elements of $\vec{v}$ are color-coded for clarity.
+
+\[
+	\renewcommand{\arraystretch}{1.5}
+	\begin{bNiceMatrix}[name=Av1]
+		1 & 0 & 2\\
+		0 & 3 & 1\\
+		2 & 4 & 0\\
+		6 & 1 & 3\\
+	\end{bNiceMatrix}
+	\quad\quad\quad
+	\begin{bNiceMatrix}[name=vv1]
+		2\\5\\0
+	\end{bNiceMatrix}
+	\quad\quad\quad
+	\begin{bNiceMatrix}[name=u1]
+		1\cdot2+\cancel{0\cdot5}+\cancel{2\cdot0}\\
+		\cancel{0\cdot2}+3\cdot5+\cancel{1\cdot0}\\
+		2\cdot2+4\cdot5+\cancel{\cancel{0\cdot0}}\\
+		6\cdot2+1\cdot5+\cancel{3\cdot0}\\
+	\end{bNiceMatrix}
+	\quad\quad
+	\begin{bNiceMatrix}[name=u2]
+		2\\15\\24\\17
+	\end{bNiceMatrix}
+\]
+\tikz[overlay, remember picture, blend mode=multiply]{
+	% \node[mathl={xorange!20}, fit=(vv1-1-1)(vv1-3-1)] {};
+	\node[below of=Av1-4-2, yshift=2pt] (Av1-txt) {$A$};
+	\node[below of=vv1-3-1, yshift=-6pt] (vv1-txt) {$\vec{v}$};
+	\node[below of=u1-4-1, yshift=2pt] (u1-txt) {$\vec{u}$};
+	\node[below of=u2-4-1, yshift=2pt] (u2-txt) {$\vec{u}$};
+	\foreach \r in {1,...,4}{
+		\node[mathl={xcol\r!25}, fit=(Av1-\r-1)(Av1-\r-3)] {};
+		\node[mathl={xcol\r!25}, fit=(u1-\r-1)(u1-\r-1)] {};
+		\node[mathl={xcol\r!25}, fit=(u2-\r-1)(u2-\r-1)] {};
+		\pgfmathsetmacro{\a}{(\r-2.5)*8}
+		\draw[thick, -stealth, xcol\r] ($(Av1-\r-3.east)+(7pt,0pt)$) to [out=0, in=180] ($(vv1-2-1.west)-(7pt,\a pt)$);
+		\draw[thick, -stealth, xcol\r] ($(vv1-2-1.east)+(7pt,-\a pt)$) to [out=0, in=180] ($(u1-\r-1.west)-(7pt,0)$);
+		\draw[thick, -stealth, xcol\r] ($(u1-\r-1.east)+(7pt,0)$) to ($(u2-\r-1.west)-(7pt,0)$);
+	}
+}
+
+\vspace{2em}
+\begin{example}{Matrix-vector products}{}
+	The following are some examples of matrix-vector products. Note how in each product the number of columns in the matrix is the same as the number of elements of the vector.
+
+	\begin{align*}
+		&\begin{bmatrix}1 & 0 & 2\\3 & -1 & 5\end{bmatrix}\cdot\colvec{2;-7;4} = \colvec{1\cdot2+\cancel{0\cdot(-7)}+2\cdot4;3\cdot2-1\cdot(-7)+5\cdot4} = \colvec{10;33}.\\[5mm]
+		&\begin{bmatrix}0 & 4 & -5\\4 & 6 & -2\\-2 & 2 & 0\\\end{bmatrix} \cdot \colvec{0;-3;-2} = \colvec{\cancel{\cancel{0\cdot0}}+4\cdot(-3)-5\cdot(-2);\cancel{4\cdot0}+6\cdot(-3)-2\cdot(-2);-\cancel{2\cdot0}+2\cdot(-3)+\cancel{0\cdot(-2)}} = \colvec{-2;-14;-6}.\\[5mm]
+		&\begin{bmatrix}-2 & -1\\-2 & 1\\\end{bmatrix} \cdot \colvec{0;-1} = \colvec{-\cancel{2\cdot0}-1\cdot(-1);-\cancel{2\cdot0}+1\cdot(-1)} = \colvec{1;-1}.\\[5mm]
+		&\begin{bmatrix}6 & -1\\5 & 0\\\end{bmatrix} \cdot \colvec{2;2} = \colvec{6\cdot2-1\cdot2;5\cdot2+\cancel{0\cdot2}} = \colvec{10;10}.\\[5mm]
+		&\begin{bmatrix}2 & -1 & -2 & -2\\2 & 0 & 0 & 5\\\end{bmatrix} \cdot \colvec{0;-2;2;4} = \colvec{\cancel{2\cdot0}-1\cdot(-2)-2\cdot2-2\cdot4;\cancel{2\cdot0}+\cancel{0\cdot(-2)}+\cancel{0\cdot2}+5\cdot4} = \colvec{-10;20}.\\[5mm]
+		&\begin{bmatrix}3 & 4 & -1 & 1\\-2 & 5 & 6 & -2\\4 & 5 & -1 & 3\\\end{bmatrix} \cdot \colvec{6;3;0;4} = \colvec{3\cdot6+4\cdot3-\cancel{1\cdot0}+1\cdot4;-2\cdot6+5\cdot3+\cancel{6\cdot0}-2\cdot4;4\cdot6+5\cdot3-\cancel{1\cdot0}+3\cdot4} = \colvec{34;-5;51}.
+	\end{align*}
+\end{example}
+
+\subsection{Matrix-matrix products}
+Since the product of a matrix and a vector is itself a vector, one can take the resulting vector and multiply it by another matrix, i.e. given the matrices $A,B$ and a vector $\vec{v}$, the expression
+
+\[
+	B\cdot \left( A\cdot\vec{v} \right)
+\]
+is a vector as well.
+
+Of course, the dimensions of all participating objects must align for the products to be properly defined: if $A$ is an $m\times n$ matrix, then $\vec{v}$ must be an $n$-dimensional vector. The result of the product $A\cdot\vec{v}$ is then an $m$-dimensional vector which we can call $\vec{u}$. Thus, for the product $B\cdot\vec{u}$ to be properly defined, $B$ must have the same number of columns as $\vec{u}$ has elements, namely $m$ columns. The number of rows is free, and can be any natural number $k$. Therefore, $B$ is a $k\times n$ matrix, and the product $B\cdot\vec{u}$ is a $k$-dimensional vector.
+
+\begin{example}{Multiple matrix-vector products}{}
+	Let
+	\[
+		A=\begin{bmatrix}2 & -1 & 0\\5 & 4 & 3\end{bmatrix},\quad B=\begin{bmatrix} 5 & 2\\6 & -7\\-1 & 0\end{bmatrix},\quad \vec{v}=\colvec{1;2;5},
+	\]
+	then
+	\[
+		\vec{u} = A\cdot\vec{v} = \colvec{2\cdot1-1\cdot2+\cancel{0\cdot5};5\cdot1+4\cdot2+3\cdot5} = \colvec{0;28}.
+	\]
+	The product $B\cdot\vec{u}$ is defined, since $\vec{u}$ has the same number of elements as $B$ has columns (namely $2$). Its result is the $3$-dimensional vector
+	\[
+		\vec{w} = B\cdot\vec{u} = \colvec{\cancel{5\cdot0}+2\cdot28;\cancel{6\cdot0}-7\cdot28;-\cancel{1\cdot0}+\cancel{0\cdot2}8} = \colvec{56;-196;0}.
+	\]
+\end{example}
+
+Multiple matrix-vector product therefore represent application of multiple linear transformations on an initial vector, in the order the matrix-vector products are performed. For example, consider the vector $\vec{v}=\colvec{1;1}$. Rotating $\vec{v}$ by $\frac{\pi}{2}\ (=\ang{90})$ counter-clockwise around the origin and then scaling the result by $2$ should yield the vector $\vec{w}=\colvec{-2;2}$:
+\[
+	\colvec{1;1} \xrightarrow[] {\text{rotation by $\frac{\pi}{2}$}} \colvec{-1;1} \xrightarrow[] {\text{scaling by $2$}} \colvec{-2;2}.
+\]
+
+Using the respective matrix representation of each transformation, we get the following:
+\[
+	\begin{bNiceMatrix}[name=mp1] 2 & 0\\0 & 2\end{bNiceMatrix} \cdot \left( \begin{bNiceMatrix}[name=mp2] 0 & 1\\-1 & 0 \end{bNiceMatrix} \cdot \begin{bNiceMatrix}[name=mpv1]1\\1\end{bNiceMatrix} \right) = \begin{bNiceMatrix}[name=mp3] 2 & 0\\0 & 2 \end{bNiceMatrix} \cdot \begin{bNiceMatrix}[name=mpv2] -1\\1 \end{bNiceMatrix} = \colvec{-2;2}.
+\]
+\tikz[overlay, remember picture, blend mode=multiply]{
+	\node[mathl={xred!20}, fit=(mp1-1-1)(mp1-2-2)] {};
+	\node[mathl={xgreen!20}, fit=(mp2-1-1)(mp2-2-2)] {};
+	\node[mathl={xgreen!20}, fit=(mpv1-1-1)(mpv1-2-1)] {};
+	\node[mathl={xred!20}, fit=(mp3-1-1)(mp3-2-2)] {};
+	\node[mathl={xgreen!20}, fit=(mpv2-1-1)(mpv2-2-1)] {};
+}
+(note that the matrix-vector products are performed from right to left)
+
+More generally, there could be several products made successionally, i.e.
+\[
+	A_{n} \left( A_{n-1} \left( A_{n-2} \cdots \left( A_{2} \left( A_{1}\vec{v} \right)  \right)  \right)  \right).
+\]
+Matrix-vector products are most commonly written without the paranthesis nor the dot symbol, i.e. as
+\[
+	A_{n}A_{n-1}A_{n-2}\cdots A_{2}A_{1}\vec{v},
+\]
+and the order of multiplication is from left to right, i.e. $A_{1}$ is the first matrix to be multiplied by $\vec{v}$, then $A_{2}$ is multiplied by the result of the product $A_{1}\vec{v}$, then $A_{3}$ is multiplied by the result of $A_{2}A_{1}\vec{v}$ and so on.
+
+At this point one should wonder whether instead of doing this long chain of products on each individual vector, perhaps the matrices themselves could be multiplied first, yielding a matrix representing the total transformation applied to a vector, as a composition of the separate transformations in the correct order. The answer is of course yes!\footnote{otherwise this subsection would not be called "Matrix-matrix products", after all.}
+
+Let us define the product of two matrices: given the an $m\times n$ matrix $A$ and an $n\times k$ matrix $B$, the product $C=AB$ is itself a matrix, having the dimension $m\times k$, in which every element $c_{ij}$ is the scalar product of the row $A^{i}$ and the column $B_{j}$, i.e.
+\begin{equation}
+	c_{ij} = A^{i}\cdot B_{j} = \sum_{k=1}^{n}a_{ik}b_{kj} = a_{i1}b_{1j} + a_{i2}b_{2j} + \dots + a_{in}b_{nj}.
+	\label{eq:matrix_matrix_product_elements}
+\end{equation}
+
+\autoref{fig:matrix_matrix_product_elements} illustrates this idea graphically.
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\matrix [mat] (left) {
+			|[draw, fill=xred!30]|a_{11} & |[draw, fill=xred!30]|a_{12}\\
+			a_{21} & a_{22}\\
+			|[draw, fill=xblue!30]|a_{31} & |[draw, fill=xblue!30]|a_{32}\\
+		};
+		\matrix [mat] (top) at (4,3.7) {
+			|[draw, fill=xred!30]|b_{11} & b_{12} & b_{13} & |[draw, fill=xblue!30]|b_{14} & b_{15}\\
+			|[draw, fill=xred!30]|b_{21} & b_{22} & b_{23} & |[draw, fill=xblue!30]|b_{24} & b_{25}\\
+		};
+
+		\matrix [mat, text=white] (center) at (4,0) {
+			|[draw, black, fill=xred!30]|c_{11} & 0 & 0 & 0 & 0\\
+			0 & 0 & 0 & 0 & 0\\
+			0 & 0 & 0 & |[draw, black, fill=xblue!30]|c_{34} & 0\\
+		};
+
+		\node[left=of left, xshift=7mm] {\huge$A$};
+		\node[above=of top, yshift=-4mm] {\huge$B$};
+		\node[below=of center, yshift=1cm] {\huge$C=AB$};
+
+		\draw[boxarr, xred] (left-1-2) -- (center-1-1);
+		\draw[boxarr, xblue] (left-3-2) -- (center-3-4);
+		\draw[boxarr, xred] (top-2-1) -- (center-1-1);
+		\draw[boxarr, xblue] (top-2-4) -- (center-3-4);
+
+		\draw[line width=3pt, xred] (left-1-1.north west) rectangle (left-1-2.south east);
+		\draw[line width=3pt, xblue] (left-3-1.north west) rectangle (left-3-2.south east);
+		\draw[line width=3pt, xred] (top-1-1.north west) rectangle (top-2-1.south east);
+		\draw[line width=3pt, xblue] (top-1-4.north west) rectangle (top-2-4.south east);
+	\end{tikzpicture}
+	\caption{The element $c_{ij}$ of the matrix $C=AB$ is the scalar product of the $i$-th row of $A$ and the $j$-th column of $B$.}
+	\label{fig:matrix_matrix_product_elements}
+\end{figure}
+
+Using the previous example, instead of calculating the $\frac{pi}{2}$ rotation of the vector $\colvec{1;1}$ and then scaling it by $2$, we calculate the product of the two matrices representing these transformations, and then apply them to the vector:
+\[
+	C=\begin{bmatrix} 0 & -1\\1 & 0 \end{bmatrix}\begin{bmatrix} 2 & 0\\0 & 2 \end{bmatrix} =
+	\begin{bmatrix}
+		\cancel{0\cdot2}-\cancel{1\cdot0} & \cancel{\cancel{0\cdot0}}-1\cdot2\\
+		1\cdot2+\cancel{\cancel{0\cdot0}} & \cancel{1\cdot0}+\cancel{0\cdot2}
+		\end{bmatrix} = \begin{bmatrix} 0 & -2\\2 & 0 \end{bmatrix}.
+\]
+We then apply $C$ to the vector and get the expected result:
+\[
+	C\vec{v} = \begin{bmatrix} 0 & -2\\2 & 0 \end{bmatrix} \colvec{1;1} = \colvec{\cancel{0\cdot1}-2\cdot1;2\cdot1+\cancel{0\cdot1}} = \colvec{-2;2}.
+\]
+
+\begin{example}{Matrix-matrix products}{}
+	\tbw{write example}
+\end{example}
+
+Recall that the order of composition of linear transformations matters: $T_{1}\circ T_{2} \neq T_{2}\circ T_{1}$. Therefore, matrix-matrix products, which represent such compositions, are non-commutative, i.e.
+\begin{equation}
+	AB\neq BA.
+	\label{eq:matrix_matrix_product_non_commutative}
+\end{equation}
+
+\begin{example}{Non-commutativity of matrix-matrix products}{}
+	
+\end{example}
+
+Of course, there are special cases where $AB=BA$, but these are the exception and not the norm. An example is the the rotation and scaling of the vector $\colvec{1;1}$ we saw above: if we flip the order of application of the two linear transformations we get the same result. This is true for any vector:
+
+\centering
+\begin{tikzpicture}[node distance=2cm]
+	\node (xy) {$\colvec{x;y}$};
+	\node[right of=xy, xshift=2cm] (res) {$\colvec{-2y;2x}$};
+	\node at ($(xy)!0.5!(res)+(0,1cm)$) (in1) {$\colvec{-y;x}$};
+	\node at ($(xy)!0.5!(res)-(0,1cm)$) (in2) {$\colvec{2x;2y}$};
+	\draw[-stealth, thick] (xy)  -- (in1) node[midway, above, rotate=30]  {rotate};
+	\draw[-stealth, thick] (xy)  -- (in2) node[midway, below, rotate=-30] {scale};
+	\draw[-stealth, thick] (in1) -- (res) node[midway, above, rotate=-30] {scale};
+	\draw[-stealth, thick] (in2) -- (res) node[midway, below, rotate=30]  {rotate};
+\end{tikzpicture}
+\flushleft
+
+We can see that fact by multiplying the two matrices directly, in both directions:
+\begin{align*}
+	\begin{bmatrix}0&-1\\1&0\end{bmatrix}\begin{bmatrix}2&0\\0&2\end{bmatrix} &= \begin{bmatrix}\cancel{0\cdot2}-\cancel{1\cdot0} & \cancel{\cancel{0\cdot0}}-1\cdot2 \\1\cdot2+\cancel{\cancel{0\cdot0}}&\cancel{1\cdot0}+\cancel{0\cdot2}\end{bmatrix} = \begin{bmatrix}0&-2\\2&0\end{bmatrix},\\
+	\begin{bmatrix}2&0\\0&2\end{bmatrix}\begin{bmatrix}0&-1\\1&0\end{bmatrix} &= \begin{bmatrix}\cancel{2\cdot0}+\cancel{0\cdot1}&2\cdot(-1)+\cancel{\cancel{0\cdot0}}\\1\cdot2+\cancel{\cancel{0\cdot0}}&\cancel{1\cdot0}+\cancel{0\cdot2}\end{bmatrix} = \begin{bmatrix}0&-2\\2&0\end{bmatrix}.
+\end{align*}
+
+Later in this chapter we will analyze the conditions for such commutativity to occur.
+
+The determinant of a matrix-matrix product $AB$ equals the product of the determinants of the separate matrices, i.e.
+\begin{equation}
+	|AB| = |A|\times|B|.
+	\label{eq:determinant_AB}
+\end{equation}
+The reason is that the change in volume after application of two consecutive transformations is the product of the change in volume for each separate transformation. This also mean that $|AB|=|BA|$. The trace of a matrix-matrix product behaves the same as well:
+\begin{equation}
+	\tr\left(AB\right) = \tr\left(BA\right).
+	\label{eq:}
+\end{equation}
+
+\begin{proof}{Trace of a matrix-matrix product}{}
+	Prove the above behaviour of the trance operator.
+\end{proof}
+
+On the other hand, the traspose operator doesn't behave so "nicely":
+\begin{equation}
+	\left(AB\right)^{\top} = B^{\top}A^{\top}.
+	\label{eq:}
+\end{equation}
+
+\subsection{Inverse matrices}
+Some linear transformations are invertible. For example, given a transformation which rotates any vector in $\Rs[2]$ by $\theta$ \textbf{counter-clockwise} around the origin, its inverse transformation is one that rotates any vector in $\Rs[2]$ by $\theta$ \textbf{clockwise} around the origin (or equivalently by $-\theta$ counter-clockwise). \autoref{fig:trans_and_inverses} illustrates such transformation.
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[node distance=1pt]
+		\pgfmathsetmacro{\tha}{15}
+		\pgfmathsetmacro{\thb}{80}
+		\pgfmathsetmacro{\thas}{\tha+3}
+		\pgfmathsetmacro{\thbs}{\thb-3}
+		\pgfmathsetmacro{\R}{2.5}
+		\begin{axis}[
+			vector plane,
+			width=10cm, height=10cm,
+			xmin=-0.5, xmax=3,
+			ymin=-0.5, ymax=3,
+			xticklabels={,},
+			yticklabels={,},
+		]
+			\coordinate (v) at ({\R*cos(\tha)},{\R*sin(\tha)});
+			\coordinate (u) at ({\R*cos(\thb)},{\R*sin(\thb)});
+			\draw[vector, xred]  (0,0) -- (v) node[pos=1.05] {$\vec{u}$};
+			\draw[vector, xblue] (0,0) -- (u) node[pos=1.05] {$\vec{v}$};
+			\draw[vector, xpurple] ({0.4*\R*cos(\thas)},{0.4*\R*sin(\thas)}) arc (\thas:\thbs:{0.4*\R});
+			\draw[vector, xpurple] ({0.65*\R*cos(\thbs)},{0.65*\R*sin(\thbs)}) arc (\thbs:\thas:{0.65*\R});
+			\node[draw=xpurple, thick, fill=xpurple!20, rounded corners, text=xpurple] at (0.75,0.75) {$T$};
+			\node[draw=xpurple, thick, fill=xpurple!20, rounded corners, text=xpurple] at (1.2,1.2) {$T^{-1}$};
+		\end{axis}
+	\end{tikzpicture}
+	\caption{The transformation $T$ rotates a vector $\vu$ by $\ath$ counter-clockwise, turning it into the vector $\vv$. Its inverse, $T^{-1}$, turns the vector $\vv$ back into $\vu$.}
+	\label{fig:trans_and_inverses}
+\end{figure}
+
+Recall that a transformations (function) is only invertible if and only if it is bijective (\autoref{sec:relations_and_functions}). Specifically to our case, a non-bijective linear transformation is a transformation $T:\Rs[m]\to\Rs[n]$ for which some two vectors $\vec{u},\vec{v}\in\Rs[m]$ are mapped to the same vector $\vec{w}\in\Rs[n]$.
+
+\begin{example}{Two vectors mapped to the same vector}{}
+	Let $T$ be a linear transformation represented by the matrix
+	\[
+		A=
+		\begin{bmatrix}
+			1 & 0 & 2\\
+			0 & 1 & 0\\
+			0 & 0 & 0\\
+		\end{bmatrix}.
+	\]
+	
+	The two vectors $\vec{u}=\colvec{2;0;0}$ and $\vec{v}=\colvec{0;0;1}$ are mapped by $T$ to the same vector:
+	\begin{align*}
+		A\vec{u} &= \colvec{1\cdot2+\cancel{\cancel{0\cdot0}}+\cancel{2\cdot0};\cancel{0\cdot2}+\cancel{1\cdot0}+\cancel{\cancel{0\cdot0}};\cancel{0\cdot2}+\cancel{\cancel{0\cdot0}}+\cancel{\cancel{0\cdot0}}} = \colvec{2;0;0}.\\
+		A\vec{v} &= \colvec{\cancel{1\cdot0}+\cancel{0\cdot0}+2\cdot1;\cancel{0\cdot0}+\cancel{1\cdot0}+\cancel{0\cdot1};\cancel{0\cdot0}+\cancel{0\cdot0}+\cancel{0\cdot2}} = \colvec{2;0;0}.\\
+	\end{align*}
+\end{example}
+
+In fact, when a linear transformation maps two vectors in its domain to a single vector in is image - it actually maps \textbf{infinitely many} vectors to that point: let $T$ be a linear transformation and $\vec{u},\vec{v}$ two vectors in its domain that are mapped to the same output $\vec{w}$, i.e.
+\[
+	T \left( \vec{u} \right) = T \left( \vec{v} \right) = \vec{w}.
+\]
+
+Due to the properties of linear transformations, on one side we get
+\begin{align}
+	T \left( \alpha\vec{v}+\beta\vec{u} \right) &= T \left( \alpha\vec{u} \right) + T \left( \beta\vec{v} \right)\\ 
+												&= \alpha T \left( \vec{u} \right)  + \beta T\left(\vec{w}\right)\\
+												&= \alpha\vec{w} + \beta\vec{w}\\
+												&= (\alpha+\beta)\vec{w}.
+\end{align}
+(for any $\alpha\in\mathbb{R}$)
+
+Thus, for example, the linear combination $2\vec{u}+6\vec{v}$ will be mapped to the same output as $6\vec{u}+2\vec{v},\ 3\vec{u}+9\vec{v},\ 0.5\vec{u}+11.5\vec{v}$, etc. - the linear combination using any two coefficients $\alpha,\beta$ which add up to $12$ would be mapped to $12\vec{w}$. This is of course true for any real number, and so for each scale of $\vec{w}$ there are infinitely many linear combinations that are mapped to it.
+
+In fact, the only way in which a linear transformation can be non-bijective is by "loosing" a dimension, i.e. when it maps $\Rs[3]$ to a single plane/line/point. As we saw earlier, these kind of transformations are represented by matrices for which the determinant is zero, i.e.
+\begin{equation}
+	|A|=0 \Leftrightarrow \nexists A^{-1}.
+	\label{eq:determinant_zero_no_inverse}
+\end{equation}
+which in words mean that if (and only if!) the determinant of a matrix is zero then it has no iverse, and vice-versa (the symbol $\nexists$ means "does not exist"). On the other hand, if the determinant isn't zero, then the inverse must exist.
+
+The product of a matrix and its inverse is the respective identity matrix, since the composition of the respective linear transformations represented by the matrices is the identity transformation. In mathematic terms:
+\begin{equation}
+	AA^{-1} = A^{-1}A = I.
+	\label{eq:matrix_inverse_identity}
+\end{equation}
+
+\begin{example}{Inverse matrices}{}
+	\tbw{give a $3\times3$ matrix, show that its determinant is non-zero, present its inverse and demonstrate it on a specific vector.}
+\end{example}
+
+Matrices with zero determinant are also known as a \emph{singular} or \emph{degenerate} matrix. For obvious reason, we will not use the latter term in this book\footnote{nor should you use it in general, in my opinion.}.
+
+While the identity matrix is its own inverse (since $I\cdot I=I$), it is not the only matrix which shows such behaviour. For example, consider the matrix
+\[
+	A =
+	\begin{bmatrix}
+		-1 & 0 & 0\\
+		 0 & 1 & 0\\
+		 0 & 0 & 1\\
+	\end{bmatrix}.
+\]
+Geometrically, $A$ takes a vector in $\Rs[3]$ and flips its $x$-component. In other words it mirrors any vector across the $yz$-plane (see \autoref{fig:mirror_yz}). If we take a vector $\vec{u}=\colvec{x;y;z}$ and multiply it by $A$ we get the vector $\vec{v}=\colvec{-x;y;z}$ (tip: calculate the product $A\vec{v}$ directly for practice). If we take $\vec{v}$ and multiply it by $A$, we get the vector $\colvec{x;y;z}$ - i.e. we retrieved back $\vec{u}$. Since this is true for any vector in $\Rs[3]$, $A$ is its own inverse. We can check this directly by calculating the product of $A$ with itself:
+\begin{align*}
+	A\cdot A &=
+	\begin{bmatrix}
+		-1 & 0 & 0\\
+		 0 & 1 & 0\\
+		 0 & 0 & 1\\
+	\end{bmatrix}
+	\begin{bmatrix}
+		-1 & 0 & 0\\
+		 0 & 1 & 0\\
+		 0 & 0 & 1\\
+	\end{bmatrix}\\
+			 &=
+	\begin{bmatrix}
+		-1\cdot(-1) + \cancel{\cancel{0\cdot0}}+\cancel{\cancel{0\cdot0}} & -\cancel{1\cdot0}+\cancel{0\cdot1}+\cancel{\cancel{0\cdot0}} & -\cancel{1\cdot0}+\cancel{\cancel{0\cdot0}}+\cancel{0\cdot1}\\
+		 \cancel{0\cdot(-1)} + \cancel{\cancel{0\cdot0}}+\cancel{\cancel{0\cdot0}} &  \cancel{0\cdot1}+1\cdot1+\cancel{\cancel{0\cdot0}} &  \cancel{\cancel{0\cdot0}}+\cancel{0\cdot1}+\cancel{\cancel{0\cdot0}}\\
+		 \cancel{0\cdot(-1)} + \cancel{\cancel{0\cdot0}}+\cancel{0\cdot1} &  \cancel{\cancel{0\cdot0}}+\cancel{0\cdot1}+\cancel{\cancel{0\cdot0}} &  \cancel{\cancel{0\cdot0}}+\cancel{\cancel{0\cdot0}}+1\cdot1\\
+	\end{bmatrix}\\
+			 &=
+	\begin{bmatrix}
+		1 & 0 & 0\\
+		0 & 1 & 0\\
+		0 & 0 & 1\\
+	\end{bmatrix}\\
+			 &= I_{3}.
+\end{align*}
+
+A matrix which is its own inverse is known as an \emph{involutory matrix}. Such matrices must be square (challange to the reader: why is that true?).
+
+How do we calculate the inverse of a matrix? In general, non-square matrices don't have so-called "complete" inverses, so we focus on calculating the inverses of square matrices only. The general formula for an inverse matrix $A^{-1}$ is
+\begin{equation}
+	A^{-1} = \frac{1}{|A|}\adj(A),
+	\label{eq:inverse_matrix_calc}
+\end{equation}
+where $\adj(A)$ is the \emph{adjugate} of the matrix $A$. The adjugate of a matrix is calculated using its minors, as follows: let \[
+	A=
+	\begin{bNiceMatrix}
+		\Ma{1}{1} & \Ma{1}{2} & \cdots & \Ma{1}{n}\\
+		\Ma{2}{1} & \Ma{2}{2} & \cdots & \Ma{2}{n}\\
+		\vdots & \vdots & \Ddots & \vdots\\
+		\Ma{m}{1} & \Ma{m}{2} & \cdots & \Ma{m}{n}
+	\end{bNiceMatrix},
+\]
+then its adjugate is the matrix
+\[
+	\adj(A)=
+	\begin{bNiceMatrix}
+		+\Mm{1}{1} & -\Mm{1}{2} & \cdots & \pm\Mm{1}{n}\\
+		-\Mm{2}{1} & +\Mm{2}{2} & \cdots & \mp\Mm{2}{n}\\
+		\vdots & \vdots & \Ddots & \vdots\\
+		\pm\Mm{m}{1} & \mp\Mm{m}{2} & \cdots & \pm\Mm{m}{n}
+	\end{bNiceMatrix}^{\top}
+\]
+(where $\Mm{i}{j}$ is the $\textcolor{xred}{i}\textcolor{xblue}{j}$-minor of $A$).
+
+\begin{example}{Adjugate of a matrix}{}
+	Let
+	\[
+		C=
+		\begin{bmatrix}
+			1 & 7 & -3\\
+			2 & 5 &  0\\
+			0 & 1 &  1\\
+		\end{bmatrix},
+	\]
+	then
+	\begin{align*}
+		\adj(C)&=
+		\begin{bmatrix}
+			+\Mm{1}{1} & -\Mm{1}{2} & +\Mm{1}{3}\\
+			-\Mm{2}{1} & +\Mm{2}{2} & -\Mm{2}{3}\\
+			+\Mm{3}{1} & -\Mm{3}{2} & +\Mm{3}{3}\\
+		\end{bmatrix}^{\top}\\
+			   &=
+			   \begin{bmatrix}
+				   +\begin{vmatrix}5&0\\1&1\end{vmatrix} & -\begin{vmatrix}2&0\\0&1\end{vmatrix} & +\begin{vmatrix}2&5\\0&1\end{vmatrix}\\
+				   -\begin{vmatrix}7&-3\\1&1\end{vmatrix} & +\begin{vmatrix}1&-3\\0&1\end{vmatrix} & -\begin{vmatrix}1&7\\0&1\end{vmatrix}\\
+				   +\begin{vmatrix}7&-3\\5&0\end{vmatrix} & -\begin{vmatrix}1&-3\\2&0\end{vmatrix} & +\begin{vmatrix}1&7\\2&5\end{vmatrix}\\
+			   \end{bmatrix}^{\top}\\
+			   &=
+			   \begin{bmatrix}
+				   5\cdot1-\cancel{1\cdot0} & -2\cdot1+\cancel{\cancel{0\cdot0}} & 2\cdot1-\cancel{0\cdot5}\\
+				   -(7\cdot1+1\cdot3) & 1\cdot1+\cancel{3\cdot0} & -(1\cdot1-\cancel{7\cdot0})\\
+				   \cancel{7\cdot0}+3\cdot5 & -(\cancel{1\cdot0}+3\cdot2) & 1\cdot5-2\cdot7\\
+			   \end{bmatrix}^{\top}\\
+			   &=
+			   \begin{bmatrix}
+				   5 & -2 & 2\\
+				   -10 & 1 & -1\\
+				   15 & -6 & -9\\
+			   \end{bmatrix}^{\top}\\ 
+			   &=
+			   \begin{bmatrix}
+				   5 & -10 & 15\\
+				   -2 & 1 & -6\\
+				   2 & -1 & -9
+			   \end{bmatrix}.
+	\end{align*}
+\end{example}
+
+We can use the above example to calculate the inverse of the matrix $C$.
+
+\begin{example}{Inverse of a matrix}{}
+	The determinant of $C$ is
+	\[
+		|C| = \Mm{1}{1} -7\Mm{1}{2} -3\Mm{1}{3} = 5-14-6 = -15.
+	\]
+	Therefore the inverse of $C$ is
+	\begin{align*}
+		C^{-1} &= \frac{1}{|C|}\adj(C)\\
+			   &= -\frac{1}{15}
+			   \begin{bmatrix}
+				   5 & -10 & 15\\
+				   -2 & 1 & -6\\
+				   2 & -1 & -9
+			   \end{bmatrix}\\
+			   &=
+			   \begin{bmatrix}
+				   -\frac{1}{3} & -\frac{2}{3} & -1\\
+				   \frac{2}{15} & -\frac{1}{15} & \frac{6}{15}\\
+				   -\frac{2}{15} & \frac{1}{15} & \frac{3}{5}\\
+			   \end{bmatrix}.
+	\end{align*}
+\end{example}
+
+In the case of $2\times2$ matrices, the adjugate has a rather simple formula:
+\begin{equation}
+	\adj\left( \begin{bmatrix}a&b\\c&d\end{bmatrix}  \right) = \begin{bmatrix} d&-b\\-c&a \end{bmatrix}.
+	\label{eq:adjugate_2x2}
+\end{equation}
+
+\begin{note}{Minors of $\bm{2\times2}$ matrices}{}
+	The minors of a $2\times2$ matrix $A=\begin{bmatrix}a&b\\c&d\end{bmatrix}$ are simply
+	\begin{align*}
+		\Mm{1}{1} &= d,\ \Mm{1}{2} = c,\\
+		\Mm{2}{1} &= b,\ \Mm{2}{2} = a.
+	\end{align*}
+\end{note}
+
+Therefore, the inverse of a $2\times2$ matrix $A=\begin{bmatrix}a&b\\c&d\end{bmatrix}$ is
+\begin{equation}
+	A^{-1} = \frac{1}{|A|}\begin{bmatrix}d&-b\\-c&a\end{bmatrix} = \frac{1}{ad-cb}\begin{bmatrix}d&-b\\-c&a\end{bmatrix}.
+	\label{eq:inverse_2x2}
+\end{equation}
+
+We can check that \autoref{eq:inverse_2x2} is correct by directly calculating the products $AA^{-1}$ and $A^{-1}A$:
+\begin{align*}
+	AA^{-1} &= \frac{1}{|A|}\begin{bmatrix}a&b\\c&d\end{bmatrix}\begin{bmatrix}d&-b\\-c&a\end{bmatrix}\\
+			&= \frac{1}{ad-cb}\begin{bmatrix} ad-bc & \cancel{-ab+ba} \\ \cancel{cd-dc} & -cb+da \end{bmatrix}\\
+			&= \begin{bmatrix}\frac{ad-bc}{ad-cb} & 0 \\ 0 & \frac{da-cb}{ad-bc}\end{bmatrix}\\
+			&= \begin{bmatrix} 1&0 \\ 0&1 \end{bmatrix}\\
+			&= I_{2}.\\
+			\\
+	A^{-1}A &= \frac{1}{|A|}\begin{bmatrix}d&-b\\-c&a\end{bmatrix}\begin{bmatrix}a&b\\c&d\end{bmatrix}\\
+			&= \frac{1}{ad-cb}\begin{bmatrix} da-bc & \cancel{db-bd} \\ \cancel{-ca+ac} & -cb+ad \end{bmatrix}\\
+			&= \begin{bmatrix} \frac{da-bc}{ad-cb} & 0 \\ 0 & \frac{ad-cb}{ad-cb} \end{bmatrix}\\
+			&= \begin{bmatrix} 1&0 \\ 0&1 \end{bmatrix}\\
+			&= I_{2}.
+\end{align*}
+
+\begin{example}{Inverting a $\bm{2\times2}$ matrix}{}
+	The inverse of the matrix
+	\[
+		A = \begin{bmatrix}1&-3 \\ 2&0\end{bmatrix}
+	\]
+	is
+	\begin{align*}
+		A^{-1} &= \frac{1}{|A|}\begin{bmatrix}0&3 \\ -2&1\end{bmatrix}\\
+			   &= \frac{1}{1\cdot0-(-3)\cdot2} \begin{bmatrix}0&3 \\ -2&1\end{bmatrix}\\
+			   &= \frac{1}{6}\begin{bmatrix}0&3 \\ -2&1\end{bmatrix}.
+	\end{align*}
+\end{example}
+
+\begin{example}{Inverse of the $2$-dimensional rotation matrix}{}
+	We can use \autoref{eq:inverse_2x2} to calculate the inverse of the $2$-dimensional rotation matrix
+	\[
+		R \left( \theta \right) = \begin{bmatrix} \cos(\theta) & -\sin(\theta) \\ \sin(\theta) & \cos(\theta) \end{bmatrix}.
+	\]
+	Since the rotation matrix rotates all vector by $\theta$ counter-clockwise around the origin, we expect its inverse to rotate all vectors by $-\theta$ counter-clockwise around the origin. Let's show that this is indeed the case: we first calculate the determinant of $R$:
+	\[
+		|R| = \cos(\theta)\cdot\cos(\theta) + \sin(\theta)\sin(\theta) = \cos(\theta)^{2}+\sin(\theta)^{2} = 1.
+	\]
+	This result makes sense - rotation does not change areas. We can now use $|R|$ to calculate $R^{-1}$:
+	\begin{align*}
+		R^{-1} \left( \theta \right) &= \frac{1}{|R|}\begin{bmatrix} \cos(\theta) & \sin(\theta) \\ -\sin(\theta) & \cos(\theta)  \end{bmatrix}\\
+									 &= \begin{bmatrix} \cos(\theta) & \sin(\theta) \\ -\sin(\theta) & \cos(\theta)  \end{bmatrix}. 
+	\end{align*}
+	Since $\cos(-\theta)=\cos(\theta)$ and $\sin(-\theta)=-\sin(\theta)$, the above matrix is exactly a rotation by $-\theta$ counter-clockwise around the origin, as we expected.
+\end{example}
+
+We can use the rotation matrix and its inverse to calculate the general $2\times2$ reflection matrix around a line going through the origin (\autoref{eq:reflect_general_2x2}), represented by its angel $\theta$. We do this by taking the following steps (see \autoref{fig:building_reflect_2x2} for a graphical illustration):
+\begin{enumerate}
+	\item Rotate space by $-\theta$ such that the reflection line aligns with the horizontal axis.
+	\item Reflect space across the horizontal line.
+	\item Rotate space by $\theta$ to bring back space to its original orientation.
+\end{enumerate}
+
+The order of application of the above transformations is 1-2-3. Therefore, in matrix form we write them from \textbf{left to right}, i.e. $\bm{3}\cdot\bm{2}\cdot\bm{1}$:
+
+\vspace{1em}
+\centering
+\tikz[node distance=2.75cm]{
+	\node (RefD) {$\Refl(\theta)$};
+	\node[right of=RefD, xshift=-2cm] (eq1) {$=$};
+	\node[fill=xgreen!20, right of=eq1] (rot2) {$\begin{bmatrix} \cos(\theta)&-\sin(\theta) \\ \sin(\theta)&\cos(\theta) \end{bmatrix}$};
+	\node[fill=xblue!20, right of=rot2] (ref) {$\begin{bmatrix} 1&0 \\ 0&-1 \end{bmatrix}$};
+	\node[fill=xred!20, right of=ref] (rot1) {$\begin{bmatrix} \cos(\theta)&\sin(\theta) \\ -\sin(\theta)&\cos(\theta) \end{bmatrix}$};
+	
+	\node at ($(rot2.east)!0.5!(ref.west)$) {$\cdot$};
+	\node at ($(ref.east)!0.5!(rot1.west)$) {$\cdot$};
+
+	\tikzset{node distance=1.5cm}
+	\node[fill=xgreen!20, above of=rot2] (rot2txt) {3. rotate back};
+	\node[fill=xblue!20, above of=ref] (reftxt) {2. flip vertically};
+	\node[fill=xred!20, above of=rot1] (rot1txt) {1. rotate};
+
+	\draw[vector, xgreen!20] (rot2txt) -- (rot2);
+	\draw[vector, xblue!20] (reftxt) -- (ref);
+	\draw[vector, xred!20] (rot1txt) -- (rot1);
+
+	\tikzset{node distance=2.75cm}
+	\node[below of=eq1, yshift=1cm] (eq2) {$=$};
+	\node[right of=eq2, xshift=3mm] {$\begin{bmatrix} \cos \left( 2\theta \right) & \sin \left( 2\theta \right) \\ -\sin \left( 2\theta \right) & \cos \left( 2\theta \right) \end{bmatrix}.$};
+}
+\flushleft
+
+\renewcommand\thesubfigure{\arabic{subfigure}}
+\setcounter{subfigure}{-1} % <-- why doesn't this work? :(
+\begin{figure}[]
+	\centering
+	\begin{subfigure}[c]{0.45\textwidth}
+		\begin{tikzpicture}
+			\begin{axis}[
+				vector plane,
+				width=6cm, height=6cm,
+				xlabel={},
+				ylabel={},
+				xticklabels={,},
+				yticklabels={,},
+				axis line style={draw=none},
+				tick style={draw=none},
+				grid=none,
+			]
+			\node at (0,0) {\includesvg[scale=0.75]{figures/linear_algebra/tapir_transform2}};
+			\addplot[thick, dashed] {0.5*\x};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Original space.}
+	\end{subfigure}
+	\begin{subfigure}[c]{0.45\textwidth}
+		\begin{tikzpicture}
+			\begin{axis}[
+				vector plane,
+				width=6cm, height=6cm,
+				xlabel={},
+				ylabel={},
+				xticklabels={,},
+				yticklabels={,},
+				axis line style={draw=none},
+				tick style={draw=none},
+				grid=none,
+			]
+			\pgftransformcm{0.8945}{-0.4472}{0.4472}{0.8945}{\pgfpoint{0}{0}}
+			\node at (0,0) {\includesvg[scale=0.75]{figures/linear_algebra/tapir_transform2}};
+			\addplot[thick, dashed] {0.5*\x};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Rotation by $\theta$ such that the mirror line is aligned with the horizontal axis.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[c]{0.45\textwidth}
+		\begin{tikzpicture}
+			\begin{axis}[
+				vector plane,
+				width=6cm, height=6cm,
+				xlabel={},
+				ylabel={},
+				xticklabels={,},
+				yticklabels={,},
+				axis line style={draw=none},
+				tick style={draw=none},
+				grid=none,
+			]
+			\pgftransformcm{1}{0}{0}{-1}{\pgfpoint{0}{0}}
+			\pgftransformcm{0.8945}{-0.4472}{0.4472}{0.8945}{\pgfpoint{0}{0}}
+			\node at (0,0) {\includesvg[scale=0.75]{figures/linear_algebra/tapir_transform2}};
+			\addplot[thick, dashed] {0.5*\x};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Mirroring across the mirror line.}
+	\end{subfigure}
+	\begin{subfigure}[c]{0.45\textwidth}
+		\begin{tikzpicture}
+			\begin{axis}[
+				vector plane,
+				width=6cm, height=6cm,
+				xlabel={},
+				ylabel={},
+				xticklabels={,},
+				yticklabels={,},
+				axis line style={draw=none},
+				tick style={draw=none},
+				grid=none,
+			]
+			\pgftransformcm{0.8945}{0.4472}{-0.4472}{0.8945}{\pgfpoint{0}{0}}
+			\pgftransformcm{1}{0}{0}{-1}{\pgfpoint{0}{0}}
+			\pgftransformcm{0.8945}{-0.4472}{0.4472}{0.8945}{\pgfpoint{0}{0}}
+			\node at (0,0) {\includesvg[scale=0.75]{figures/linear_algebra/tapir_transform2}};
+			\addplot[thick, dashed] {0.5*\x};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Rotating back to the original orientation (i.e. by $-\theta$).}
+	\end{subfigure}
+	\caption{Constructing a general $2\times2$ reflection matrix as the composition of rotating, mirroring and rotating back.}
+	\label{fig:building_reflect_2x2}
+\end{figure}
+
+\subsection{Kernel and null space}
+While the determinant of a matrix tells us whether the matrix is reversible or not, it doesn't quantify the loss in dimensionality resulting from applying it: a matrix which "squishes" $\Rs[3]$ in to a plane has the same determinant as a matrix which "squishes" it into a line or the the a single point (the origin): $0$. To find a measurement that does quantify this characteristic, we can look at the set of all vectors which the matrix (and thus the transformation it represents) map to $\vec{0}$. We call this set the \emph{kernel} of the matrix/transformation (denoted $\ker(A)$ or $\ker(T)$, respectively). More formally - given an $m\times n$ matrix representing a transformation $T:\Rs[n]\to\Rs[m]$,
+\begin{equation}
+	\ker(A) = \left\{ \vec{v}\in\Rs[n] \mid A\vec{v}=\vec{0}_{m} \right\},
+	\label{eq:kernel_matrix}
+\end{equation}
+and equivalently,
+\begin{equation}
+	\ker(T) = \left\{ \vec{v}\in\Rs[n] \mid T \left( \vec{v} \right) =\vec{0}_{m} \right\}
+	\label{eq:kernel_transformation}
+\end{equation}
+
+In the language of matrices, the kernel is sometimes refered to as their \emph{null space}.
+
+\begin{note}{Matrix/Transformation duality}{}
+	From now on in this subsection we will discuss matrices only, however everything discussed here can be applied directly to the transformations they represent. We also use the term kernel instead of null space, as these two concepts are practially equivalent in our context.
+\end{note}
+
+\begin{example}{Kernel of a matrix}{}
+	The vector
+	\[
+		\vec{v}=\colvec{0;-2;1}
+	\]
+	is in the kernel of the matrix
+	\[
+		A=
+		\begin{bmatrix}
+			 0 & 1 & 2\\
+			-1 & 3 & 6\\
+			 2 & 2 & 4\\
+		\end{bmatrix},
+	\]
+	since
+	\begin{align*}
+		A\vec{v} &= 
+		\begin{bmatrix}
+			 0 & 1 & 2\\
+			-1 & 3 & 6\\
+			 2 & 2 & 4\\
+		 \end{bmatrix}\colvec{0;-2;1}\\
+				 &= \colvec{0\cdot0+1\cdot(-2)+2\cdot1;-1\cdot0+3\cdot(-2)+6\cdot1;2\cdot0+2\cdot(-2)+4\cdot1}\\
+				 &= \colvec{0-2+2;0-6+6;0-2+4}\\
+				 &= \colvec{0;0;0}.
+	\end{align*}
+\end{example}
+
+Two properties of the kernel of a matrix are relatively straight-forward:
+\begin{itemize}
+	\item The (dimentially correct) zero vector is always in the kernel of any matrix. This is because the zero vector of a transformation's domain is always mapped to the zero vector in its image (stated in \autoref{sec:intuitive_linear_trans} as the fact that linear transformations preserve the origin).
+	\item Any linear combination of vectors in the kernel of a matrix is also in the kernel of the matrix. This is easily proved using the basic properties of linear transformations (which we show in matrix form):
+\begin{proof}{Linear combinations of kernel vectors}{}
+	Let $A$ be a matrix, and $\vec{u},\vec{v}$ two vectors in its kernel. Then
+	\begin{align*}
+		A\cdot \left( \alpha\vec{u}+\beta\vec{v} \right) &= A\cdot \left( \alpha\vec{u} \right) + A\cdot \left( \beta\vec{v} \right)\\
+														 &= \alpha A\vec{u} + \beta A\vec{v}\\
+														 &= \alpha\vec{0} + \beta\vec{0}\\
+														 &= \vec{0} + \vec{0}\\
+														 &= \vec{0}.
+	\end{align*}
+	Therefore $\vec{w}=\alpha\vec{u}+\beta\vec{v}$ is also in the kernel of $A$.
+\end{proof}
+\end{itemize}
+
+The kernel of a matrix forms a subspace of its domain (see \autoref{fig:kernel_subspace}). Therefore, we can quantify the dimension of the kernel, sometimes called its \emph{nullity}:
+\begin{equation}
+	\Null(A) = \dim(\ker(A)).
+	\label{eq:nullity}
+\end{equation}
+
+\begin{example}{Kernel space of a matrix}{}
+	The matrix
+	\[
+		A=
+		\begin{bmatrix}
+			0 &  1 & 2\\
+			0 &  2 & 4\\
+			0 & -3 & -6\\
+		\end{bmatrix} 
+	\]
+	has the following two vectors in its kernel:
+	\[
+		\vec{u}=\colvec{1;0;0},\ \vec{v}=\colvec{0;-2;1}.
+	\]
+	These two vectors are linearly independant, and span the kernel of $A$, having dimension $\dim(V)=2$. All the vectors in $\ker(A)$ are of the form
+	\[
+		\vec{w} = \alpha\vec{u} + \beta\vec{v},
+	\]
+	i.e. the linear combinations of $\vec{u}$ and $\vec{v}$.
+\end{example}
+
+All the vectors which are not in $\ker(A)$ also span a subspace of its domain, called the \emph{column space} of $A$. The dimension of the column space is called the \emph{rank} of $A$, $\rank(A)$. The kernel and column space of a matrix are complementary: together they span $\Rs[n]$.
+
+This means that we can split the domain of a matrix to two separate subspaces, which together give us a lot of information about the image of the matrix: in one subspace are all the vectors that will be "squished" by the transformation into the origin, and the other subspace is composed of all the vectors that are transformed to a non-zero vector. If we limit the domain of the transformation to its column space, it becomes reversible - no two vectors in the column space are mapped to a single vector. On the other hand, the transformation on the kernel is always inversible.
+
+Alltogether, the nullity and rank of a matrix add up to the dimension of its domain, i.e.
+\begin{equation}
+	\Null(A) + \rank(A) = n.
+	\label{eq:}
+\end{equation}
+
+\begin{figure}[]
+	\centering
+	\begin{tikzpicture}
+		\node[ellipse, draw=black, thick, fill=xred!50, minimum width=2cm, minimum height=4cm, label={[label distance=-1cm]90:$\Rs[n]$}] (domain) {};
+		\node[circle, draw=black, thick, fill=xblue!50, minimum size=1cm] (kernel) {$\ker(A)$};
+
+		\node[ellipse, draw=black, thick, fill=xgreen!50, minimum width=2cm, minimum height=3cm, label={[label distance=-1cm]90:$\Rs[m]$}] (image) at (4cm,0) {};
+		\node[circle, fill=black] (zero) at (4cm,0) {};
+		\node[right=of zero, xshift=-1cm] {$\vec{0}$};
+
+		\draw[thick, densely dotted] (domain.north) -- (image.north);
+		\draw[thick, densely dotted] (domain.south) -- (image.south);
+		\draw[thick, densely dotted] (kernel.north) -- (zero.north);
+		\draw[thick, densely dotted] (kernel.south) -- (zero.south);
+
+		\draw[vector] (1,2.3) -- node [midway, above] {$A$} ++(2,0);
+	\end{tikzpicture}
+	\caption{The kernel of a matrix $A$ is a subspace of its domain $\Rs[n]$. It is mapped exclusively to $\vec{0}_{m}$ in its image. The set $\Rs[n]\setminus\ker(A)$, i.e. $\Rs[n]$ minus the kernel (shown in red), is in fact the column space of the matrix.}
+	\label{fig:kernel_subspace}
+\end{figure}
+
+TBD: figure to illustrate the kernel and column space of a matrix as complementary.
+
+If the rank of an $m\times n$ matrix $A$ is equal to $n$, its kernel space must have the dimension
+\begin{equation}
+	\Null(A) = n-\rank(A) = n-n = 0,
+	\label{eq:nullity_rank}
+\end{equation}
+i.e. the matrix has no vectors mapped to $\vec{0}$ (except the zero vector itself), and thus the matrix is invertible (non-singular), and so its determinant is non-zero. This is true in the other direction: a matrix with non-zero determinant is invertible, and thus its kernel contains only $\vec{0}$ and the nullity of the matrix is $0$. This means that the column space of the matrix must equal $n$. Altogether, these facts can be written succinctly as
+\begin{equation}
+	\rank(A) = n \Leftrightarrow |A|\neq0.
+	\label{eq:rank_det}
+\end{equation}
+
+\tbw{how matrix-matrix product changes the right-side matrix (i.e. exchanging rows/columns, scaling, etc.).}
+
+\subsection{Matrices as basis change}

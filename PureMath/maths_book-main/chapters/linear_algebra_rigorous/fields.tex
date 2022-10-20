@@ -1,0 +1,369 @@
+\section{Fields}
+We begin our dive into the rigorous analysis of linear algebra by defining an algebraic construction call a \emph{field}, which we need in order to properly define vector spaces later. In essence, a field has most of the important properties of the real numbers, namely the closure, commutativity, associativity, identity and inverse of addition and multiplication of any two elements in the field (except the product inverse of the field equivalent object for the number $0$). In a later section we will use fields to construct the general notion of \emph{vector spaces}.
+
+\setenumerate[1]{label*=\arabic*.}
+\begin{definition}{Field}{}
+	A field $\mathbb{F}$ is a set of objects together with two operations called \emph{addition} and \emph{multiplication} (denoted $+$ and $\cdot$, respectively), for which the following axioms hold:
+
+	\begin{descitemize}
+		\item[Closure of under addition and multiplication] for any $a,b\in\mathbb{F}$,
+			\begin{enumerate}
+				\item $(a+b)\in\mathbb{F}$,
+				\item $(a\cdot b)\in\mathbb{F}$.
+			\end{enumerate}
+
+		\item[Commutativity under addition multiplication] for any $a,b\in\mathbb{F}$,
+			\begin{enumerate}
+				\item $a+b=b+a$,
+				\item $a\cdot b=b\cdot a$.
+			\end{enumerate}
+
+		\item[Associativity under addition and multiplication] for any $a,b,c\in\mathbb{F}$,
+			\begin{enumerate}
+				\item $a+(b+c)=(a+b)+c$,
+				\item $a\cdot(b\cdot c)=(a\cdot b)\cdot c$.
+			\end{enumerate}
+
+		\item[Additive and multiplicative identity] there exist an element in $\mathbb{F}$ called the \textit{additive identity} and denoted by $0$, for which $a+0=a$ for any $a\in\mathbb{F}$.
+			
+			Similarity, there exists an element in $\mathbb{F}$ called the \textit{multiplicative identity} and denoted by $1$, for which $a\cdot1=a$ for any $a\in\mathbb{F}$.
+
+		\item[Additive and multiplicative inverses] for any element $a\in\mathbb{F}$ (except the additive identity) there exists:
+			\begin{enumerate}
+				\item $b\in\mathbb{F}$ such that $a+b=0$, and
+				\item $c\in\mathbb{F}$ such that $a\cdot c=1$.
+			\end{enumerate}
+			(usually $b$ is denoted as $-a$, while $c$ is denoted as $a^{-1}$)
+
+		\item[Distributivity of multiplication over addition] for any $a,b,c\in\mathbb{F}$,
+			\[
+				a\cdot(b+c) = (a\cdot b) + (a\cdot c).
+			\]
+	\end{descitemize}
+\end{definition}
+
+\subsection{Infinite fields}
+We start with one of the most obvious examples of a field: the real numbers together with the standard addition and product.
+
+\begin{theorem}{$\bm{\mathbb{R}}$ as a field}{R as a field}
+	The set of real numbers $\mathbb{R}$ forms a field together with the standard addition and product.
+\end{theorem}
+
+We leave the proof of \autoref{theorem:R as a field} to the reader, as it is pretty straight forward using the known properties of the standard addition and product over $\mathbb{R}$ (and rather uninteresting). Instead, we jump forward to using \autoref{theorem:R as a field} for proving the same idea about the complex numbers:
+
+\begin{theorem}{$\bm{\mathbb{C}}$ as a field and more more more}{C as a field}
+	The set of complex numbers $\mathbb{C}$ forms a field together with the addition and product operations as defined in \autoref{sec:complex numbers} (namely \autoref{eq:complex_addition}, \autoref{eq:complex_product} and \autoref{eq:complex_product_geometric}).
+\end{theorem}
+
+\begin{proof}{$\bm{\mathbb{C}}$ as a field}{C as a field}
+	(note: in the following proof, equalities marked with $!$ use the respective property of the real numbers)
+
+	\begin{descitemize}
+		\item[Closure under both operations] for any two complex numbers $z_{1}=a+\iu b$ and $z_{2}=c+\iu d$,
+			\begin{listitemize}
+			\item[Addition] since addition in $\mathbb{R}$ is closed, $(a+c)\in\mathbb{R}$ and $(b+d)\in\mathbb{R}$. Therefore
+				\[
+					z = z_{1}+z_{2} = a+c + (b+d)\iu
+				\]
+				is also a complex number with $\Re(z)=a+c$ and $\Im(z)=b+d$.
+			\item[Multiplication] since multiplication in $\mathbb{R}$ is also closed, $(ac-bd)\in\mathbb{R}$ and $(ad+bc)\in\mathbb{R}$. Therefore
+				\[
+					z = z_{1} \cdot z_{2} = ac-bd + (ad+bc)\iu
+				\]
+				is a complex number with $\Re(z)=ac-bdc$ and $\Im(z)=ad+bc$.
+			\end{listitemize}
+		
+		\item[Commutativity of both operation] for any two complex numbers $z_{1}=a+\iu b$ and $z_{2}=c+\iu d$,
+			\begin{listitemize}
+			\item[Addition] since addition in $\mathbb{R}$ is commutative, $a+c=c+a$ and $b+d=d+b$. Therefore
+				\[
+					z_{1} + z_{2} = a+c + (b+d)\iu \overset{!}{=} c+a + (d+b)\iu = z_{2}+z_{2}.
+				\]
+			\item[Multiplication] since multiplication in $\mathbb{R}$ is also commutative, $ac-bd = ca-db$ and $ad+bc=da+cb$. Therefore
+				\[
+					z_{1} \cdot z_{2} = ac-bd + (ad+bc)\iu \overset{!}{=} ca-db + (da+cb)\iu = z_{2} \cdot z_{1}.
+				\]
+			\end{listitemize}
+		
+		\item[Associativity of both operation] for any three complex numbers $z_{1}=a+\iu b,\ z_{2}=c+\iu d$ and $z_{3}=g+\iu h$ (where $a,b,c,d,g,h\in\mathbb{R}$\footnote{The letters $g$ and $h$ are used instead of $e$ and $f$ to avoid confusion with Eurler's constant and the common notation for real functions, respectively.}),
+			\begin{listitemize}
+			\item[Addition] since addition in $\mathbb{R}$ is associative, $a+(c+g)=(a+c)+g$ and $b+(d+h)=(b+d)+h$. Therefore
+				\[
+					z_{1} + (z_{2}+z_{3}) = a+(c+g) + [b+(d+h)]\iu \overset{!}{=} (a+c)+g + [(b+d)+h]\iu = (z_{1}+z_{2}) + z_{3}.
+				\]
+			\item[Multiplication] since multiplication in $\mathbb{R}$ is also associative, the following equalities apply:
+				\begin{align*}
+					a\cdot(c\cdot g) &= (a\cdot c)\cdot g,\\
+					b\cdot(c\cdot h) &= (b\cdot c)\cdot h,\\
+					a\cdot(d\cdot h) &= (a\cdot d)\cdot h,\\
+					b\cdot(d\cdot g) &= (b\cdot d)\cdot g,\\
+					a\cdot(c\cdot h) &= (a\cdot c)\cdot h,\\
+					a\cdot(d\cdot g) &= (a\cdot d)\cdot g,\\
+					b\cdot(c\cdot g) &= (b\cdot c)\cdot g,\\
+					b\cdot(d\cdot h) &= (b\cdot d)\cdot h.\\
+				\end{align*}
+				Therefore,
+				\begin{align*}
+					z_{1}\cdot(z_{2} \cdot z_{3}) &= a\cdot(c\cdot g) - a\cdot(d\cdot h) - b\cdot(c\cdot h) - b\cdot(d\cdot g)\\ &+[a\cdot(c\cdot h) + a\cdot(d\cdot g) + b\cdot(c\cdot g) - b\cdot(d\cdot h)]\iu\\
+					&\overset{!}{=} (a\cdot c)\cdot g - (a\cdot d)\cdot h - (b\cdot c)\cdot h - (b\cdot d)\cdot g\\ &+[(a\cdot c)\cdot h + (a\cdot d)\cdot g + (b\cdot c)\cdot g - (b\cdot d)\cdot h]\iu\\
+					&= (z_{1} \cdot z_{2}) \cdot z_{3}.
+				\end{align*}
+			\end{listitemize}
+
+		\item[Identity for both operations]~\\
+			\begin{listitemize}
+			\item[Addition] the complex number $0=0+0i$ is the complex addition identity: for any real number $x\in\mathbb{R},\ x+0=x$. Therefore, for any complex number $z=a+\iu b$,
+				\[
+					z+0 = a+\iu b + 0+0i = a+0 + (b+0)\iu \overset{!}{=} a+\iu b.
+				\]
+			\item[Multiplication] the complex number $1=1+0\iu$ is the complex multiplication identity: for any real number $x\in\mathbb{R},\ x\cdot1=x$ and $x\cdot0=0$. Therefore, for any complex number $z=a+\iu b$,
+				\[
+					z\cdot1 = (a+\iu b)\cdot(1+0\iu) \overset{!}{=}a\cdot1-\cancel{b\cdot0\iu^{2}} + (\cancel{a\cdot0\iu}+b\cdot1)\iu = a+\iu b.
+				\]
+
+			\end{listitemize}
+		
+		\item[Inverse for both operations]~\\
+			\begin{listitemize}
+			\item[Addition] for any complex number $z_{1}=a+\iu b$, the number $z_{2}=-a-\iu b$ is also a complex number for which
+				\[
+					z_{1} + z_{2} = a+\iu b + -a-\iu b \overset{!}{=} a-a + (b-b)\iu = 0 + 0\iu = 0.
+				\]
+			\item[Multiplication] for any complex number $z=r\eu^{\theta i}$ where $r\neq0$, the number $z^{-1}=\frac{1}{r}\eu^{-\iu\theta}$ is also a complex number for which
+				\[
+					z \cdot z^{-1} = r\eu^{\iu\theta} \cdot \frac{1}{r}\eu^{-\iu\theta} \overset{!}{=} \frac{r}{r}\eu^{\cancel{\iu\theta - \iu\theta}} = 1\cdot1 = 1.
+				\]
+				
+			Note: for $z=a+\iu b$,
+			\[
+				z^{-1} = \frac{1}{r}\eu^{-\iu\theta} = \frac{1}{|z|}\cdot\frac{a-\iu b}{|z|} = \frac{1}{|z|}\cdot\frac{\conj{z}}{|z|} = \frac{\conj{z}}{|z|^{2}}.
+			\]
+			Therefore, for any $z\neq0,\ z^{-1} = \frac{\conj{z}}{|z|^{2}}$.
+			\end{listitemize}
+
+		\item[Distributivity of multiplication over addition] for any $z_{1}=a+\iu b,\ z_{2}=c+\iu d$ and $z_{3}=g+\iu h$,
+			\begin{align*}
+				z_{1}\cdot(z_{2}+z_{3}) &= (a+\iu b)\cdot(c+\iu d + g+\iu h) = (a+\iu b)\cdot(c+g + [d+h]\iu)\\
+				&= ac + ag + (bd)\iu^{2} + (bh)\iu^{2}\\
+				&+ (ad)\iu + (ah)\iu + (bc)\iu + (bg)\iu\\
+				&= ac + ag - bd - bh + (ad + ah + bc + bg)\iu\\
+				&= ac-bd + (ad+bc)\iu + ag-bh + (ah+bg)\iu\\
+				&= (z_{1}\cdot z_{2}) + (z_{1}\cdot z_{3}).
+			\end{align*}
+	\end{descitemize}
+\end{proof}
+
+The sets $\mathbb{R}$ and $\mathbb{C}$ are examples of \emph{infinite fields}, since they each have infinite number of elements. The set $\mathbb{Q}$ (rational numbers) can be shown to also be an infinite field, however unlike $\mathbb{R}$ and $\mathbb{C}$ it has \textbf{countable} number of elements, i.e. each number in $\mathbb{Q}$ can be assigned an index $1,2,3,\dots$\footnote{For proof, see \ldots}.
+
+\begin{challenge}{$\bm{\mathbb{Q}}$ as a field}{Q as a field}
+	Prove that $\mathbb{Q}$ (together with the usual addition and product operation) is indeed a field.
+\end{challenge}
+
+\subsection{Finite fields}
+While all three examples of fields we encountered so far have each an infinite number of elements, some fields only have a finite number of elements (called their \emph{order}). For example, consider the set $S=\{0,1,a,b\}$ and the addition and product operations described using the following tables (left table describes addition, right table describes multiplication):
+
+\centering
+\begin{tabular}[]{>{\bfseries}c|cccc}
+	\rowstyle{\bfseries} % why doesn't this work? :(
+	$\bm{+}$ & 0 & 1 & a & b\\
+	\hline
+	\rule{0em}{2.65ex}%
+	0 & 0 & 1 & a & b\\
+	1 & 1 & 0 & b & a\\
+	a & a & b & 0 & 1\\
+	b & b & a & 1 & 0\\
+\end{tabular}\hspace{2cm}
+\begin{tabular}[]{>{\bfseries}c|cccc}
+	\rowstyle{\bfseries}
+	$\bm{\cdot}$ & 0 & 1 & a & b\\
+	\hline
+	\rule{0em}{2.65ex}%
+	0 & 0 & 0 & 0 & 0\\
+	1 & 0 & 1 & a & b\\
+	a & 0 & a & b & 1\\
+	b & 0 & b & 1 & a\\
+\end{tabular}
+
+\flushleft
+By examining the tables above, several points become clear:
+\begin{itemize}
+	\item all the possible combinations of operands in both addition and multiplication give elements from $S$ itself, meaning that the set is closed under both these operations.
+	\item both tables are symmetric around their main diagonal, meaning that both addition and multiplication are commutative operations.
+	\item in the addition table, the first row and first column both show that $x+0=x$ for any $x\in S$, meaning that $0$ is the additive identity in $S$.
+	\item in the product table, the second row and second column both show that $x\cdot1=x$ for any $x\in S$, meaning that $1$ is the multiplicative identity in $S$.
+	\item in the addition table, the element $0$ appears in each row and each column exactly once. This means that every element $x$ has a single additive inverse $y\in S$.
+	\item in the product table, the element $1$ appears in each row and each column exactly once, except for the first row and first column. This means that every element $x\neq 0$ has a single multiplicative inverse $z\in S$.
+\end{itemize}
+
+We therefore only need to prove two points to show that $S$ is a field together with the operations described by the above tables: associativity of both operations and distributivity of multiplication over addition. We leave these proofs as a challenge to the reader. Such a field is sometime denoted as $\mathbb{F}_{4}$. There are, of course, infinitely many finite fields.
+
+\subsection{Modulo fields}
+Another example of finite fields are sets of integers of the form $\{0,1,2,3,\dots,n\}$ where $n$ is a prime, together with \emph{modular addition} and \emph{modular product}. To understand modular arithmetics, we recall the fact that on a circle, an angle can have a negative value but also greater than $\ang{360}$ values are possible (see \autoref{fig:angles equivalency}): $\ang{390}$ is equivalent to $\ang{30}$, $\ang{-30}$ is equivalent to $\ang{330}$, etc. The set of integer values $\ang{0},\ang{1},\ang{2},\dots,\ang{359}$ on a circle is an example of a modular set: if for example we add together two angles of values $\deg{100}$ and $\ang{300}$ we get the equivalent angle $\deg{60}$. If we subtract $\deg{300}$ from $\deg{100}$ the result is an angle of $\deg{160}$.
+
+We say that on a circle, the values $\ang{360}, \ang{720}, -\ang{360}$ etc. are all \emph{congruent} to $0$ modulo $360$. In mathematical notation we represent this fact as e.g.
+\begin{equation}
+	720 \equiv 0 \pmod{360}.
+	\label{eq:mod 360}
+\end{equation}
+
+Note that from this point forward we drop the degrees unit, and deal with pure integers.
+The notation for the set $\{0,1,2,\dots,359\}$ is $\mathbb{Z}_{360}$. Generally speaking, the set $\{0,1,2,\dots,n\}$ is denoted as $\Z{n}$.
+
+\begin{note}{About modulo set notation}{}
+	It is not common to use the notation $\Z{n}$ for the modulo-$n$ set, since it is also used for a different algebraic construct, namely the $n$-adic ring. However, due to the simplicity of the notation, and the fact that we don't discuss rings in this chapter we are using it in this book. Common notations for the set are $\mathbb{Z}\mathbin{/} n\mathbb{Z}$ and $\mathbb{Z}\mathbin{/} n$.
+\end{note}
+
+Addition and multiplication on $\Z{n}$ is done by the following rather straight forward definition:
+\begin{definition}{Operations in $\bm{\Z{n}}$}{operations in Zn}
+	In the set $\Z{n}$ addition and multiplication are defined as the following:
+	\begin{descitemize}
+	\item[Addition] for any two elements $a,b\in\Z{n},\ a+b\coloneqq(a+b)\pmod{n}$.
+	\item[Multiplication] for any two elements $a,b\in\Z{n},\ a\cdot b\coloneqq(a\cdot b)\pmod{n}$.
+	\end{descitemize}
+\end{definition}
+
+\begin{example}{Operations in $\bm{\Z{n}}$}{}
+	The tables below show addition and multiplication results of numbers in different modulo sets $\Z{n}$ for some values of $n$:
+
+	\vspace{1em}
+	\centering
+	\begin{tabular}[]{lll}
+		\toprule
+		$n$ & $2+3$ & $2\cdot3$\\
+		\midrule
+		$4$  & $1$ & $2$\\
+		$5$  & $0$ & $1$\\
+		$6$  & $5$ & $0$\\
+		$7$  & $5$ & $6$\\
+		$8$  & $5$ & $6$\\
+		$9$  & $5$ & $6$\\
+		$10$ & $5$ & $6$\\
+		$11$ & $5$ & $6$\\
+		\bottomrule
+	\end{tabular}
+	\hspace{1cm}
+	\begin{tabular}[]{lll}
+		\toprule
+		$n$ & $4+7$ & $4\cdot7$\\
+		\midrule
+		$8$  & $3$  & $4$\\
+		$9$  & $2$  & $1$\\
+		$10$ & $1$  & $8$\\
+		$15$ & $11$ & $13$\\
+		$20$ & $11$ & $8$\\
+		$27$ & $11$ & $1$\\
+		$28$ & $11$ & $0$\\
+		$30$ & $11$ & $28$\\
+		\bottomrule
+	\end{tabular}
+\end{example}
+
+\autoref{fig:Z5 periodic} shows the equivalency between integers and the elements of $\Z{5}$.
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}
+		\pgfmathsetmacro{\d}{1.75}
+		\pgfmathsetmacro{\h}{-1.3}
+		\foreach \k in {-10,-9,...,9}{
+			\pgfmathsetmacro{\kp}{int(mod(\k+20,5))}
+			\node (\k) at ({\k/\d},0) {$\k$};
+			\node (z5\k) at ({\k/\d},\h) {$\kp$};
+			\draw[->, >=stealth, densely dashed, xblue] (\k.south) -- (z5\k.north);
+		}
+		\node (Zdots) at ({-11/\d},0) {$\dots$};
+		\node (Z5dots) at ({-11/\d},\h) {$\dots$};
+		\node at ({10/\d},0) {$\dots$};
+		\node at ({10/\d},\h) {$\dots$};
+		\node[left of=Zdots] (Z) {$\mathbb{Z}$};
+		\node[left of=Z5dots] (Z5) {$\Z{5}$};
+		\draw[->, >=stealth, densely dashed, xblue] (Z.south) -- (Z5.north);
+	\end{tikzpicture}
+	\caption{An example of the periodicity of $\Z{5}$: the top numbers are the ordinary integers, each showing their respective congruent modulo $5$ below (blue dashed arrow).}
+	\label{fig:Z5 periodic}
+\end{figure}
+
+Only the sets $\Z{n}$ for which $n$ is a prime number are also fields. Let's define this property precisely:
+
+\begin{theorem}{$\bm{\Z{p}}$ is a field}{Zp is a field}
+	Any modulo set $\Z{p}$ where $p$ is a prime number greater than $1$ is also a field together with the operations as defined in \autoref{def:operations in Zn}.
+\end{theorem}
+
+In order to prove \autoref{theorem:Zp is a field} we use two lemmas: the first is known as \emph{B\'ezout’s lemma}:
+\begin{lemma}{B\'ezout's lemma}{bezout}
+	For any two positive integers $a,b$ there exist two integers $x,y$ such that
+	\[
+		\gcd{a}{b} = xa+yb.
+	\]
+\end{lemma}
+
+\begin{note}{$\bm{\gcd{a}{b}}$}{gcd}
+	$\gcd{a}{b}$ is the \emph{greatest common divisor} of the two integers $a$ and $b$. For example, $\gcd{36}{24}=12$ since the divisors of $36$ are $1,\ 2,\ 3,\ 4,\ 6,\ 9,\ 12,\ 18,\ 36$,\ and the divisors of $24$ are $1,\ 2,\ 3,\ 4,\ 6,\ 8,\ 12,\ 24$.
+\end{note}
+
+An example of B\'ezout's lemma is the following:
+
+\begin{example}{B\'ezout's lemma in action}{bezout}
+	For the two positive integers $a=60,\ y=114$
+	\[
+		\gcd{60}{114}=6.
+	\]
+	Therefore, B\'ezout's lemma says that there exist two integers $x,y$ such that
+	\[
+		6 = 60x + 114y.
+	\]
+	Indeed, two such integers exist: $x=2$ and $y=-1$.
+\end{example}
+(SHOULD WE PROVE THE LEMMA?..)
+
+The second lemma we use is the following:
+\begin{lemma}{$\bm{\gcd{n}{p}=1}$}{gcd(n,p)=1}
+	Given a positive prime number $p$, then for any positive integer $n<p$,
+	\[
+		\gcd{p}{n}=1.
+	\]
+\end{lemma}
+
+Proving the lemma:
+\begin{proof}{$\bm{\gcd{n}{p}=1}$}{gcd(n,p)=1}
+	We assume that $\gcd{p}{n} \neq 1$. Then there exist an integer $a\leq n<p$ which divides both $n$ and $p$, meaning that $p$ has a divider, contrary to the assumption that $p$ is a prime number. Therefore $\gcd{n}{p}$ must equal $1$.
+\end{proof}
+
+Now we can proceed to the proof of \autoref{theorem:Zp is a field}:
+
+\begin{proof}{$\bm{\Z{p}}$ is a field}{}
+	\begin{descitemize}
+	\item[Closure under both operations] the definition of the modulo operator limit any $M\pmod{p}$ (where $M\in\mathbb{Z}$) to be in $[0,p-1]$. Therefore the result of using the operators given in \autoref{def:operations in Zn} must be within the same range, and thus in $\Z{p}$.
+
+	\item[Commutativity and associativity of both operations] for any two numbers $a,b\in\Z{p}$ the result $a+b$ and $a\cdot b$ under $\mathbb{Z}$ is both commutative and associative. Therefore the result modulo $n$ is the same no matter the order of operations.
+
+	\item[Additive identity] the number $0\in\Z{p}$ is the additive identity, since for each $a\in\Z{p},\ a+0=a$.
+	
+	\item[Multiplicative identity] the number $1\in\Z{p}$ is the additive identity, since for each $a\in\Z{p},\ a\cdot1=a$.
+
+	\item[Additive inverse] for each $a\in\Z{p}$ the element $n=p-a$ is in $\Z{p}$ since $p>a$. Adding $n$ to $a$ results in $0$:
+		\[
+			a+n = a+(p-a) = p \equiv 0\pmod{p}.
+		\]
+	
+	\item[Multiplicative inverse] let $a\in\Z{p}$ and $a\neq0$. Since $p$ is a prime, $\gcd{a}{p}=1$ and from B\'ezout's theorem we know that there exist two integers $x,y$ such that
+		\[
+			xa + yp = 1.
+		\]
+		Rearrangement gives $p = \frac{1-xa}{y}$ meaning that $p$ divides $1-xa$, and thus
+		\[
+			xa\equiv1\pmod{p}.
+		\]
+		Therefore $x$ is the multiplicative inverse of $a$.
+	
+	\item[Distributivity of multiplication over addition] \ldots
+	\end{descitemize}
+\end{proof}
+
+The only part of the proof that uses the fact that $p$ is a prime number is the multiplicative inverse. When $n$ is not a prime, $\Z{n}$ is not a field.
+
+\begin{challenge}{$\bm{\Z{n}}$ is not a field when $n$ is not a prime number}{}
+	Prove that the modulo set $\Z{n}$ where $n$ is \textbf{not} a prime number, is not a field.
+
+	(\textbf{hint}: what property of prime numbers is used in the above proof to show that there is always a multiplicative inverse in $\Z{p}$ where $p$ is prime?)
+\end{challenge}

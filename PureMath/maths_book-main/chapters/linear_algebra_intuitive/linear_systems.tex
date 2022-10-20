@@ -1,0 +1,870 @@
+\section{Systems of linear equations}
+\subsection{Defintions}
+Everything we learned so far about vectors and matrices can be used to solve and characterise a family of equations known as \emph{linear equations}. You're probably already very familiar with linear equations: they are equations in which the \emph{variables} appear directly, without any power or other functions acting on them. For example, the simple equation
+\begin{equation}
+	y = ax+b,
+	\label{eq:linear_equation_2_vars}
+\end{equation}
+where $x,y$ are both variables and $a,b$ are both constant real numbers is a linear equation. \autoref{eq:linear_equation_2_vars} can be re-written as
+\begin{equation}
+	ax - y + b = 0,
+	\label{eq:linear_equation_2_vars_rewritten}
+\end{equation}
+where now $a$ is the \emph{coefficient} of the variable $x$, while the variable $y$ has the coefficient $-1$ and $b$ is a so-called \emph{free coefficient}. In general, a linear equation of two variables has the form
+\begin{equation}
+	a_{0} + a_{x}x + a_{y}y = 0,
+	\label{eq:general_linear_equation_2_vars}
+\end{equation}
+i.e. we changed the name of $a$ to $a_{x}$ and $b$ to $a_{0}$, and gave $y$ the coefficient $a_{y}$. We can also rename $x$ and $y$ to $x_{1}$ and $x_{2}$, respectively, and name their coefficients accordingly:
+\begin{equation}
+	a_{0} + a_{1}x_{1} + a_{2}x_{2} = 0.
+	\label{eq:general_linear_equation_2_vars_renamed}
+\end{equation}
+
+The form shown in \autoref{eq:general_linear_equation_2_vars_renamed} can be easily expanded into $n$ variables:
+\begin{equation}
+	a_{0} + a_{1}x_{1} + a_{2}x_{2} + a_{3}x_{3} + \cdots + a_{n-1}x_{n-1} + a_{n}x_{n} = 0,
+	\label{eq:general_linear_equation_n_vars}
+\end{equation}
+where $x_{1},x_{2},\dots,x_{n}$ are the variables of the equation, and $a_{0},a_{1},\dots,a_{n}$ are its coefficients. We say that $n$ is the \emph{order} (also: \emph{degree}) of the equation.
+
+\begin{note}{Number set used for linear equations}{}
+	As with other topics, in the context of this section both the variables and coefficients are all \textbf{real numbers}, however almost anything we discuss here can genrally be applied to complex numbers or other structures.
+\end{note}
+
+\begin{example}{Linear equations}{}
+	The following is a linear equation of order $3$, using the variables $x,y,z$:
+	\[
+		3x+2y-z+4 = 0.
+	\]
+	The coefficients of the equation are
+	\begin{align*}
+		a_{0}&=4,\\
+		a_{x}&=a_{1}=3,\\
+		a_{y}&=a_{2}=2,\\
+		a_{z}&=a_{3}=-1.
+	\end{align*}
+
+	Another linear equation of the same three variables is
+	\[
+		5x-2y+1 = 0.
+	\]
+	In this case the coefficient $a_{z}=a_{3}=0$. Depending on the context, this equation can be considered as either an equation of order $3$ or an equation of order $2$.
+\end{example}
+
+In $\Rs[2]$ linear equations represent a line, which doesn't necesserally go through the origin (and thus isn't necesserally a subspace of $\Rs[n]$). For a line to go through the origin, the free coefficient $a_{0}$ must equal zero (see \autoref{fig:linear_equations_2_vars}).
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			vector plane,
+			width=9cm, height=9cm,
+			xmin=-1, xmax=6,
+			ymin=-1, ymax=6,
+			domain={-1:6},
+		]
+		\addplot[function, xred] {2*\x} node[pos=0.27, below, font=\Large, rotate=63.435] {$-2x+y=0$};
+		\addplot[function, xblue] {-0.5*\x+5} node[pos=0.7, above, font=\Large, rotate=-30] {$\frac{1}{2}x+y+5=0$};
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Two linear equations represented as lines in $\Rs[2]$. Note how in the red equation the free coefficient is zero, and so the line goes through the origin.}
+	\label{fig:linear_equations_2_vars}
+\end{figure}
+
+In $\Rs[3]$ linear equations represent planes. Much like with the lines in $\Rs[2]$, these planes don't necesserally go through the origin. The trend continues with increasing dimensions: in $\Rs[4]$ linear equations represent $3$-dimensional spaces, in $\Rs[5]$ linear equations represent $4$-dimensional spaces, etc. When the free coefficient is equal to zero, these spaces become subspaces of the respective $\Rs[n]$.
+		
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		% The trick with the labels is copied from https://tex.stackexchange.com/questions/212699/text-projection-onto-plane-in-3d-pgf-plots
+		\def\h{58}
+		\def\v{30}
+		\begin{axis}[
+			width=9cm, height=9cm,
+			view={\h}{\v},
+			]
+			% Plots
+			\pgfplotsset{plane/.style={surf, faceted color={#1!75!black!50}, fill={#1!20}, opacity=0.8, samples=6}}
+			\addplot3[plane={xpurple}, domain=-4:0, y domain=-4:0, samples=3] {-1};
+			\addplot3[plane={xpurple}, domain=-4:0, y domain=0:4, samples=3] {-1};
+			\addplot3[plane={xorange}, domain=-4:4] {-0.5*\x};
+			\addplot3[plane={xpurple}, domain=0:4, y domain=-4:0, samples=3] {-1};
+			\addplot3[plane={xpurple}, domain=0:4, y domain=0:4, samples=3] {-1};
+			\addplot3[mark=*] coordinates { (0,0,0) };
+
+			% Labels
+			\pgfmathparse{atan(tan(\h)*sin(\v))}
+			\let\a=\pgfmathresult
+			\pgfmathparse{atan(tan(90-\h)*sin(\v))}
+			\let\b=\pgfmathresult
+			\path (axis cs:-2.5,-1.5,1.25) -- (axis cs:-2.5,-0.5,1.25) node[color=xdarkorange, midway, above, sloped, xslant=tan(\a+\b+110), yscale=sin(\a+\b), font=\Huge] {$\frac{1}{2}x+z=0$};
+			\path (axis cs:3.5,-1.5,-1) -- (axis cs:3.5,-0.5,-1) node[color=xdarkpurple, midway, above, sloped, xslant=tan(\a+\b+80), yscale=sin(\a+\b), font=\Huge] {$z+1=0$};
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Two intersecting planes in $\Rs[3]$ with their corresponding equations.}
+	\label{fig:line_plane_R3}
+\end{figure}
+
+\subsection{Systems and matrix form}
+A \emph{system of linear equations} is a set of linear equations using the same variables. For example, the three equations
+\[
+	\begin{cases}
+		&2x-5y+4z+2=0\\
+		&-3x-2y+1=0\\
+		&5x+4z+-3=0\\
+	\end{cases}
+\]
+form together a system of $3$ linear equations with $3$ variables ($x,y$ and $z$). Systems of linear equations can be written together in matrix form: in the above example, the system can be represented as the equation
+\[
+	\begin{bmatrix}
+		2 & -5 & 4\\
+		-3 & -2 & 0 \\
+		5 & 0 & 4
+	\end{bmatrix}\colvec{x;y;z} + \colvec{2;1;-3} = \colvec{0;0;0}, 
+\]
+since performing the matrix-vector product and vector addition yields back the system of equations. We call the matrix the \emph{coefficients matrix} of the equation.
+
+\begin{note}{}{}
+	In practice, many times the vector representing the free coefficients is moved to the right hand side of the equation. In the case of the above system this yields the simple equation
+	\[
+		\begin{bmatrix}
+			2 & -5 & 4\\
+			-3 & -2 & 0 \\
+			5 & 0 & 4
+		\end{bmatrix}\colvec{x;y;z} = \colvec{-2;-1;3}. 
+	\]
+\end{note}
+
+In the most general form, a system of $m$ equations in $n$ variavles $x_{1},x_{2},x_{3},\dots,x_{n}$ can be represented as the product of an $m\times n$ coefficient matrix and the variables vector, yielding the free-coefficient vector:
+
+\vspace{1em}
+\begin{equation}
+	\begin{bNiceMatrix}[name=coeffMat_mxn]
+		a_{11} & a_{12} & \cdots & a_{1n}\\
+		a_{21} & a_{22} & \cdots & a_{2n}\\
+		\vdots & \vdots & \Ddots & \vdots\\
+		a_{m1} & a_{m2} & \cdots & a_{mn}
+		\end{bNiceMatrix}\begin{bNiceMatrix}[name=varVec]x_{1}\\x_{2}\\x_{3}\\\vdots\\x_{n}\end{bNiceMatrix} = \begin{bNiceMatrix}[name=freeCoeffVec]b_{1}\\b_{2}\\\vdots\\b_{m}\end{bNiceMatrix},
+	\label{eq:n_eqs_m_vars}
+\end{equation}
+\tikz[overlay, remember picture, blend mode=multiply]{
+	% Highlights
+	\node[mathl={xred!30}, fit=(coeffMat_mxn-1-1)(coeffMat_mxn-4-4)] {};
+	\node[mathl={xblue!30}, fit=(varVec-1-1)(varVec-5-1)] {};
+	\node[mathl={xgreen!30}, fit=(freeCoeffVec-1-1)(freeCoeffVec-4-1)] {};
+
+	% Texts
+	\tikzset{node distance=2cm and 2mm}
+	\node[xred, below of=coeffMat_mxn-4-2, xshift=-5mm] (coeffMatTxt) {$\bm{m}\times \bm{n}$ coefficients};
+	\node[xblue, below of=varVec-5-1] (varVecTxt) {$\bm{n}$ variables};
+	\node[xgreen, below of=freeCoeffVec-4-1, xshift=15mm] (freeCoeffTxt) {$\bm{m}$ free coefficients};
+	
+	% Arrows
+	\draw[vector, thin, xred] (coeffMatTxt) to [out=90, in=-90] ($(coeffMat_mxn-4-2)-(0,5mm)$);
+	\draw[vector, thin, xblue] (varVecTxt) to [out=90, in=-90] ($(varVec-5-1)-(0,5mm)$);
+	\draw[vector, thin, xgreen] (freeCoeffTxt) to [out=90, in=-90] ($(freeCoeffVec-4-1)-(0,5mm)$);
+}
+
+\vspace{5em}
+which can be written succinctly as
+\begin{equation}
+	\colorbox{xred!30}{$A$}\colorbox{xblue!30}{$x$} = \colorbox{xgreen!30}{$b$}.
+	\label{eq:system_equations_sussinct}
+\end{equation}
+
+
+\subsection{Solutions}
+A system of linear equations can have either one, infinitely many, or no \emph{solutions}. A solution of a system of linear equations is a tuple
+\[
+	s=\left(s_{1},s_{2},\dots,s_{n}\right)
+\]
+such that if we substitute each $s_{i}$ into the respective variable $x_{i}$ all of the equations become \true{} statements.
+
+\begin{example}{Solutions of a system of linear equations}{}
+	The following linear system
+	\[
+		\begin{cases}
+			&-4x+2y=0\\
+			&x-y+3=0
+		\end{cases}
+	\]
+	has the solution
+	\[
+		s = (-1,2).
+	\]
+	Indeed if we substitute $x=-1$ and $y=2$ into the system we get
+	\[
+		\begin{cases}
+			&-4\cdot(-1)+2\cdot(2)=-4+4=0\ \Rightarrow\ \true{}\\
+			&-1-2+3=-3+3=0\ \Rightarrow\ \true{}
+		\end{cases}
+	\]
+\end{example}
+
+In the graphical representation of linear equations, the solutions of a system are the points where the respective graphs representing the equation (line, plane, etc.) intersect.
+
+\begin{example}{Solutions of a system of linear equations - graph}{sys_solution}
+	The linear system from the previous example can be represented by the following graph:
+	
+	\vspace{2em}
+	\centering
+	\begin{tikzpicture}[every node/.style={font=\Large}]
+		\begin{axis}[
+			vector plane,
+			width=9cm, height=9cm,
+			xmin=-4, xmax=4,
+			ymin=-4, ymax=4,
+			domain={-4:4},
+			major grid style={black!10},
+		]
+		\pgfmathsetmacro{\A}{-2}
+		\pgfmathsetmacro{\B}{1}
+		\addplot[function, xred] {\A*\x} node[pos=0.63, above, rotate={atan(\A)}] {$4x+2y=0$};
+		\addplot[function, xblue] {\B*\x+3} node[pos=0.22, above, rotate={atan(\B)}] {$x-y-6=0$};
+		\addplot[mark=*] coordinates { (-1,2) } node (s) {};
+		\node[] (stxt) at (-3,3) {solution};
+		\draw[-stealth, thick] (stxt.east) to [out=0, in=180] (s.west);
+		\end{axis}
+	\end{tikzpicture}
+\end{example}
+
+Not all systems have single solutions only, nor do all systems even have any solutions. For example, if we add to the system in \autoref{example:sys_solution} the equation
+\[
+	x-3y+3=0,
+\]
+the resulting system
+\[
+	\begin{cases}
+		&-4x+2y=0\\
+		&x-y+3=0\\
+		&x-3y+3=0
+	\end{cases}
+\]
+has no solutions (see \autoref{example:no_solution}).
+
+\begin{example}{System with no solutions}{no_solution}
+	When the system of linear equations from \autoref{example:sys_solution} is supplemented with the equation
+	\[
+		x-3y+3=0,
+	\]
+	it has no solution. However, any two equations of the system do have solutions (represented below as black points).
+
+	\centering
+	\begin{tikzpicture}[every node/.style={font=\Large}]
+		\begin{axis}[
+			vector plane,
+			width=9cm, height=9cm,
+			xmin=-4, xmax=4,
+			ymin=-4, ymax=4,
+			domain={-4:4},
+			major grid style={black!10},
+		]
+		\pgfmathsetmacro{\A}{-2}
+		\pgfmathsetmacro{\B}{1}
+		\pgfmathsetmacro{\C}{1/3}
+		\addplot[function, xred] {\A*\x} node[pos=0.63, above, rotate={atan(\A)}] {$4x+2y=0$};
+		\addplot[function, xblue] {\B*\x+3} node[pos=0.22, above, rotate={atan(\B)}] {$x-y-6=0$};
+		\addplot[function, xgreen] {\C*\x+1} node[pos=0.7, above, rotate={atan(\C)}] {$x-3y+3=0$};
+		\addplot[only marks, mark=*] coordinates {
+		  	(-1,2)
+		  	(-3,0)
+		  	(-0.4286,0.8571)
+		} node (s) {};
+		\end{axis}
+	\end{tikzpicture}
+\end{example}
+
+Let us now explore when a set of linear equations in $\Rs[2]$ and $\Rs[3]$ has a single solution, infinitely many solutions or no solutions. In $\Rs[2]$, the lines representing two linear equations can be either parallel or non-parallel. If they are non-parallel then the two equations have a single solution - the intercept of both lines (as seen in the previous two examples). If the lines are parallel, there are two cases: either the two lines are identical, in which case there are infinitely many solutions (all the points on the line), or they are parallel yet distince, in which case there are no solutions to the system (see \autoref{fig:R2_num_solutions}).
+
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[c]{0.3\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[every node/.style={font=\Large}]
+				\begin{axis}[
+					linear plane no ticks,
+					]
+					\addplot[function, xred] {-0.5*\x+1};
+					\addplot[function, xgreen] {2*\x+3};
+					% -0.5x+1 = 2x+3 ==> 2.5x=-2, x=-0.8, y=1.5
+					\addplot[only marks, mark=*] coordinates { (-0.8,1.4) };
+				\end{axis}
+			\end{tikzpicture}
+		\end{center}
+		\caption{}
+		\label{fig:}
+	\end{subfigure}	
+	\begin{subfigure}[c]{0.3\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[every node/.style={font=\Large}]
+				\begin{axis}[
+					linear plane no ticks,
+					]
+					\addplot[function, xred] {-0.5*\x-0.5};
+					\addplot[function, dashed, xgreen] {-0.5*\x-0.5};
+				\end{axis}
+			\end{tikzpicture}
+		\end{center}
+		\caption{}
+		\label{fig:R2_infinite_solutions}
+	\end{subfigure}	
+	\begin{subfigure}[c]{0.3\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[every node/.style={font=\Large}]
+				\begin{axis}[
+					linear plane no ticks,
+					]
+					\addplot[function, xred] {-0.5*\x-0.5};
+					\addplot[function, xgreen] {-0.5*\x-1.5};
+				\end{axis}
+			\end{tikzpicture}
+		\end{center}
+		\caption{}
+		\label{fig:}
+	\end{subfigure}	
+	\caption{Three possible cases for two linear equations in $\Rs[2]$: (a) non-parallel and thus a single solution, (b) parallel and identical and thus infinitely many solutions, and (c) parallel but not identical and thus no solutions.}
+	\label{fig:R2_num_solutions}
+\end{figure}
+
+In the case of more than two linear equations there can be, again, either a single solution, infinitely many solutions or no solutions. The difference is that in this case zero solutions can happen even when all of the lines representing the equations are non-parallel (see \autoref{fig:R2_num_solutions_multi}).
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[c]{0.3\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[every node/.style={font=\Large}]
+				\begin{axis}[
+					linear plane no ticks,
+					]
+					\addplot[function, xred] {x};
+					\addplot[function, xblue] {2*\x-2};
+					\addplot[function, xgreen] {3*\x-4};
+					\addplot[function, xpurple] {-\x+4};
+					\addplot[function, xorange] {-2*\x+6};
+					\addplot[only marks, mark=*] coordinates { (2,2) };
+				\end{axis}
+			\end{tikzpicture}
+		\end{center}
+		\caption{}
+		\label{fig:}
+	\end{subfigure}	
+	\begin{subfigure}[c]{0.3\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[every node/.style={font=\Large}]
+				\begin{axis}[
+					linear plane no ticks,
+					]
+					\addplot[function, xred] {x};          % x-y=0
+					\addplot[function, xblue] {2*\x+2};    % 2x-y=-2
+					\addplot[function, xgreen] {3*\x-5};   % 3x-y=5
+					\addplot[function, xpurple] {-\x+1};   % -x-y=-1
+					\addplot[function, xorange] {-2*\x+3}; % -2x-y=-3
+					\addplot[only marks, mark=*] coordinates {
+							(-2.0,-2.0)
+							(2.5,2.5)
+							(0.5,0.5)
+							(1.0,1.0)
+							(7.0,16)
+							(-0.334,1.334)
+							(0.25,2.5)
+							(1.5,-0.5)
+							(1.6,-0.2)
+							(2.0,-1.0)
+					};
+				\end{axis}
+			\end{tikzpicture}
+		\end{center}
+		\caption{}
+		\label{fig:}
+	\end{subfigure}	
+	\begin{subfigure}[c]{0.3\textwidth}
+		\begin{center}
+			\begin{tikzpicture}[every node/.style={font=\Large}]
+				\begin{axis}[
+					linear plane no ticks,
+					]
+					\addplot[function, xred] {\x+2};
+					\addplot[function, xblue] {\x+1};
+					\addplot[function, xgreen] {\x};
+					\addplot[function, xpurple] {\x-1};
+					\addplot[function, xorange] {\x-2};
+				\end{axis}
+			\end{tikzpicture}
+		\end{center}
+		\caption{}
+		\label{fig:}
+	\end{subfigure}	
+	\caption{Three possible cases for the number of solutions of several linear equations in $\Rs[2]$: (a) non-parallel but all lines intercept at single point and thus the system has a solution, (b) non-parallel but no single interception point and thus no solution, and (c) parallel and thus no solutions. The case where all lines are identical and thus there are infinitely many solutions is ommited from the figure, and looks identical to \autoref{fig:R2_infinite_solutions}.}
+	\label{fig:R2_num_solutions_multi}
+\end{figure}
+
+In $\Rs[3]$\ldots
+\tbw{the rest\ldots later, because right now I'm lazy af}
+
+\subsection{Finding solutions}
+Several method to solve systems of linear equations were established over the years. One of the most well-known is \emph{Gauss elimination method}. The goal of this method is to use a set of pre-defined operations to bring the system into a form which is easy to solve. This form essentially exposes the rank of the coefficient matrix, from which one can deduce some important properties of the system such as the existance of a solution (or lack thereof), the degrees of freedom in the values which can be substituted into the system and more.
+
+We start by describing the \emph{row-echelon form} of a matrix. For now we simply assume that such matrices exist, and later we will use a set of pre-defined operations to convert any matrix to this form. The following matrix is in row-echelon form:
+\[
+	A =
+	\begin{bmatrix}
+		1 & 3 & -5 & 7 &  0\\
+		0 & 0 &  2 & 2 & -3\\
+		0 & 0 &  0 & 1 &  2\\
+		0 & 0 &  0 & 0 &  0\\
+	\end{bmatrix} 
+\]
+
+We note three properties of the above matrix:
+\begin{itemize}
+	\item The bottom row is all zeros.
+	\item When looking at each row (left to right), all values are zero until we reach a non-zero element. For example, the first row starts with a non-zero element, but the second row has two non zero elements followed by the number $2$. These first non-zero elements are called \emph{leading coefficients} or \emph{pivots}, and each one is strictle to the \textbf{right} of the leading coefficient of the row above it.
+	\item The leading coefficient of each row has only zeros below it in its column.
+\end{itemize}
+Any matrix that has the same three properies is said to be in its row-echelon form.
+
+\begin{example}{Row-echelon form}{row-echelon}
+	All of the matrices below are in their row-echelon form, and the leading zeros in each row are highlighted:
+
+	\vspace{1em}
+	\centering
+	\begin{tabular}{cccc}
+		$\begin{bNiceMatrix}[name=RE1]
+			0 & 5 & 10\\
+			0 & 0 & 0\\
+			0 & 0 & 0\\
+			0 & 0 & 0\\
+		\end{bNiceMatrix}$ &
+		$\begin{bNiceMatrix}[name=RE2]
+			1 &  2 & 4\\
+			0 & -2 & 2\\
+			0 &  0 & 7\\
+		\end{bNiceMatrix}$ &
+		$\begin{bNiceMatrix}[name=RE3]
+			0 & 0 & 3\\
+			0 & 0 & 0\\
+			0 & 0 & 0\\
+		\end{bNiceMatrix}$ &
+		$\begin{bNiceMatrix}[name=RE4]
+			0 & 0 & 3 & -6 & 9 & -3\\
+			0 & 0 & 0 &  0 & 2 &  6\\
+		\end{bNiceMatrix}$\\
+	\end{tabular}
+	\tikz[overlay, remember picture, blend mode=multiply]{
+		\node[mathl={xred!20}, fit=(RE1-1-2)] {};
+		\foreach \pivot in {(RE2-1-1),(RE2-2-2),(RE2-3-3)}{
+			\node[mathl={xblue!20}, fit=\pivot] {};
+		}
+		\node[mathl={xgreen!20}, fit=(RE3-1-3)] {};
+		\foreach \pivot in {(RE4-1-3),(RE4-2-5)}{
+			\node[mathl={xpurple!20}, fit=\pivot] {};
+		}
+	}
+	\flushleft
+
+	The following matrices are all \textbf{not} in their row-echelon form:
+	
+	\vspace{1em}
+	\centering
+	\begin{tabular}{cccc}
+		$\begin{bmatrix}
+			0 & 5 & 1\\
+			0 & 0 & 0\\
+			0 & 1 & 0\\
+			0 & 0 & 0\\
+		\end{bmatrix}$ &
+		$\begin{bmatrix}
+			1 &  2 & 4\\
+			0 & -2 & 2\\
+			3 &  0 & 7\\
+		\end{bmatrix}$ &
+		$\begin{bmatrix}
+			0 & 0 & 0\\
+			0 & 0 & 0\\
+			0 & 0 & 3\\
+		\end{bmatrix}$ &
+		$\begin{bmatrix}
+			0 & 0 & 7 & -3 & 4 & 4\\
+			0 & 1 & 0 &  0 & 2 & 3\\
+		\end{bmatrix}$\\
+	\end{tabular}
+\end{example}
+
+Using the row-echelon form we define the \emph{reduced row-echelon form}. A matrix in a reduced row-echelon form is a matrix that is already in its row-echelon form, and in addition:
+\begin{itemize}
+	\item The leading coefficients are all equal to $1$ (and are thus called \emph{leading ones}).
+	\item All the elements in the \textbf{column} of a leading one are equal to zero (except the leading one itself).
+\end{itemize}
+
+\begin{example}{Reduced row-echelon form}{}
+	The following matrices are the reduced row-echelon forms of the row-echelon matrices in \autoref{example:row-echelon}, with theleading ones in each row highlighted:
+
+	\vspace{1em}
+	\centering
+	\begin{tabular}{cccc}
+		$\begin{bNiceMatrix}[name=RRE1]
+			0 & 1 & 2\\
+			0 & 0 & 0\\
+			0 & 0 & 0\\
+			0 & 0 & 0\\
+		\end{bNiceMatrix}$ &
+		$\begin{bNiceMatrix}[name=RRE2]
+			1 &  0 & 0\\
+			0 & -1 & 0\\
+			0 &  0 & 1\\
+		\end{bNiceMatrix}$ &
+		$\begin{bNiceMatrix}[name=RRE3]
+			0 & 0 & 1\\
+			0 & 0 & 0\\
+			0 & 0 & 0\\
+		\end{bNiceMatrix}$ &
+		$\begin{bNiceMatrix}[name=RRE4]
+			0 & 0 & 1 & -2 & 0 & -10\\
+			0 & 0 & 0 &  0 & 1 &   3\\
+		\end{bNiceMatrix}$\\
+	\end{tabular}
+	\tikz[overlay, remember picture, blend mode=multiply]{
+		\node[mathl={xred!20}, fit=(RRE1-1-2)] {};
+		\foreach \pivot in {(RRE2-1-1),(RRE2-2-2),(RRE2-3-3)}{
+			\node[mathl={xblue!20}, fit=\pivot] {};
+		}
+		\node[mathl={xgreen!20}, fit=(RRE3-1-3)] {};
+		\foreach \pivot in {(RRE4-1-3),(RRE4-2-5)}{
+			\node[mathl={xpurple!20}, fit=\pivot] {};
+		}
+	}
+\end{example}
+
+To bring a matrix to its reduced row-echelon form, we use a sequence of operations from the following set:
+\begin{itemize}
+	\item Scaling a row by a non-zero real number. For example:
+		\[
+			\begin{bNiceMatrix}[name=rreo1]
+				 1 & 0 & -3 &  2\\
+				-3 & 2 &  1 &  1\\
+				 5 & 1 &  0 & -4\\
+				 2 & 2 & -1 &  7\\
+			 \end{bNiceMatrix} \xrightarrow[]{\colorbox{xblue!30}{$R_{2}$}\rightarrow3\colorbox{xblue!30}{$R_{2}$}}
+			 \begin{bNiceMatrix}[name=rreo2]
+				 1 & 0 & -3 &  2\\
+				-9 & 6 &  3 &  3\\
+				 5 & 1 &  0 & -4\\
+				 2 & 2 & -1 &  7\\
+			 \end{bNiceMatrix}
+		\]
+		here we take the 2nd row of the matrix (denoted as $R_{2}$) and scale it by $3$. The notation above the arrow tells us exactly that: $R_{2}$ is transformed into $2\times R_{2}$.
+
+	\item Exchanging two rows. For example:
+		\[
+			\begin{bNiceMatrix}[name=rreo3]
+				 1 & 0 & -3 &  2\\
+				-9 & 6 &  3 &  3\\
+				 5 & 1 &  0 & -4\\
+				 2 & 2 & -1 &  7\\
+			 \end{bNiceMatrix} \xrightarrow[]{\colorbox{xred!30}{$R_{2}$}\leftrightarrow \colorbox{xgreen!30}{$R_{3}$}}
+			 \begin{bNiceMatrix}[name=rreo4]
+				 1 & 0 & -3 &  2\\
+				 5 & 1 &  0 & -4\\
+				-9 & 6 &  3 &  3\\
+				 0 & 2 &  6 &  3\\
+			 \end{bNiceMatrix}
+		\]
+
+	\item Adding one scaled row to a different row (where the scalar is not zero). For example:
+		\[
+			\begin{bNiceMatrix}[name=rreo5]
+				 1 & 0 & -3 &  2\\
+				 5 & 1 &  0 & -4\\
+				-9 & 6 &  3 &  3\\
+				 2 & 2 & -1 &  7\\
+			 \end{bNiceMatrix} \xrightarrow[]{\colorbox{xpurple!30}{$R_{4}$}\rightarrow \colorbox{xpurple!30}{$R_{4}$}-2\colorbox{xorange!30}{$R_{1}$}}
+			 \begin{bNiceMatrix}[name=rreo6]
+				 1 & 0 & -3 &  2\\
+				 5 & 1 &  0 & -4\\
+				-9 & 6 &  3 &  3\\
+				 0 & 2 &  5 &  3\\
+			 \end{bNiceMatrix}
+		\]
+		(note that $R_{1}$ itself is not changed by the operation)
+
+\tikz[overlay, remember picture, blend mode=multiply]{
+	% Scaling
+	\node[mathl={xblue!30}, fit=(rreo1-2-1)(rreo1-2-4)] {};
+	\node[mathl={xblue!30}, fit=(rreo2-2-1)(rreo2-2-4)] {};
+
+	% Exchanging
+	\node[mathl={xred!30}, fit=(rreo3-2-1)(rreo3-2-4)] {};
+	\node[mathl={xred!30}, fit=(rreo4-3-1)(rreo4-3-4)] {};
+	\node[mathl={xgreen!30}, fit=(rreo3-3-1)(rreo3-3-4)] {};
+	\node[mathl={xgreen!30}, fit=(rreo4-2-1)(rreo4-2-4)] {};
+
+	% Addition
+	\node[mathl={xorange!30}, fit=(rreo5-1-1)(rreo5-1-4)] {};
+	\node[mathl={xorange!30}, fit=(rreo6-1-1)(rreo6-1-4)] {};
+	\node[mathl={xpurple!30}, fit=(rreo5-4-1)(rreo5-4-4)] {};
+	\node[mathl={xpurple!30}, fit=(rreo6-4-1)(rreo6-4-4)] {};
+}
+\end{itemize}
+
+\begin{example}{Row operations}{}
+	Let us apply a sequence of 6 row opertions on a matrix until it reaches its reduced row-echelon form:
+
+	\begin{align*}
+		&
+		\begin{bmatrix}
+			 1 &  5 & 0 \\
+			-2 &  3 & 1 \\
+			-3 & -8 & 0 \\
+		\end{bmatrix}
+		\xrightarrow[]{R_{3}\to R_{3}+3R_{1}}
+		\begin{bmatrix}
+			 1 & 5 & 0 \\
+			-2 & 3 & 1 \\
+			 0 & 7 & 0 \\
+		\end{bmatrix}
+		\xrightarrow[]{R_{3}\to \frac{1}{7}R_{3}}
+		\begin{bmatrix}
+			 1 & 5 & 0 \\
+			-2 & 3 & 1 \\
+			 0 & 1 & 0 \\
+		\end{bmatrix}
+		\xrightarrow[]{R_{2}\leftrightarrow R_{3}}
+		\\&
+		\begin{bmatrix}
+			 1 & 5 & 0 \\
+			 0 & 1 & 0 \\
+			-2 & 3 & 1 \\
+		\end{bmatrix}
+		\xrightarrow[]{R_{1}\to R_{1}-5R_{2}}
+		\begin{bmatrix}
+			 1 & 0 & 0 \\
+			 0 & 1 & 0 \\
+			-2 & 3 & 1 \\
+		\end{bmatrix}
+		\xrightarrow[]{R_{3}\to R_{3}+2R_{1}}
+		\begin{bmatrix}
+			 1 & 0 & 0 \\
+			 0 & 1 & 0 \\
+			 0 & 3 & 1 \\
+		\end{bmatrix}
+		\xrightarrow[]{R_{3}\to R_{3}-3R_{2}}
+		\\&
+		\begin{bmatrix}
+			 1 & 0 & 0 \\
+			 0 & 1 & 0 \\
+			 0 & 0 & 1 \\
+	    \end{bmatrix}=I_{3}.
+	\end{align*}
+\end{example}
+
+To use row operations to solve a system of linear equations, we first write the \emph{augmented matrix} form of the system. This for looks as follows: suppose we have the system
+\[
+	\begin{cases}
+		% x=-1, y=3, z=2
+		&2x+y-3z  = -5\\
+		&4x-2y+6z =  2\\
+		&x+y-z    =  0
+	\end{cases}
+\]
+Then the augmenten matrix of the system is
+\[
+	\begin{bNiceMatrixAug}
+		2 &  1 & -3 & -5\\
+		4 & -2 &  6 &  2\\
+		1 &  1 & -1 &  0
+	\end{bNiceMatrixAug},
+\]
+i.e. it is simpy the coefficients matrix \textit{augmented} with the free coefficients vector. We draw a vertical line where the matrix and vector were "stitched" together, to remind us which elements belong to what object.
+
+To solve the system, we bring the augmented matrix to its reduced row-echelon form. In our case, this would be the matrix
+\[
+	\begin{bNiceMatrixAug}[name=AugM1]
+		1 & 0 & 0 & -1\\
+		0 & 1 & 0 &  3\\
+		0 & 0 & 1 &  2
+	\end{bNiceMatrixAug},
+\]
+which means that the solution to the system is
+\[
+	x=-1,\ y=3,\ z=2.
+\]
+\solvesym{AugM1-1-4}
+
+\begin{example}{Solving a system of linear equations}{}
+	Let us solve the following system of linear equations using the Gaussian elimination method:
+
+	\[
+		% x=4, y=0, z=3, w=-2
+		\begin{cases}
+		& -3x+6y+6z-2w = 10\\
+		& 7x-5y+7z-6w = 61\\
+		& 5x-5y-4z-5w = 18\\
+		& -8x+2y+2z+7y = -40
+		\end{cases}
+	\]
+
+	The augmented matrix for the system is
+	\[
+		A =
+		\begin{bNiceMatrixAug}
+			-3 &  6 &  6 & -2 &  10\\
+			 7 & -5 &  7 & -6 &  61\\
+			 5 & -5 & -4 & -5 &  18\\
+			-8 &  2 &  2 &  7 & -40
+		\end{bNiceMatrixAug}.
+	\]
+
+	Applying a sequence of row operations to $A$:
+
+	\begin{align*}
+		&
+		\begin{bNiceMatrixAug}
+			-3 &  6 &  6 & -2 &  10\\
+			 7 & -5 &  7 & -6 &  61\\
+			 5 & -5 & -4 & -5 &  18\\
+			-8 &  2 &  2 &  7 & -40
+		\end{bNiceMatrixAug}
+		\xrightarrow[]{R_{1}\to R_{1}-3R_{4}}
+		\begin{bNiceMatrixAug}
+			21 &  0 &  0 & -23 & 130\\
+			 7 & -5 &  7 &  -6 &  61\\
+			 5 & -5 & -4 &  -5 &  18\\
+			-8 &  2 &  2 &   7 & -40
+		\end{bNiceMatrixAug}
+	  \\[5mm]&
+		\xrightarrow[]{R_{2}\to R_{2}-R_{3}}
+		\begin{bNiceMatrixAug}
+			21 &  0 &  0 & -23 & 130\\
+			 2 &  0 & 11 &  -1 &  43\\
+			 5 & -5 & -4 &  -5 &  18\\
+			-8 &  2 &  2 &   7 & -40
+		\end{bNiceMatrixAug}
+		\xrightarrow[]{R_{3}\to R_{3}+2R_{4}}
+		\begin{bNiceMatrixAug}
+			21 &  0 &  0 & -23 & 130\\
+			 2 &  0 & 11 &  -1 &  43\\
+		   -11 & -1 &  0 &   9 & -62\\
+			-8 &  2 &  2 &   7 & -40
+		\end{bNiceMatrixAug}
+	  \\[5mm]&
+		\xrightarrow[]{R_{4}\to R_{4}+2R_{3}}
+		\begin{bNiceMatrixAug}
+			21 &  0 &  0 & -23 & 130\\
+			 2 &  0 & 11 &  -1 &  43\\
+		   -11 & -1 &  0 &   9 & -62\\
+		   -30 &  0 &  2 &  25 & -164
+		\end{bNiceMatrixAug}
+		\xrightarrow[]{R_{4}\to R_{4}+15R_{2}}
+		\begin{bNiceMatrixAug}
+			21 &  0 &   0 & -23 & 130\\
+			 2 &  0 &  11 &  -1 &  43\\
+		   -11 & -1 &   0 &   9 & -62\\
+		     0 &  0 & 167 &  10 & 481
+		\end{bNiceMatrixAug}
+	  \\[5mm]&
+		\xrightarrow[]{R_{1}\to R_{1}-10.5R_{2}}
+		\begin{bNiceMatrixAug}
+			 0 &  0 & -115.5 & -12.5 & -321.5\\
+			 2 &  0 &   11   &    -1 &   43\\
+		   -11 & -1 &    0   &     9 &  -62\\
+		     0 &  0 &  167   &    10 &   481
+		\end{bNiceMatrixAug}
+	  \\[5mm]&
+		\xrightarrow[]{R_{1}\to R_{1}-1.25R_{4}}
+		\begin{bNiceMatrixAug}
+			 0 &  0 &  93.25 &  0 & 279.75\\
+			 2 &  0 &  11    & -1 &  43\\
+		   -11 & -1 &   0    &  9 & -62\\
+		     0 &  0 & 167    & 10 &  481
+		\end{bNiceMatrixAug}
+	  \\[5mm]&
+		\xrightarrow[]{R_{1}\to \frac{1}{93.25}R_{1}}
+		\begin{bNiceMatrixAug}
+			 0 &  0 &   1 &  0 &   3\\
+			 2 &  0 &  11 & -1 &  43\\
+		   -11 & -1 &   0 &  9 & -62\\
+		     0 &  0 & 167 & 10 &  481
+		\end{bNiceMatrixAug}
+		\xrightarrow[]{R_{4}\to R_{4}-167R_{1}}
+		\begin{bNiceMatrixAug}
+			 0 &  0 &  1 &  0 &   3\\
+			 2 &  0 & 11 & -1 &  43\\
+		   -11 & -1 &  0 &  9 & -62\\
+		     0 &  0 &  0 & 10 &  -20
+		\end{bNiceMatrixAug}
+	  \\[5mm]&
+		\xrightarrow[]{R_{4}\to \frac{1}{10}R_{4}}
+		\begin{bNiceMatrixAug}
+			 0 &  0 &  1 &  0 &   3\\
+			 2 &  0 & 11 & -1 &  43\\
+		   -11 & -1 &  0 &  9 & -62\\
+		     0 &  0 &  0 &  1 &  -2
+		\end{bNiceMatrixAug}
+		\xrightarrow[]{R_{3}\to R_{3}-9R_{4}}
+		\begin{bNiceMatrixAug}
+			 0 &  0 &  1 &  0 &   3\\
+			 2 &  0 & 11 & -1 &  43\\
+		   -11 & -1 &  0 &  0 & -44\\
+		     0 &  0 &  0 &  1 &  -2
+		\end{bNiceMatrixAug}
+	  \\[5mm]&
+		\xrightarrow[]{R_{2}\to R_{2}-11R_{1}}
+		\begin{bNiceMatrixAug}
+			 0 &  0 & 1 &  0 &   3\\
+			 2 &  0 & 0 & -1 &  10\\
+		   -11 & -1 & 0 &  0 & -44\\
+		     0 &  0 & 0 &  1 &  -2
+		\end{bNiceMatrixAug}
+		\xrightarrow[]{R_{2}\to R_{2}-R_{4}}
+		\begin{bNiceMatrixAug}
+			 0 &  0 & 1 & 0 &   3\\
+			 2 &  0 & 0 & 0 &   8\\
+		   -11 & -1 & 0 & 0 & -44\\
+		     0 &  0 & 0 & 1 &  -2
+		\end{bNiceMatrixAug}
+	  \\[5mm]&
+		\xrightarrow[]{R_{2}\to \frac{1}{2}R_{2}}
+		\begin{bNiceMatrixAug}
+			 0 &  0 & 1 & 0 &   3\\
+			 1 &  0 & 0 & 0 &   4\\
+		   -11 & -1 & 0 & 0 & -44\\
+		     0 &  0 & 0 & 1 &  -2
+		\end{bNiceMatrixAug}
+		\xrightarrow[]{R_{3}\to R_{3}+11R_{2}}
+		\begin{bNiceMatrixAug}
+			0 &  0 & 1 & 0 &  3\\
+			1 &  0 & 0 & 0 &  4\\
+			0 & -1 & 0 & 0 &  0\\
+		    0 &  0 & 0 & 1 & -2
+		\end{bNiceMatrixAug}
+	  \\[5mm]&
+		\xrightarrow[]{R_{3}\to -R_{3}}
+		\begin{bNiceMatrixAug}
+			0 & 0 & 1 & 0 &  3\\
+			1 & 0 & 0 & 0 &  4\\
+			0 & 1 & 0 & 0 &  0\\
+		    0 & 0 & 0 & 1 & -2
+		\end{bNiceMatrixAug}
+		\xrightarrow[]{R_{1}\leftrightarrow R_{2},\ R_{2}\leftrightarrow R_{3}}
+		\begin{bNiceMatrixAug}[name=rrefe]
+			1 & 0 & 0 & 0 &  4\\
+			0 & 1 & 0 & 0 &  0\\
+			0 & 0 & 1 & 0 &  3\\
+		    0 & 0 & 0 & 1 & -2
+		\end{bNiceMatrixAug}.
+	\end{align*}
+	\tikz[overlay, remember picture]{
+		\node[thick, draw=xred, rounded corners, fill=xred!20, right of=rrefe-3-5, text width=2.5cm, xshift=1.3cm, align=center] (rrefeTxt) {Reduced row echelon form};
+		\draw[-stealth, thick, xred] (rrefeTxt.west) to ($(rrefe-3-5.east)+(2.5mm,0)$);
+	}
+
+	The solution of the system is therefore
+	\[
+		x=4,\ y=0,\ z=3,\ w=-2.
+	\]
+\end{example}
+
+MORE TEXT WILL BE HERE
+

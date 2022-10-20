@@ -1,0 +1,690 @@
+\section{Eigenvectors and eigenvalues}
+\subsection{Definition}
+Some linear transformations have special directions which only scale by the application of the transformation and are not mapped to different directions. Take for example the transformation $T:\Rs[2]\to\Rs[2]$, which scales space by $2$ in the $y$-direction. All vectors pointing in the $y$-direction get scaled by $T$ (namely by a factor of $2$) and still point in the $y$-direction after the application of $T$. All vectors pointing in the $x$-direction do not change at all (i.e. they are "scaled" by a factor of $1$), and of course still point in the $x$-direction after the application of $T$. Any other vector - i.e. those that have both components different than zero - change their direction after the application of $T$ (see \autoref{fig:y_scale_2}).
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[c]{0.45\textwidth}
+		\begin{center}
+			\begin{tikzpicture}
+				\begin{axis}[
+					vector plane,
+					width=7.5cm, height=7.5cm,
+					xlabel={},
+					xticklabels={,},
+					yticklabels={,},
+					]
+					\pgfmathsetmacro{\R}{2}
+					\coordinate (O) at (0,0);
+					\foreach \k in {0,...,11}{
+						\pgfmathsetmacro{\th}{30*\k}
+						\edef\temp{\noexpand
+							\draw[vector, color=xrainbow\k] (O) -- ({\R*cos(\th)},{\R*sin(\th)});
+						;}
+						\temp
+					}
+					\fill (O) circle (0.1);
+				\end{axis}
+			\end{tikzpicture}
+		\end{center}
+		\caption{Some vectors.}
+		\label{fig:}
+	\end{subfigure}
+	\begin{subfigure}[c]{0.45\textwidth}
+		\begin{center}
+			\begin{tikzpicture}
+				\begin{axis}[
+					vector plane,
+					width=7.5cm, height=7.5cm,
+					xticklabels={,},
+					yticklabels={,},
+					]
+					\pgfmathsetmacro{\R}{2}
+					\coordinate (O) at (0,0);
+					\foreach \k in {0,...,11}{
+						\pgfmathsetmacro{\th}{30*\k}
+						\edef\temp{\noexpand
+							\draw[vector, color=xrainbow\k] (O) -- ({\R*cos(\th)},{2*\R*sin(\th)});
+						;}
+						\temp
+					}
+					\fill (O) circle (0.1);
+				\end{axis}
+			\end{tikzpicture}
+		\end{center}
+		\caption{Same vectors after the application of $T$.}
+		\label{fig:}
+	\end{subfigure}
+	\begin{subfigure}[c]{\textwidth}
+		\begin{center}
+			\begin{tikzpicture}
+				\begin{axis}[
+					vector plane,
+					width=7.5cm, height=7.5cm,
+					xticklabels={,},
+					yticklabels={,},
+					]
+					\pgfmathsetmacro{\R}{2}
+					\coordinate (O) at (0,0);
+					\foreach \k in {0,...,11}{
+						\pgfmathsetmacro{\th}{30*\k}
+						\edef\temp{
+							\noexpand\draw[vector, color=xrainbow\k] (O) -- ({\R*cos(\th)},{\R*sin(\th)});
+							\noexpand\draw[vector, color=xrainbow\k] (O) -- ({\R*cos(\th)},{2*\R*sin(\th)});
+						;}
+						\temp
+					}
+					\fill (O) circle (0.1);
+				\end{axis}
+			\end{tikzpicture}
+		\end{center}
+		\caption{The vectors before and after the application of $T$ layered on top of eachother.}
+		\label{fig:}
+	\end{subfigure}
+	\caption{Some vectors before and after application of the $y$-scaling transformation $T$. Note how only the vectors pointing in the direction of the $x$- and $y$-axes stay in the same direction, while all the other vectors change their directions.}
+	\label{fig:y_scale_2}
+\end{figure}
+
+We call such vectors the \emph{eigenvectors} of the transformation. The amount by which the are scaled is then their respective \emph{eigenvalues}.
+
+\begin{note}{Pronounciation}{}
+	The word \textit{eigen} is a German word meaning "own" (as in "own rules"), or "self" (as in self-made). We will see how this meaning fits the concept later in the section. The \textit{ei} part it pronounced the same as the English word "eye", and the \textit{g} is pronounced like the \textit{g} in the English word \text{dog} (i.e. unlike the \textit{g} in \textit{generation}).
+\end{note}
+
+\begin{example}{Eigenvectors and eigenvalues}{}
+	Text here
+\end{example}
+
+In matrix form, a vector $\vec{v}$ is an eigenvector of a transformation represented by the matrix $A$, if
+\begin{equation}
+	A\vec{v} = \lambda\vec{v},
+	\label{eq:eigenvector_matrix_form}
+\end{equation}
+where $\lambda\in\mathbb{R},\ \lambda\neq0$. This kind of equation is typically called an \emph{eigenvector equation}. When there are several eigenvectors for a transformation, each with its distinct eigenvalue, we simply add indeces to all relevant parts:
+\begin{equation}
+	A\vec{v}_{i} = \lambda_{i}\vec{v}_{i},
+	\label{eq:eigenvector_matrix_form_indeces}
+\end{equation}
+where again $\lambda_{i}\in\mathbb{R}$ and $\lambda_{i}\neq0$.
+
+\begin{note}{The zero-vector}{}
+	Although technically the zero vector is indeed "scaled" by any linear transformation - by infinitely many scalars - it is \textbf{not} considered an eigenvector, exactly because of the fact it has no unique eigenvalue.
+\end{note}
+
+Before continuing to explore some more examples of eigenvectors, there are two properties\footnote{actually one property and one non-property} of eigenvectors that are important to mention. Given a linear transformation $T$,
+\begin{itemize}
+	\item A scale of any eigenvector $\vec{v}$ of $T$ is also an eigenvector of $T$, with the same eigenvalue.
+		\begin{proof}{Eigenvector scale}{}
+			Let $T:\Rs[n]\to\Rs[n]$ be a linear transformation represented by the square matrix $A$, with eigenvector $\vec{v}$ and its respective eigenvalue $\lambda$. Then
+			\[
+				A\vec{v} = \lambda\vec{v}.
+			\]
+			Replacing $\vec{v}$ with a scale of itself, i.e. $\vec{u}=\alpha\vec{v}$, then applying $A$ to $\vec{u}$ gives us
+			\[
+				A\vec{u} \overset{(1)}{=} A \left( \alpha\vec{v} \right) \overset{(2)}{=} \alpha A \vec{v} \overset{(3)}{=} \alpha\lambda\vec{v} \overset{(4)}{=} \lambda\alpha\vec{v} \overset{(5)}{=} \lambda\vec{u}.
+			\]
+			where
+			\begin{enumerate}[label=(\arabic*)]
+				\item Substitution of $\vec{u}$ by its definition $\vec{u}=\alpha\vec{v}$.
+				\item Due to the linearity of $A$ we can bring $\alpha$ out of the product.
+				\item Resulting due to $\vec{v}$ being an eigenvector of $A$.
+				\item The product of real numbers is commutative.
+				\item Substituting back $\alpha\vec{v}=\vec{u}$.
+			\end{enumerate}
+
+			Therefore, $\vec{u}$ is also an eigenvector of $A$ (and thus $T$) with the same eigenvalue $\lambda$ as $\vec{v}$.
+		\end{proof}
+
+		Since a linear transformation never has just a single eigenvector but infinitely many (i.e. its entire span), we will refer from now on the \emph{families} of eigenvectors, all pointing in the same direction, represented by a single vector (usually a unit vector, but not necesseraly).
+
+	\item The linear combination of two eigenvectors of $T$ is \textbf{not neccessarily an eigenvector of} $\bm{T}$! For example, consider the above transformation which scales all vectors by $2$ in the $y$-direction: as we saw, any vector in the $x$-direction is an eigenvector of the transformation, and so does any vector in the $y$-direction. Specifically, the vectors $\vec{a}=\colvec{1;0}$ and $\vec{b}=\colvec{0;1}$ are two separate eigenvectors of the transformation (with eigenvalues $1$ and $2$, respectively), however the vector
+		\[
+			\vec{c} = \vec{a}+\vec{b} = \colvec{1;1}
+		\]
+		is \textbf{NOT} an eigenvector of the transformation, since
+		\[
+			\colvec{1;1} \overset{T}{\mapsto} \colvec{1;2} \neq 2\colvec{1;1}.
+		\]
+\end{itemize}
+
+\subsection{Some examples}
+\begin{example}{Eigenvectors and eigenvalues of common linear transformations}{}
+	Let's find the eigenvectors and their respective eigenvalues for the some basic linear transformations in $2$-dimensions.
+
+	\begin{descitemize}
+		\item[Skew (shear) in the $\bm{x}$-direction] any vector pointing in the $x$-direction is unchanged (i.e. scaled by a factor of $1$), while any other vector changes its direction. Thus, the transformation has only a single family of eigenvectors, which we will represent by the vector $\hat{x}$, and their respective eigenvalue $\lambda=1$.
+
+		\item[Rotation around the origin] no vector (except the zero-vector) is scaled by rotation, and therefore rotations have no eigenvectors. However, in $3$-dimensions any rotation transformation does have an eigenvector, with eigenvalue $\lambda=1$: it is of course the family of vectors pointing in the direction of the axis of rotation. We will discuss this further later in the section.
+		
+		\item[Reflection across the $\bm{x}$-axis] in this case, any vector pointing in the $x$-axis is not being changed - an eigenvector with eigenvalue $\lambda=1$, and any vector pointing in the $y$-direction is reflected verically, i.e.
+			\[
+				\colvec{0;\beta} \overset{T}{\mapsto} \colvec{0;-\beta} = -\colvec{0;\beta},
+			\]
+			and is therefore an eigenvector with eigenvalue $\lambda=-1$. The transformation has no other eigenvectors.
+
+		\item[Reflection across a line going through the origin] much like the previous case, any vector lying on the reflection line will not change ($\lambda=1$), and any vector pointing in an orthogonal direction to the line will flip ($\lambda=-1$). No other eigenvectors exist for this transformation.
+	\end{descitemize}
+\end{example}
+
+\subsection{Calulating eigenvectors}
+Calculating the eigenvectors of a given transformation, and their respective eigenvalues, is a rather easy procedure to perform once one has the transformation in matrix form. However, in order to understand \textit{why} the procedure works it is useful to derive it first, which is what we'll do now.
+
+We take the eigenvector equation (\autoref{eq:eigenvector_matrix_form}) and rearrange it slightly:
+\begin{equation}
+	A\vec{v} - \lambda\vec{v} = \vec{0}.
+	\label{eq:eigenvec_rearranged_1}
+\end{equation}
+
+We can then group together all parts which include $\vec{v}$, but we must be careful: $A$ is a matrix while $\lambda$ is a scalar. This means that the term $A-\lambda$ has no meaning, since we haven't defined how to add or subtract matrices and real numbers. We therefore change \autoref{eq:eigenvec_rearranged_1} a bit without changing its validity, by replacing $\lambda\vec{v}$ with $\lambda I\vec{v}$: i.e. instead of scaling $\vec{v}$ by a scalar, we scale it using the matrix $\lambda I$, which yields the same result:
+
+\begin{equation}
+	A\vec{v} - \lambda I\vec{v} = \vec{0}.
+	\label{eq:eigenvec_rearranged_2}
+\end{equation}
+
+\begin{note}{That one weird trick}{}
+	If you are not convinced the above trick works, consider the following:
+	\[
+		\lambda=3, \vec{v}=\colvec{1;5;-7}.
+	\]
+	Then the direct scaling of $\vec{v}$ by $\lambda$ is
+	\[
+		\lambda\vec{v} = \colvec{3;15;-21},
+	\]
+	and scaling it using $\lambda I$ yields
+	\[
+		\lambda I \vec{v} = \begin{bmatrix}3&0&0\\0&3&0\\0&0&3\end{bmatrix}\colvec{1;5;-7} = \colvec{3;15;-7},
+	\]
+	i.e. we get exactly the same result.
+\end{note}
+
+Grouping together the parts with $\vec{v}$ gives:
+\begin{equation}
+	\left( A-\lambda I \right)\vec{v} = \vec{0}.
+	\label{eq:eigenvec_rearranged_3}
+\end{equation}
+
+Note that $A-\lambda I$ is a matrix, with the following form:
+\begin{align}
+	A-\lambda I &=
+		\begin{bNiceMatrix}
+			\Ma{1}{1} & \Ma{1}{2} & \cdots & \Ma{1}{n}\\
+			\Ma{2}{1} & \Ma{2}{2} & \cdots & \Ma{2}{n}\\
+			\vdots & \vdots & \Ddots & \vdots\\
+			\Ma{n}{1} & \Ma{n}{2} & \cdots & \Ma{n}{n}
+		\end{bNiceMatrix}
+		-\lambda
+		\begin{bNiceMatrix}
+			1 & 0 & \cdots & 0\\
+			0 & 1 & \cdots & 0\\
+			\vdots & \vdots & \Ddots & \vdots\\
+			0 & 0 & \cdots & 1
+		\end{bNiceMatrix}\nonumber\\
+		&=
+		\begin{bNiceMatrix}
+			\Ma{1}{1} & \Ma{1}{2} & \cdots & \Ma{1}{n}\\
+			\Ma{2}{1} & \Ma{2}{2} & \cdots & \Ma{2}{n}\\
+			\vdots & \vdots & \Ddots & \vdots\\
+			\Ma{n}{1} & \Ma{n}{2} & \cdots & \Ma{n}{n}
+		\end{bNiceMatrix}
+		-
+		\begin{bNiceMatrix}
+			\lambda & 0 & \cdots & 0\\
+			0 & \lambda & \cdots & 0\\
+			\vdots & \vdots & \Ddots & \vdots\\
+			0 & 0 & \cdots & \lambda
+		\end{bNiceMatrix}\nonumber\\
+		&=
+		\begin{bNiceMatrix}
+			\Ma{1}{1}-\lambda & \Ma{1}{2} & \cdots & \Ma{1}{n}\\
+			\Ma{2}{1} & \Ma{2}{2}-\lambda & \cdots & \Ma{2}{n}\\
+			\vdots & \vdots & \Ddots & \vdots\\
+			\Ma{n}{1} & \Ma{n}{2} & \cdots & \Ma{n}{n}-\lambda
+		\end{bNiceMatrix}.
+	\label{eq:A-LI}
+\end{align}
+
+\autoref{eq:eigenvec_rearranged_3} tells us that $A-\lambda I$ sends the vector $\vec{v}$ to $\vec{0}$, and therefore $\vec{v}$ is in the kernel of $\left( A-\lambda I \right)$. Sinve by the definition of an eigenvector $\vec{v}\neq\vec{0}$, this means that the kernel of $A-\lambda I$ has more then just the zero vector, and thus
+\begin{equation}
+	|A-\lambda I| = 0.
+	\label{eq:|A-LI|=0}
+\end{equation}
+(this is derived from \autoref{eq:nullity_rank} and \autoref{eq:rank_det})
+
+Therefore, if we solve \autoref{eq:|A-LI|=0} for $\lambda$, we will get all the values of $\lambda$ for which the eigenvector equation holds, and in turn we get all the eigenvalues $\lambda_{i}$ of the linear transformation represented by $A$. We can then substitute each $\lambda_{i}$ into the eigenvector equation and find its respective eigenvector family.
+
+\begin{example}{Eigenvectors and eigenvalues of a $\bm{2\times2}$ matrix}{}
+	The matrix representing the $y$-scaling transformation discussed in the beginning of this section is
+	\[
+		A = \begin{bmatrix}1&0 \\ 0&2\end{bmatrix}.
+	\]
+	Therefore, in order to find the eigenvectors of $A$ we solve the equation
+	\[
+		0 = |A-\lambda I| = \begin{vmatrix}1-\lambda & 0 \\ 0 & 2-\lambda\end{vmatrix} = (1-\lambda)(2-\lambda).
+	\]
+	In this case there are two solutions: $\lambda_{1}=1$ and $\lambda_{2}=2$. To find their corresponding eigenvectors, we subtitute them into the eigenvectors equation. First $\lambda_{1}$:
+	\[
+		\begin{bmatrix}1&0 \\ 0&2\end{bmatrix}\colvec{x;y} = \colvec{x;y},
+	\]
+	which corresponds to the following system of equations:
+	\[
+		\begin{cases}
+			1\cdot x + 0\cdot y = x,\\
+			0\cdot x + 2\cdot y = y,
+		\end{cases}
+	\]
+	for which the solution is $x\in\mathbb{R}$ and $y=0$ - i.e. any vector pointing in the $x$-direction. Now for $\lambda_{2}=2$:
+	\[
+		\begin{bmatrix}1&0 \\ 0&2\end{bmatrix}\colvec{x;y} = 2\colvec{x;y} = \colvec{2x;2y},
+	\]
+	i.e. the following system of equations:
+	\[
+		\begin{cases}
+			1\cdot x + 0\cdot y = 2x,\\
+			0\cdot x + 2\cdot y = 2y.
+		\end{cases}
+	\]
+	The solution is of course $x=0$ and $y\in\mathbb{R}$, meaning any vector pointing in the $y$-direction.
+\end{example}
+
+\begin{example}{Eigenvectors and eigenvalues of a $\bm{3\times3}$ matrix}{}
+	Let us now calculate the eigenvectors and their respective eigenvalues for the following $3\times3$ matrix:
+	\[
+		A=
+		\begin{bmatrix}
+			5 & -6 & -3\\
+			0 & -1 &  0\\
+			0 &  2 &  2\\
+		\end{bmatrix}.
+	\]
+
+	We start by calculating the determinant $|A-\lambda I$:
+	\begin{align*}
+		|A-\lambda I| &=
+		\begin{vmatrix}
+			5-\lambda & -6 & -3\\
+			0 & -1-\lambda & 0\\
+			0 & 2 & 2-\lambda\\
+		\end{vmatrix}\\
+		&=
+		\left(5-\lambda\right)\begin{vmatrix}-1-\lambda & 0 \\ 2 & 2-\lambda\end{vmatrix} -(-6)\cancel{\begin{vmatrix}0&0 \\ 0&2-\lambda\end{vmatrix}} +3 (-3)\cancel{\begin{vmatrix}0&-1-\lambda \\ 0&2\end{vmatrix}}\\
+		&= \left(5-\lambda\right) \left( -1-\lambda \right) \left( 2-\lambda \right)\\
+	\end{align*}
+	The solutions of $|A-\lambda I|=0$ are therefore
+	\[
+		\lambda_{1}=5,\ \lambda_{2}=-1,\ \lambda_{3}=2.
+	\]
+
+	\begin{descitemize}
+	\item[$\bm{\lambda_{1}=5}$] solving $A\vec{v} = 5\vec{v}$ yields
+	\[
+		\begin{bmatrix}
+			5 & -6 & -3\\
+			0 & -1 &  0\\
+			0 &  2 &  2\\
+		\end{bmatrix}\colvec{x;y;z} = 5\colvec{x;y;z} = \colvec{5x;5y;5z},
+	\]
+	i.e.
+	\[
+		\begin{cases}
+			5x-6y-3z &= 5x,\\
+			0x-1y+0z &= 5y,\\
+			0x+2y+2z &=5z,
+		\end{cases}
+	\]
+	for which the solution is
+	\[
+		x\in\mathbb{R},\ y=0,\ z=0.
+	\]
+	The first family of eigenvectors are the vectors pointing in the $x$-direction, and their respective eigenvalue is $\lambda=5$. We can verify this:
+	\[
+		\begin{bmatrix}
+			5 & -6 & -3\\
+			0 & -1 &  0\\
+			0 &  2 &  2\\
+		\end{bmatrix}\colvec{x;0;0} = \colvec{5x-6\cdot0-3\cdot0;0x-1\cdot0+0\cdot0;0x+2\cdot0+2\cdot0} = \colvec{5x;0;0} = 5\colvec{x;0;0}.
+	\]
+
+	\vspace{1em}
+	\item[$\bm{\lambda_{2}=-1}$] solving $A\vec{v}=-\vec{v}$ yields
+	\[
+		\begin{bmatrix}
+			5 & -6 & -3\\
+			0 & -1 &  0\\
+			0 &  2 &  2\\
+		\end{bmatrix}\colvec{x;y;z} = -\colvec{x;y;z} = \colvec{-x;-y;-z},
+	\]
+	i.e.
+	\[
+		\begin{cases}
+			5x-6y-3z &= -x,\\
+			0x-1y+0z &= -y,\\
+			0x+2y+2z &= -z,
+		\end{cases}
+	\]
+	for which the solution is
+	\[
+		x=\frac{2}{3}y,\ y\in\mathbb{R},\ z=-x.
+	\]
+	Verifying the solution using the representative vector $\vec{v}=\colvec{2;3;-2}$:
+	\[
+		\begin{bmatrix}
+			5 & -6 & -3\\
+			0 & -1 &  0\\
+			0 &  2 &  2\\
+		\end{bmatrix}\colvec{2;3;-2} = \colvec{5\cdot2-6\cdot3+3\cdot2;0\cdot2-1\cdot3+0\cdot(-2);0\cdot2+2\cdot3+2\cdot(-2)} = \colvec{10-18+6;-3;6-4} = \colvec{-2;-3;2} = -\colvec{2;3;-2}.
+	\]
+
+	\item[$\bm{\lambda_{3}=2}$] solving $A\vec{v}=2\vec{v}$ yields
+	\[
+		\begin{bmatrix}
+			5 & -6 & -3\\
+			0 & -1 &  0\\
+			0 &  2 &  2\\
+		\end{bmatrix}\colvec{x;y;z} = 2\colvec{x;y;z} = \colvec{2x;2y;2z},
+	\]
+	i.e.
+	\[
+		\begin{cases}
+			5x-6y-3z &= 2x,\\
+			0x-1y+0z &= 2y,\\
+			0x+2y+2z &= 2z,
+		\end{cases}
+	\]
+	for which the solution is
+	\[
+		x=z,\ y=0.
+	\]
+	Verifying the solution using the representative vector $\colvec{1;0;1}$:
+	\[
+		\begin{bmatrix}
+			5 & -6 & -3\\
+			0 & -1 &  0\\
+			0 &  2 &  2\\
+		\end{bmatrix}\colvec{1;0;1} = \colvec{5\cdot1-6\cdot0-3\cdot1;0\cdot1-1\cdot0+0\cdot0;0\cdot1+2\cdot0+2\cdot1} = \colvec{2;0;2} = 2\colvec{1;0;1}.
+	\]
+	\end{descitemize}
+
+	To summarize: the linear transformation represented by the matrix
+	\[
+		A=
+		\begin{bmatrix}
+			5 & -6 & -3\\
+			0 & -1 &  0\\
+			0 &  2 &  2\\
+		\end{bmatrix}
+	\]
+	has three families of eigenvectors:
+
+	\begin{center}
+		\begin{NiceTabular}{lc}[
+		cell-space-limits=3pt, code-before=\rowcolors{1}{xblue!15}{xblue!10} \rowcolor{xblue!50}{1}
+	]
+	% !! NOTE !! The blue color here (instead of tabcol) is intentional.
+			\toprule
+			\RowStyle{\bfseries} Eigenvalue & Eigenvector \\
+			\midrule
+			\addlinespace[1em]
+			$\lambda_{1}= 5$ & $\colvec{1;0;0}$ \\[3em]
+			$\lambda_{2}=-1$ & $\colvec{2;3;-2}$ \\[3em]
+			$\lambda_{3}= 2$ & $\colvec{1;0;1}$ \\[2em]
+			\bottomrule
+		\end{NiceTabular}
+	\end{center}
+\end{example}
+
+\begin{example}{The eigenvectors of reflections in $\bm{\Rs[2]}$, polar form}{}
+	In $\Rs[2]$, The reflection transformation across the $x$-axis has two families of eigenvectors: vectors pointing in $x$-direction (with eigenvalue $\lambda=1$), and vectors pointing in the $y$-direction (with eigenvalue $\lambda=-1$). The reflection transformation across the $y$-axis has the same families, but their eigenvalues are flipped: the vectors pointing in the $x$-direction have eigenvalue $\lambda=-1$, and those pointing in the $y$-direction have eigenvalu $\lambda=1$.
+
+	\vspace{1em}
+	Generalizing to reflections in any direction, we expect to see a similar result: one family of eigenvectors being vectors pointing in the direction of the reflection line with eigenvalue $\lambda=1$, and the other family of vectors pointing in the orthogonal direction, with eigenvalue $\lambda=-1$. Let us now calculate this directly from the matrix representations of the transformation. We start with the angle-based representation, where the reflection line is represented by its angle $\theta$ relative to the $x$-axis (\autoref{eq:reflect_general_2x2}):
+	\[
+		\Refl_{\theta} = \begin{bmatrix} \cos \left( 2\theta \right) & \sin \left( 2\theta \right) \\ \sin \left( 2\theta \right) & -\cos \left( 2\theta \right) \end{bmatrix}.
+	\]
+
+	Using \autoref{}, we expect the vectors with eigenvalue $\lambda=1$ to have the following form:
+	\[
+		\colvec{r\cos(\theta);r\sin(\theta)},
+	\]
+	since this is a structure of a vector pointing in the direction with angle $\theta$ relative to the $x$-axis. The ratio of the components of these vectors is therefore expected to be
+	\[
+		\frac{x}{y} = \frac{\cos(\theta)}{\sin(\theta)}.
+	\]
+
+	The vectors with eigenvalue $\lambda=-1$ should be orthogonal to the previous family, i.e. have the structure
+	\[
+		\colvec{-r\sin(\theta);r\cos(\theta)},
+	\]
+	or component ratio of
+	\[
+		\frac{x}{y} = -\frac{\sin(\theta)}{\cos(\theta)}.
+	\]
+
+	Now that we know what to expect, let's start with the actual calculations:
+	\begin{align*}
+		0 &= \left|\Refl_{\theta}-\lambda I\right|\\
+		  &= \left(\cos(2\theta)-\lambda\right)\left( -\cos(2\theta)-\lambda \right) - \sin^{2}(\theta)\\
+		  &= -\cos^{2}(2\theta)-\cancel{\lambda\cos(2\theta)}+\cancel{\lambda\cos(2\theta)}+\lambda^{2} - \sin^{2}(\theta)\\
+		  &= \lambda^{2}-1.
+	\end{align*}
+	(the last equality stems from \autoref{eq:sin sqr plus cos sqr equals 1})
+
+	We see that the solutions for the above equation in $\lambda$ are $\lambda_{1}=1$ and $\lambda_{2}=-1$, as expected. Substituing each of these eigenvalues into the eigenvector equation yields:
+	\begin{descitemize}
+	\item [$\lambda=1$] the eigenvector equation
+		\[
+			\begin{bmatrix} \cos(2\theta) & \sin(2\theta) \\ \sin(2\theta) & -\cos(2\theta) \end{bmatrix}\colvec{x;y} = \colvec{x;y}
+		\]
+		gives rise to the system
+		\[
+			\begin{cases}
+				\cos(2\theta)x + \sin(2\theta)y &= x,\\
+				\sin(2\theta)x - \cos(2\theta)y &= y.
+			\end{cases}
+		\]
+		The solution of the system is
+		\begin{align*}
+			y &= \frac{x\sqrt{1-\cos^{2}(2\theta)}}{\cos(2\theta)+1}\\
+			  &= \frac{x\sin(2\theta)}{\cos(2\theta)+1}\\
+			  &= \frac{\cancel{2}x\sin(\theta)\cancelcol[xblue]{\cos(\theta)}}{\cancel{2}\cos^{\cancelcol[xblue]{2}}(\theta)}\\
+			  &= \frac{x\sin(\theta)}{\cos(\theta)}.
+		\end{align*}
+		Rearranging this yields
+		\[
+			\frac{x}{y} = \frac{\cos{\theta}}{\sin{\theta}},
+		\]
+		as expected.
+
+	\item [$\lambda=-1$] the eigenvector equation
+		\[
+			\begin{bmatrix} \cos(2\theta) & \sin(2\theta) \\ \sin(2\theta) & -\cos(2\theta) \end{bmatrix}\colvec{x;y} = -\colvec{x;y} = \colvec{-x;-y}
+		\]
+		gives rise to the system
+		\[
+			\begin{cases}
+				\cos(2\theta)x + \sin(2\theta)y &= -x,\\
+				\sin(2\theta)x - \cos(2\theta)y &= -y.
+			\end{cases}
+		\]
+		The solution of the system is
+		\begin{align*}
+			y &= \frac{x\sqrt{1-\cos^{2}(2\theta)}}{\cos(2\theta)-1}\\
+			  &= \frac{x\sin(2\theta)}{\cos(2\theta)-1}\\
+			  &= \frac{2x\sin(\theta)\cos(\theta)}{\cancel{1}-2\sin^{2}(\theta)-\cancel{1}}\\
+			  &= -\frac{\cancel{2}x\cancelcol[xblue]{\sin(\theta)}\cos(\theta)}{\cancel{2}\sin^{\cancelcol[xblue]{2}}(\theta)}\\
+			  &= -\frac{x\cos(\theta)}{\sin(\theta)}.
+		\end{align*}
+		And rearranging this yields
+		\[
+			\frac{x}{y} = -\frac{\sin(\theta)}{\cos(\theta)},
+		\]
+		also as expected.
+	\end{descitemize}
+\end{example}
+
+\begin{example}{The eigenvectors of reflections in $\bm{\Rs[2]}$, slope form}{}
+	In this example we will again calculate the eigenvectors and eigenvalues of the general reflection transformation, this time by using the slope $m$ of the reflection line, and the matrix representation
+	\[
+		\Refl_{m} = \frac{1}{1+m^{2}}
+		\begin{bmatrix}
+			1-m^{2} & 2m \\
+			2m & m^{2}-1
+		\end{bmatrix}.
+	\]
+	Again we expect the two eigenvalues $\lambda=\pm1$. The eigenvector family corresponding to $\lambda=1$ should have a component ratio $\frac{y}{x}=m$, i.e. $y=mx$ (the line equation) - and the eigenvector family corresponding to the eigenvalue $\lambda=-1$ should be orthogonal to the other family, i.e. has component ratio $\frac{y}{x}=-\frac{1}{m}$ (i.e. $y=-\frac{1}{m}x$).
+
+	\underline{The calculation}: the determinant $\left|\Refl_{m}-\lambda\right|$ is then
+	\begin{align*}
+		\left|\Refl_{m}-\lambda\right| &=
+		{\renewcommand{\arraystretch}{2}
+			\begin{vmatrix}
+				\frac{1-m^{2}}{1+m^{2}}-\lambda & \frac{2m}{1+m^{2}} \\
+				\frac{2m}{1+m^{2}} & \frac{m^{2}-1}{1+m^{2}}-\lambda
+			\end{vmatrix}
+		}\\
+		&= \left( \frac{1-m^{2}}{1+m^{2}}-\lambda \right) \left(  \frac{m^{2}-1}{1+m^{2}}-\lambda \right) - \frac{4m^{2}}{\left(1+m^{2}\right)^{2}}\\
+		&= \frac{\left(1-m^{2}\right)\left(m^{2}-1\right)}{\left(1+m^{2}\right)^{2}} - \lambda\frac{1-m^{2}}{1+m^{2}} - \lambda\frac{m^{2}-1}{1+m^{2}} + \lambda^{2} - \frac{4m^{2}}{\left(1+m^{2}\right)^{2}}.
+	\end{align*}
+	Setting $a=1-m^{2}$ and $b=1+m^{2}$ we get that  $m^{2}-1=-a$, and we continue:
+	\begin{align*}
+		\ldots &= \frac{a(-a)}{b^{2}} - \cancel{\lambda\frac{a}{b}} - \cancel{\lambda\frac{-a}{b}} + \lambda^{2} - \frac{4m^{2}}{b^{2}}\\
+			   &= \frac{-a^{2}-4m^{2}}{b^{2}}+\lambda^{2}\\
+			   &= \frac{-(1-m^{2})-4m^{2}}{\left(1+m^{2}\right)^{2}}+\lambda^{2}\\
+			   &= \frac{-\left(1-2m^{2}+m^{4}\right)-4m^{2}}{\left(1+m^{2}\right)^{2}}+\lambda^{2}\\
+			   &= \frac{-1+2m^{2}-m^{4}-4m^{2}}{\left(1+m^{2}\right)^{2}}+\lambda^{2}\\
+			   &= \frac{-1-2m^{2}-m^{4}}{\left(1+m^{2}\right)^{2}}+\lambda^{2}\\
+			   &= -\frac{1+2m^{2}+m^{4}}{\left(1+m^{2}\right)^{2}}+\lambda^{2}\\
+			   &= -\frac{\left(1+m^{2}\right)^{2}}{\left(1+m^{2}\right)^{2}}+\lambda^{2}\\
+			   &= -1+\lambda^{2},
+	\end{align*}
+	i.e. $\lambda^{2}=1$ and thus $\lambda=\pm1$ as expected. We now subtitute these eigenvalues in the eigenvector equation:
+
+	\begin{descitemize}
+		\item[$\lambda=1$] the matrix equation is
+			\[
+				\frac{1}{1+m^{2}}
+				\begin{bmatrix}
+					1-m^{2} & 2m \\
+					2m & m^{2}-1
+				\end{bmatrix}\colvec{x;y}=\colvec{x;y},
+			\]
+			for which the system of equations is
+			\[
+				\begin{cases}
+					\frac{1-m^{2}}{1+m^{2}}x + \frac{2m}{1+m^{2}}y &= x,\\
+					\frac{2m}{1+m^{2}}x + \frac{m^{2}-1}{1+m^{2}}y &= y,
+				\end{cases}
+			\]
+			and its solution is
+			\[
+				y = mx,
+			\]
+			i.e. $\frac{y}{x}=m$ as expected.
+
+		\item[$\lambda=-1$] the matrix equation is
+			\[
+				\frac{1}{1+m^{2}}
+				\begin{bmatrix}
+					1-m^{2} & 2m \\
+					2m & m^{2}-1
+				\end{bmatrix}\colvec{x;y}=-\colvec{x;y}=\colvec{-x;-y},
+			\]
+			for which the system of equations is
+			\[
+				\begin{cases}
+					\frac{1-m^{2}}{1+m^{2}}x + \frac{2m}{1+m^{2}}y &= -x,\\
+					\frac{2m}{1+m^{2}}x + \frac{m^{2}-1}{1+m^{2}}y &= -y,
+				\end{cases}
+			\]
+			and its solution is
+			\[
+				y = -\frac{x}{m},
+			\]
+			i.e. $\frac{y}{x}=-\frac{1}{m}$ as expected.
+	\end{descitemize}
+\end{example}
+
+\subsection{Characteristic polynomial}
+Did you notice that in all of the above examples the expression $\left|A-\lambda I\right|$ is a polynomial in $\lambda$? This is not a coincidence: any expression of such form is a polynomial in $\lambda$, its degree depending on the form of $A$. We call this polynomial the \emph{characteristic polynomial} of $A$. As we saw in the examples, the roots of the characteristic polynomial are the eigenvectors of $A$. A more precise definition of the characteristic polynomial is given below.
+
+\begin{definition}{Characteristic polynomial of a matrix $\bm{A}$}{}
+	Let $A$ be a square matrix representing some transformation $T:\Rs[n]\to\Rs[n]$. Then
+	\begin{equation}
+		P(\lambda)=|A-\lambda I|,
+		\label{eq:characteristic_polynomial}
+	\end{equation}
+	is called the characteristic polynomial of $A$ (and $T$). The roots $\lambda_{1},\lambda_{2},\dots,\lambda_{n}$ of $P$ are the eigenvalues of $A$ (and $T$).
+\end{definition}
+
+Let us examine some values and coefficients of the characteristic polynomial $P(\lambda)$. Subtituting $\lambda=0$ into $P$ produces
+\begin{equation}
+	P(0) = \left| A-0I \right| = |A|,
+	\label{eq:}
+\end{equation}
+i.e. the value $P(0)$ is always the determinant of $A$. Recall that for a polynomial, this value is the free coefficient of $P$. We can see this fact clearly when we consider a generic $2 \times 2$ matrix
+\[
+	A= \begin{bmatrix} a & b \\ c & d \end{bmatrix}.
+\]
+Its characteristic polynomial is then
+\begin{align*}
+	P(\lambda) &= \left| A-\lambda I \right|\\
+			   &= \begin{vmatrix} a-\lambda & b \\ c & d-\lambda \end{vmatrix}\\
+			   &= (a-\lambda)(d-\lambda) - bc\\
+			   &= ad - a\lambda -d\lambda + \lambda^{2} - bc\\
+			   &= \tikz[baseline=-0.5ex]{\node[frame={xred}](CP1){$(ad-bc)$}; \node[xred, below of=CP1] (CP1txt) {$|A|$}; \draw[-stealth, xred] (CP1txt) -- (CP1);} + \tikz[baseline=-0.5ex]{\node[frame={xgreen}](CP2){$(a+d)$}; \node[xgreen, below of=CP2] (CP2txt) {$\Tr(A)$}; \draw[xgreen, -stealth] (CP2txt) -- (CP2);}\lambda + \lambda^{2}.
+\end{align*}
+
+We see that not only is the free coefficient of $P$ equal to the determinant of $A$, but also that the coefficient of $\lambda$ is the trace of A. This is not just the case in $2 \times 2$ matrices, but all square matrices: the coefficient of $\lambda^{n-1}$ is the trace of the matrix (up to a sign, i.e. $\pm\Tr(A)$). For example, the characteristic polynomial of a generic $3 \times 3$ matrix\footnote{note that $e$ and $i$ are just some real numbers, and \textbf{not} the constants $\eu$ and $\iu$, respectively.}
+\[
+	B =
+	\begin{bmatrix}
+		a & b & c\\
+		d & e & f\\
+		g & h & i
+	\end{bmatrix}
+\]
+is
+\begin{align}
+	P(\lambda) &= \left|B-\lambda I\right| =
+	\begin{vmatrix}
+		a-\lambda & b & c\\
+		d & e-\lambda & f\\
+		g & h & i-\lambda
+	\end{vmatrix}\nonumber\\
+			   &= (a-\lambda) \left( (e-\lambda)(i-\lambda)-fh \right) - b \left( d(i-\lambda)-fg \right) + c \left( dh - (e-\lambda)g \right)\nonumber\\
+			   &= (a-\lambda) \left( ei-e\lambda-\lambda i+\lambda^{2}-fh \right) -b \left( di-d\lambda-fg \right) + c \left( dh -eg+\lambda g \right)\nonumber\\
+			   &= aei-ae\lambda-ai\lambda+a\lambda^{2}-afh-ei\lambda-i\lambda^{2}-\lambda^{3}-fh\lambda-bdi+bd\lambda+bfg+cdh-ceg+cg\lambda\nonumber\\
+			&=aei-ae\lambda-afh-ai\lambda+a\lambda^{2}-bdi+bd\lambda+bfg+cdh-ceg+cg\lambda-ei\lambda+e\lambda^{2}+fh\lambda\nonumber\\
+			&+i\lambda^{2}-\lambda^{3}\nonumber\\
+			&= \tikz[baseline=-0.5ex]{\node[frame=xred]{$aei-afh-bdi+bfg-cdh-ceg$}} + (-ae-ai-ei-fh+bd+cg-ei+fh)\lambda\nonumber\\
+			&+ \left(\tikz[baseline=-0.5ex]{\node[frame=xgreen]{$a+e+i$}}\right)\lambda^{2} - \lambda^{3}.
+	\label{eq:}
+\end{align}
+
+We see that highlighted parts are exactly \tikz[baseline=-0.5ex]{\node[frame={xred}]{$|B|$}} and \tikz[baseline=-0.5ex]{\node[frame={xgreen}]{$\Tr(B)$}}, respectively.
+
+\subsection{Special cases}
+In the case of upper- or lower-triangular matrices, the eigenvalues are simply the main diagonal elements, e.g. the eigenvalues of the matrix
+\begin{equation}
+	A =
+		\begin{bNiceMatrix}
+			\Ma{1}{1} & 0 & 0 & \cdots & 0\\
+			\Ma{2}{1} & \Ma{2}{2} & 0 & \cdots & 0\\
+			\Ma{2}{1} & \Ma{2}{2} & \Ma{2}{3} & \cdots & 0\\
+			\vdots & \vdots & \vdots & \Ddots & \vdots\\
+			\Ma{n}{1} & \Ma{n}{2} & \Ma{n}{3} & \cdots & \Ma{n}{n}
+		\end{bNiceMatrix}
+	\label{eq:}
+\end{equation}
+are
+\[
+	\lambda=\left\{ \Ma{1}{1}, \Ma{2}{2}, \Ma{3}{3}, \dots, \Ma{n}{n} \right\},
+\]
+i.e. written simply,
+\begin{equation}
+	\lambda_{i} = \Ma{i}{i}.
+	\label{eq:eigenvalues_triangular_matrix}
+\end{equation}
+
+\vspace{1em}
+\tbw{rest of the section}

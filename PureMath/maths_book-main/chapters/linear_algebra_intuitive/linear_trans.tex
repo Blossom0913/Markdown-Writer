@@ -1,0 +1,431 @@
+\section{Linear transformations}\label{sec:intuitive_linear_trans}
+In the previous section we introduced real vectors and their most important properties. In this section we explore a special set of operations that can act on vectors, namely \emph{linear transformations}.
+
+Linear transformations are a special set of transformations that are relatively easy to analyze. Their use is extremely widespread all throughout different fields of mathematics and its application, e.g. (just to name a few): in computer graphics, machine learning, quantum physics and engineering.
+
+\subsection{Definition}
+As mentioned in \autoref{chapter:intro}, a ``transformation`` is simply another name for a function. Thus in our context, linear transformations are some functions that act on vectors: a linear transformation $T$ takes a vector as an input, and outputs another vector, possibly of a different dimension, i.e.
+\begin{equation}
+	T:\Rs[n]\to\Rs[m].
+	\label{eq:linear transformation signature}
+\end{equation}
+
+What makes linear transformations more ``special'' than other functions is their property of \emph{linearity}, which entails the following two properties:
+\begin{listitemize}
+	\item[Scalability] for any scalar $\alpha$ and vector $\vec{v}$,
+		\[
+			T\left( \alpha\vec{v} \right) = \alpha T\left( \vec{v} \right).
+		\]
+	\item[Additivity] for any two vectors $\vec{u},\vec{v}$
+		\[
+			T\left( \vec{u}+\vec{v} \right) = T\left( \vec{u} \right) + T\left( \vec{v} \right).
+		\]
+\end{listitemize}
+
+\begin{example}{A linear transformation}{linear transformation}
+	\textbf{Claim}: the following $\Rs[3]\to\mathbb{R}$ transformation is linear:
+	\[
+		T\left(\colvec{x;y;z}\right) = 2x+3y-z.
+	\]
+
+	\textbf{Proof}: We can show this using the properties of linear transformations.
+	\begin{listitemize}
+	\item[Scalability] given a scalar $\alpha\in\mathbb{R}$,
+		\[
+			T\left(\colvec{\alpha x;\alpha y; \alpha z}\right)
+			= 2(\alpha x)+3(\alpha y)-(\alpha z) = \alpha\left( 2x+3y-z \right)
+			= \alpha T\left(\colvec{x;y;z}\right).
+		\]
+	\item[Additivity] given two vectors $\vec{u}=\colvec{u_{x};u_{y};u_{z}}$ and $\vec{v}=\colvec{v_{x};v_{y};v_{z}}$,
+		\begin{align*}
+			T\left( \colvec{u_{x};u_{y};u_{z}} + \colvec{v_{x};v_{y};v_{z}} \right) &= T\left( \colvec{u_{x}+v_{x};u_{y}+v_{y};u_{z}+v_{z}} \right)\\
+			&= 2\left( u_{x}+v_{x} \right) +3\left( u_{y}+v_{y} \right) - \left( u_{z}+v_{z} \right)\\
+			&= T\left( \colvec{u_{x};u_{y};u_{z}} \right) + T\left( \colvec{v_{x};v_{y};v_{z}} \right).
+		\end{align*}
+	\end{listitemize}
+\end{example}
+
+\begin{example}{A non-linear transformation}{non-linear transformation}
+	\textbf{Claim}: the following $\Rs[3]\to\mathbb{R}$ transformation is \textbf{not} a linear transformation:
+	\[
+		T\left(\colvec{x;y;z}\right) = 2x^{2}+3y-z.
+	\]
+
+	\textbf{Proof}: this time we only need to show a single case where linearity breaks - let's choose \textit{scalability}. Given the vector $\vec{v}=\colvec{v_{x};v_{y};v_{z}}$, on one hand
+	\[
+		T\left( \alpha\colvec{u_{x};u_{y};u_{z}} \right) = 2\left(\alpha u_{x}\right)^{2}+3\alpha u_{y}-\alpha u_{z} = 2\alpha^{2}u_{x}^{2}+3\alpha u_{y}-\alpha u_{z}.
+	\]
+	On the other hand
+	\[
+		\alpha T\left( \colvec{u_{x};u_{y};u_{z}} \right) = \alpha\left( 2u_{x}^{2}+3u_{y}-u_{z} \right) = 2\alpha u_{x}^{2}+3\alpha u_{y}-\alpha u_{z}.
+	\]
+	For any $a\notin\left\{ 0,1 \right\}$ we get that $T\left( \alpha\vec{v} \right)\neq\alpha T\left( \vec{v} \right)$. Therefore, $T$ is not linear.
+\end{example}
+
+\subsection{Developing intuition}\label{sec:LS_developing_intuition}
+Before moving on to explore the algebraic properties of linear transformations, we first shift our focus to gain some intuition about them. Much like in the last section, we do this using graphical representations of linear transformations in $\Rs[2]$ and $\Rs[3]$. We start with a single vector under transformation: let $\vec{u}=\colvec{2;4}$ and $T:\Rs[2]\to\Rs[2]$ defined by
+\begin{equation}
+	T\left( \colvec{x;y} \right) = \colvec{2x;-y}.
+\end{equation}
+(to the reader: verify that this transformation is indeed linear)
+
+Applying $T$ to $\vec{u}$ yields the vector $\vec{v}=\colvec{4;-4}$ (see \autoref{fig:single vector LT}), i.e. it scales the $x$-component of $\vec{u}$ by $2$ and flips over its $y$-component.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				vector plane,
+				width=7cm, height=7cm,
+				xmin=-7, xmax=7,
+				ymin=-7, ymax=7,
+				xtick={-6,-4,...,6},
+				ytick={-6,-4,...,6},
+			]
+			\tikzstyle{every node}=[font=\Large]
+			\draw[vector, xred] (0,0) -- (2,4) node[pos=1.15] (u) {$\vec{u}$};
+			\draw[vector, xblue] (0,0) -- (4,-4) node[pos=1.1] (v) {$\vec{v}$};
+			\draw[vector, dashed, xpurple] (u) to [out=-20, in=70] node[pos=0.35, xshift=9pt] {$T$} (v);
+			\end{axis}
+		\end{tikzpicture}
+		\caption{The vector $\vec{u}=\colvec{2;4}$ is transformed by $T$ yielding the vector $\vec{v}=\colvec{4;-4}$.}
+		\label{fig:single vector LT}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.45\textwidth}
+		\centering
+		\begin{tikzpicture}[]
+			\begin{axis}[
+				vector plane,
+				width=7cm, height=7cm,
+				xmin=-7, xmax=7,
+				ymin=-7, ymax=7,
+				xtick={-6,-4,...,6},
+				ytick={-6,-4,...,6},
+			]
+			\tikzstyle{every node}=[font=\Large]
+			\draw[vector, xred] (0,0) -- (-2,2) node[pos=1.3] (a) {$\vec{a}$};
+			\draw[vector, xblue] (0,0) -- (1,-6) node[pos=0.95, right] (b) {$\vec{b}$};
+			\draw[vector, xred, dashed] (0,0) -- (-4,-4) node[pos=1.3] (Ta) {$T\left(\vec{a}\right)$};
+			\draw[vector, xblue, dashed] (0,0) -- (2,6) node[pos=0.95, right] (Tb) {$T\left(\vec{b}\right)$};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{The vectors $\vec{a}=\colvec{-2;2}$ and $\vec{b}$ are transformed by the same $T$.}
+		\label{fig:two vectors LT}
+	\end{subfigure}
+\end{figure}
+
+If we take other vectors, e.g. $\vec{a}=\colvec{-2;-2}$ and $\vec{b}=\colvec{1;-6}$ we see that $T$ transforms them in the exact same manner: it scales their $x$-components by $2$ and flipps over their $y$-components (\autoref{fig:two vectors LT}). This is a fundamental aspect of linear transformations: they always transform all vectors in the exact same manner. We can use this fact to help visualize transformations, by looking at how they transform the entire space. For example, we can draw all grid lines and observe how they are transformed.
+
+In \autoref{fig:linear transformation grid} a schematic of $\Rs[2]$ is shown before and after the application of a linear transformation $T$, by placing a transformed grid (blue) ontop of an untouched grid (gray). In this view, one can see how each point in space is transformed: assuming for example that each two adjacent grid points are 1 unit apart, the gray point at $(-2,2)$ is transformed to where the blue point is, i.e. $(-1,1)$ when measured using the original axes. 
+
+\colorlet{xbefore}{black!40}
+\colorlet{xafter}{xblue}
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			vector plane,
+			width=8cm, height=8cm,
+			anchor=center,
+			at={(current page.center)},
+			xtick={-4,-2,...,4},
+			ytick={-4,-2,...,4},
+			xticklabels={,,},
+			yticklabels={,,},
+			grid style={line width=.1pt, draw=xbefore!35},
+			major grid style={line width=.2pt, draw=xbefore!50},
+			every tick/.style={xbefore},
+			axis line style={xbefore, very thick},
+		]
+		\addplot[mark=*, mark size=2.5pt] coordinates {(-4,4)};
+		% \fill[gray!50] (2,-2) rectangle (4,-4);
+		\coordinate (p) at (-2,2);
+		\coordinate (xlbl) at (5.5,2.05);
+		\coordinate (ylbl) at (2.6,4.95);
+		% \addplot[mark=*, xblue] coordinates {(-2,2)};
+		\end{axis}
+        \pgftransformcm{1}{0.4}{0.5}{0.9}{\pgfpoint{0cm}{0cm}}
+		\begin{axis}[
+			vector plane,
+			width=8cm, height=8cm,
+			anchor=center,
+			at={(current page.center)},
+			xtick={-4,-2,...,4},
+			ytick={-4,-2,...,4},
+			xticklabels={,,},
+			yticklabels={,,},
+			xlabel={},
+			ylabel={},
+			grid style={line width=.1pt, draw=xafter!35},
+			major grid style={line width=.2pt, draw=xafter!50},
+			every tick/.style={xafter},
+			axis line style={xafter, ultra thick},
+		]
+		% \fill[xblue!50] (2,-2) rectangle (4,-4);
+		\end{axis}
+        \pgftransformreset
+		\fill[xblue] (p) circle (3pt);
+		\large
+		\node[xblue] at (xlbl) {$x$};
+		\node[xblue] at (ylbl) {$y$};
+	\end{tikzpicture}
+	\caption{$\Rs[2]$ after application of a linear transformation (blue), placed ontop of $\Rs[2]$ before the transformation (gray). Note the black point at the top left at $(-2,2)$ transforming into the blue point at $(-1,1)$.}
+	\label{fig:linear transformation grid}
+\end{figure}
+
+For comparison, \autoref{fig:nonlinear transformation grid} shows a non linear transformation applied to $\Rs[2]$.
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\large
+		\draw[black!25, step=0.5] (-3,-3) grid (3,3);
+		\draw[stealth-stealth, very thick] (-3,0) -- (3,0) node[pos=1.1] {$x$};
+		\draw[stealth-stealth, very thick] (0,-3) -- (0,3) node[pos=1.1] {$y$};
+		\fill[black!50] (-3,-3) rectangle (-2.5,-2.5);
+		\fill[black!50] (3,3) rectangle (2.5,2.5);
+		\begin{scope}
+			\pgftransformnonlinear{\nltransA}
+			\draw[xblue!25, step=0.5] (-3,-3) grid (3,3);
+			\draw[xblue, stealth-stealth, very thick] (-3,0) -- (3,0) node[pos=1.1] {$x$};
+			\draw[xblue, stealth-stealth, very thick] (0,-3) -- (0,3) node[pos=1.1] {$y$};
+			\fill[xblue!50] (-3,-3) rectangle (-2.5,-2.5);
+			\fill[xblue!50] (3,3) rectangle (2.5,2.5);
+		\end{scope}
+	\end{tikzpicture}
+	\caption{A non linear transformation applied to $\Rs[2]$ for comparison.}
+	\label{fig:nonlinear transformation grid}
+\end{figure}
+
+\autoref{fig:linear transformation grid} shows some important properties of linear transformation (cf. \autoref{fig:nonlinear transformation grid}):
+\begin{enumerate}
+	\item The origin stays at the same place after application of the transformation, i.e. $T\left(\vec{0}\right) = \vec{0}$.
+	\item Parallel lines remain parallel after application of the transformation.
+	\item All areas are scaled by the same amount.
+\end{enumerate}
+
+It is rather easy to prove the first two properties.
+\begin{proof}{Two properties of linear transformations}{}
+	\begin{enumerate}
+		\item Let $T$ be a transformation that does not perserve the origin, i.e.
+	\[
+		T\left(\vec{0}\right) = \vec{v} \neq \vec{0}.
+	\]
+	We can scale $\vec{0}$ by a scalar $\alpha\neq0$, which would yield
+	\[
+		T\left(\alpha\vec{0}\right) = T\left(\vec{0}\right) = \vec{v}.
+	\]
+	However, for $T$ to be linear we expect (due to scalability)
+	\[
+		T\left(\alpha\vec{0}\right) = \alpha\vec{v},
+	\]
+	but since $\alpha\neq0$ and $\vec{v}\neq\vec{0}$ this does not happen. Therefore, $T$ can not be linear - and in turn linear transformations must preserve the origin.
+
+	\item A line is defined using a point $\vec{a}$, and a direction $\hat{v}$ as the set of all the points $\left\{x=\vec{a}+s\hat{v}, s\in\mathbb{R}\right\}$:
+
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[
+				vector plane,
+				width=8cm, height=8cm,
+				xticklabels={,,},
+				yticklabels={,,},
+			]
+			\coordinate (a) at (axis cs:2,2);
+			\coordinate (v) at (axis direction cs:1,-0.5);
+			\draw[black!50, dashed] ($(a)-6*(v)$) -- ($(a)+3*(v)$);
+			\draw[vector, xred] (0,0) -- (a) node[midway, above left] {$\vec{a}$};
+			\draw[vector, xblue] (a) -- ($(a)+(v)$) node[midway, below, xshift=-5pt, yshift=1pt] {$\hat{v}$};
+			\end{axis}
+			\foreach \s in {-6,-3.5,-1,0,1,2}{
+				\fill ($(a)+\s*(v)$) circle (0.05) node[above, anchor=west, yshift=2pt] {\tiny$s=\s$};
+			}
+		\end{tikzpicture}
+	\end{center}
+	Parallel lines have the same direction $\hat{s}$, i.e. $x_{1}=\vec{a}_{1}+s_{1}\hat{v}$ and $x_{2}=\vec{a}_{2}+s_{2}\hat{v}$ are parallel lines. Applying a linear transformation $T$ to these lines yields (using the two defining properties of linear transformations)
+	\begin{align*}
+		T\left(x_{1}\right) &= T\left(\vec{a}_{1}\right) + s_{1}T\left(\hat{v}\right),\\
+		T\left(x_{2}\right) &= T\left(\vec{a}_{2}\right) + s_{2}T\left(\hat{v}\right).
+	\end{align*}
+	We can see that the two right-hand side equations represent two new lines with the same direction, i.e. $T\left(\hat{v}\right)$. Therefore parallel lines remain parallel under a linear transformation.
+	\end{enumerate}
+\end{proof}
+
+We will prove the the third property (all areas are scaled by the same amount) later in the chapter.
+
+All linear transformations in $\Rs[2]$ can be created by composing transformations from a set of linear transformation which we will refer to as the \emph{basic linear transformations}\footnote{not an official name.}. To visualize these basic transformations we apply them on a figure of a tapir\footnote{They are here, they are a trans tapir. Get used to it.}:
+
+\begin{figure}[H]
+	\centering
+	\tapirTrans{1}{0}{0}{1}{12cm}
+\end{figure}
+
+\autoref{fig:basicLinearTrans} shows the basic linear transformations applied to our happy tapir.
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[c]{0.29\textwidth}
+		\centering
+		\tapirTrans{1}{0}{0}{1}{5cm}
+		\caption{Identity - no change.}
+		\label{fig:}
+	\end{subfigure}
+	\begin{subfigure}[c]{0.37\textwidth}
+		\centering
+		\tapirTrans{1.4}{0}{0}{1}{5cm}
+		\caption{Scaling in the $x$-axis.}
+		\label{fig:}
+	\end{subfigure}
+	\begin{subfigure}[c]{0.29\textwidth}
+		\centering
+		\tapirTrans{1}{0}{0}{1.3}{5cm}
+		\caption{Scaling in the $y$-axis.}
+		\label{fig:}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[c]{0.3\textwidth}
+		\centering
+		\tapirTrans{1}{0}{0.25}{1}{5cm}
+		\caption{Skew in the $x$-axis.}
+		\label{fig:}
+	\end{subfigure}
+	\begin{subfigure}[c]{0.3\textwidth}
+		\centering
+		\tapirTrans{1}{0.5}{0}{1}{5cm}
+		\caption{Skew in the $y$-axis.}
+		\label{fig:}
+	\end{subfigure}
+	\begin{subfigure}[c]{0.35\textwidth}
+		\centering
+		\tapirTrans{0.707}{-0.707}{0.707}{0.707}{5cm}
+		\caption{Rotation around origin.}
+		\label{fig:}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[c]{0.3\textwidth}
+		\centering
+		\tapirTrans{-1}{0}{0}{1}{5cm}
+		\caption{Reflection about line.}
+		\label{fig:}
+	\end{subfigure}
+	\begin{subfigure}[c]{0.3\textwidth}
+		\centering
+		\tapirTrans{-1}{0}{0}{-1}{5cm}
+		\caption{Reflection through origin.}
+		\label{fig:}
+	\end{subfigure}
+	\caption{The basic linear transformations, exemplified using a very happy tapir.}
+	\label{fig:basicLinearTrans}
+\end{figure}
+
+\begin{example}{Composing basic linear transformations}{ltcomposing}
+	Given the following two linear transformations:
+	\begin{enumerate}
+		\item Scale by $1.5$ in the $x$-direction,
+		\item Rotate by $\frac{\pi}{4}$ anti-clockwise around the origin,
+	\end{enumerate}
+	two composite linear transformations can be created: first scale then rotate, and first rotate then scale. As can be seen in the figure bellow, changing the order of composition results in a different linear transformations all together:
+
+	\begin{center}
+		\begin{tikzpicture}
+			\tapirTransComp{1}{0}{0}{1}{0}{0}{I}
+			
+			\tapirTransComp{0.707}{0.707}{-0.707}{0.707}{1cm}{5cm}{A}
+			\tapirTransComp{0.707}{0.707}{-1.414}{1.414}{7cm}{5cm}{B}
+			\draw[-stealth, thick] (0,1cm) -- ++(0.5cm,2cm) node[midway, above, rotate=75, text width=1.3cm] {first rotate};
+			\draw[-stealth, thick] (2.2cm,4.5cm) -- ++(2.5cm,0cm) node[midway, above, text width=1.5cm] {then scale in $x$};
+			
+			\tapirTransComp{2}{0}{0}{1}{1cm}{-5cm}{C}
+			\tapirTransComp{0.707}{1.414}{-0.707}{1.414}{8cm}{-5cm}{D}
+			\draw[-stealth, thick] (0,-1.5cm) -- ++(0.5cm,-2.5cm) node[midway, above, rotate=-80, text width=1.5cm] {first scale in $x$};
+			\draw[-stealth, thick] (3cm,-5.5cm) -- ++(3cm,0cm) node[midway, above, text width=2cm] {then rotate};
+		\end{tikzpicture}
+	\end{center}
+
+	This is not a suprising result: in \autoref{chapter:intro} we learned that function composition is not a commutative operation.
+\end{example}
+
+Some of the basic linear transformations can be created as compositions of other basic linear transformations. For example, the composition of reflection across the $y$-axis followed by reflection across the $x$-axis results in a $\ang{180}$ rotation around the origin (see \autoref{fig:two_reflections_rotation}).
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			vector plane,
+			width=10cm, height=10cm,
+			xticklabels={,},
+			yticklabels={,},
+		]
+		\node[anchor=east] (A) at (-0.5,2) {\includesvg[scale=0.75]{figures/linear_algebra/tapir_transform2}};
+		\node[anchor=east, xscale=-1] (B) at (0.5,2) {\includesvg[scale=0.75]{figures/linear_algebra/tapir_transform2}};
+		\node[anchor=east, xscale=-1, yscale=-1] (C) at (0.5,-2) {\includesvg[scale=0.75]{figures/linear_algebra/tapir_transform2}};
+
+		\draw[vector, xred] (A) -- (B);
+		\draw[vector, xred] (B) -- (C);
+		\draw[decoration={
+            text along path,
+			text color=xblue,
+            text={Rotation},
+            text align={center},
+            raise=2mm}, decorate] (A.south) to [out=-90, in=180, looseness=0.75] (C.east);
+		\draw[vector, xblue] (A.south) to [out=-90, in=180, looseness=0.75] (C.east);
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Reflection across the $y$-axis (red arrow) followed by a reflection across the $x$-axis (red arrow) results in a rotation by $\ang{180}$ around the origin (blue arrow).}
+	\label{fig:two_reflections_rotation}
+\end{figure}
+
+\subsection{3D Linear transformations}
+The basic linear transformations in $\Rs[3]$ are very much similar to those in $\Rs[2]$ with some small differences worth mentioning. For a start, scaling and skewing can be done in three different directions instead of just two directions (namely, $x,y$ and $z$ instead of just $x$ and $y$). In addition, there are infinetly many axes of rotation: in $\Rs[2]$ there is just a single axis (actually a point) of rotation - the origin. In $\Rs[3]$ any line that goes through the origin can be an axis of rotation (see \autoref{fig:rotation_around_axis}). Lastly, there are three types of reflections: about the origin (a point), across a line going through the origin, and across a plane (see fig?).
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[c]{0.47\textwidth}
+		\begin{center}
+			\def\angThe{75}
+			\def\angPhi{65}
+			\tdplotsetmaincoords{\angThe}{\angPhi}
+			\begin{tikzpicture}[tdplot_main_coords]
+				\draw[stealth-stealth, very thick] (-3,0,0) -- (3,0,0) node[pos=1.05] {$x$};
+				\draw[stealth-stealth, very thick] (0,-3,0) -- (0,3,0) node[pos=1.05] {$y$};
+				\draw[stealth-stealth, very thick] (0,0,-3) -- (0,0,3) node[pos=1.05] {$z$};
+				\draw[ultra thick, xpurple, dotted] (-0.6675,-1.335,-2.005) -- (0,0,0);
+				\draw[ultra thick, xpurple] (0,0,0) -- (0.267,0.534,0.802);
+				\begin{scope}[canvas is plane={O(0.267,0.535,0.802)x(1.231,0.386,0.549)y(0.267,-0.298,1.356)}]
+					\fill[xpurple!20, opacity=0.2] (-1,-1) rectangle (1,1);
+					\draw[step=0.5, xdarkpurple!30] (-1,-1) grid (1,1);
+					\draw[vector, xpurple!80, dotted] (0.5,0) arc (0:177:0.5);
+					\draw[vector, xpurple!80, dotted] (-0.5,0) arc (180:362:0.5);
+				\end{scope}
+				\draw[vector, xpurple] (0.267,0.534,0.802) -- (0.534,1.069,1.604) node[pos=1.2] {$\hat{r}$};
+			\end{tikzpicture}
+		\end{center}
+	\end{subfigure}%
+	\begin{subfigure}[c]{0.47\textwidth}
+		\begin{center}
+			\def\angThe{75}
+			\def\angPhi{225}
+			\tdplotsetmaincoords{\angThe}{\angPhi}
+			\begin{tikzpicture}[tdplot_main_coords]
+				\draw[stealth-stealth, very thick] (-3,0,0) -- (3,0,0) node[pos=1.05] {$x$};
+				\draw[stealth-stealth, very thick] (0,-3,0) -- (0,3,0) node[pos=1.05] {$y$};
+				\draw[stealth-stealth, very thick] (0,0,-3) -- (0,0,3) node[pos=1.05] {$z$};
+				\draw[ultra thick, xpurple, dotted] (-0.6675,-1.335,-2.005) -- (0,0,0);
+				\draw[ultra thick, xpurple] (0,0,0) -- (0.267,0.534,0.802);
+				\begin{scope}[canvas is plane={O(0.267,0.535,0.802)x(1.231,0.386,0.549)y(0.267,-0.298,1.356)}]
+					\fill[xpurple!20, opacity=0.2] (-1,-1) rectangle (1,1);
+					\draw[step=0.5, xdarkpurple!30] (-1,-1) grid (1,1);
+					\draw[vector, xpurple!80, dotted] (0.5,0) arc (0:177:0.5);
+					\draw[vector, xpurple!80, dotted] (-0.5,0) arc (180:362:0.5);
+				\end{scope}
+				\draw[vector, xpurple] (0.267,0.534,0.802) -- (0.534,1.069,1.604) node[pos=1.15] {$\hat{r}$};
+			\end{tikzpicture}
+		\end{center}
+	\end{subfigure}
+	\caption{Rotation around a direction $\hat{r}$ from two different viewpoints, showing an example of a plane orthogonal to $\hat{r}$ on which the rotation happens.}
+
+	\label{fig:rotation_around_axis}
+\end{figure}

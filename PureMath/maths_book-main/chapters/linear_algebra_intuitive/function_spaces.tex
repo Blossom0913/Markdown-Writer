@@ -1,0 +1,459 @@
+\section{Functions as vectors}
+\begin{note}{Calculus ahead!}{}
+	This section uses ideas discussed in the chapter about $1$-dimensional real calculus (\autoref{chapter:calculus_1D}). While strict knowledge of calculus is not necessary, some concepts would be rather difficult to understand without it.
+	
+	In addition, this section is merely a brief introduction to a broader idea, and is not meant in any way to be an exhaustive analysis of the topic.
+\end{note}
+
+\subsection{Properties of vectors}
+Up until now we used a rather informal definition for vectors (\autoref{def:real vectors}). While the formal definition will be discussed in the next chapter, it is worth while to review the basic properties of vectors we saw so far. We start with the scaling of vectors:
+\begin{descitemize}
+	\item[It is `close'] the result of scaling a vector is itself a vector.
+	\item[The scalar $\bm{1}$ is neutral to scaling] i.e. $1\cdot\vec{v}=\vec{v}$.
+	\item[It is associative] for any $\alpha,\beta\in\Rs$ and $\vec{v}\in\Rs[n]$,
+		\[
+			\alpha\cdot \left( \beta\vec{v} \right) = \left( \alpha\cdot\beta \right)\vec{v}.
+		\]
+\end{descitemize}
+
+And for vector addition:
+\begin{descitemize}
+	\item[It is close] the sum of any two vectors is also a vector.
+	\item[It is commutative] the order of addition does not change its result.
+	\item[It is associative] while not discussed directly, it is obvious that when adding together any three vectors $\vec{u},\vec{v},\vec{w}\in \Rs[n]$, we can change the order of addition and that too will not change its result: calculating $\vec{u}+\vec{v}$ first and then adding $\vec{w}$ to the result is the same as calculating $\vec{v}+\vec{w}$ first and then adding $\vec{u}$ to the result, i.e.
+		\[
+			\left( \vec{u}+\vec{v} \right) + \vec{w} = \vec{u} + \left( \vec{v}+\vec{w} \right).
+		\]
+	\item[$\bm{\vec{0}}$ is neutral to addition] i.e. the addition of $\vec{0}$ to any vector $\vec{v}$ results in $\vec{v}$.
+	\item[Any vector has an additive inverse] given a vector $\vec{u}\in\Rs[n]$, there is always a vector $\vec{v}\in\Rs[n]$ such that
+		\[
+			\vec{u}+\vec{v}=\vec{0},
+		\]
+		namely the vector $\vec{u}=-\vec{v}$.
+\end{descitemize}
+
+The two operations also have two important properties together:
+\begin{descitemize}
+	\item[Vector addition is distributive] for any $\alpha\in\Rs$ and $\vec{u},\vec{v}\in\Rs[n]$,
+		\[
+			\alpha \left( \vec{u}+\vec{v} \right) = \alpha\vec{u} + \alpha\vec{v}.
+		\]
+	\item[Scalar multiplication is distributive] for any $\alpha,\beta\in\Rs$ and $\vec{v}\in\Rs[n]$,
+		\[
+			\left( \alpha+\beta \right) \vec{v} = \alpha\vec{v} + \beta\vec{v}.
+		\]
+\end{descitemize}
+
+All these properties seem rather obvious, but not all mathematical structures actually have them: for example, in a later chapter in the book we learn about \emph{groups}, which do not have a scaling operator and don't necessarily have some of these properties, e.g. not all of them are commutative under their own operation.
+
+Real functions, on the other hand, do have all these properties. We can therefore apply to real functions all the stuff we learned about vectors in this chapter. While we're not promised that everything will \textit{look} the same, their general behavior is identical to that of vectors: the two obvious examples are scaling and addition:
+\begin{descitemize}
+	\item[Scaling] given a real function $f$ we can always scale it by multiplying its output by any real number $\alpha$: if $f(x)=y$, then
+		\[
+			\alpha f(x) = \alpha y.
+		\]
+		For example, we can scale the polynomial $P(x)=x^{3}-2x+5$ by a factor of $7$, yielding
+		\[
+			7P(x) = 7\cdot x^{3}-7\cdot2x+7\cdot5 = 7x^{3}-14x+35.
+		\]
+		And indeed we see that the result is itself a real function.
+	\item[Addition] any two real functions $f,g$ can be added together. For example, given the functions $f(x)=\eu^{x}$ and $g(x)=5\sin(x)$, their sum is then
+		\[
+			\left[ f+g \right](x) = \eu^{x}+5\sin(x),
+		\]
+		which is indeed a real function by itself.
+\end{descitemize}
+You should go over all the above properties of vectors and verify for yourself that real functions do indeed posses them.
+
+\subsection{Smooth functions}
+Before we move on, we should limit our further discussion to a specific set of real functions in order to avoid some annoying details which might rise later, and are not critical for the understanding of the idea of functions as vectors. Thus, from now on in the section we will only discuss functions of the set $C^{\infty}$. \textbf{Reminder}: a function $f$ which is continuous on an interval $I\subseteq\Rs$ is said to be in $C^{k}\ \left(k\in\mathbb{N}\right)$ if $f',f'',f''',\dots,f^{(k)}$ are all continuous on $I$ as well. The set $C^{\infty}$ is thus the set of all functions which are infinitely many times differentiable in some interval $I\subseteq\Rs$.
+% TODO: add reference to this part in the calculus chapter.
+
+\subsection{Function values as vector components}
+The first important thing to do when using vectors is to choose a basis set to represent them. For any $\Rs[n]$ it is rather easy to understand how this representation looks like: we simply write the vector with $n$ components. How can we do that with functions? Well, consider the following vector in $\Rs[6]$:
+\begin{equation}
+	\vec{v} = \colvec{1;2;-3;1;0;-1}.
+	\label{eq:some_vector}
+\end{equation}
+While drawing $6$-dimensional spaces is rather difficult, we can draw as a bar chart each of the components $v_{i}$ as a function of the component index $i$:
+
+\begin{center}
+	\begin{tikzpicture}
+		\begin{axis}[
+			vector plane,
+			width=10cm, height=8cm,
+			xmin=0, xmax=7,
+			ymin=-4, ymax=4,
+			xlabel={$i$},
+			ylabel={$v_{i}$},
+			x axis line style={-stealth, thick, black},
+			xtick={1,2,4,5},
+			extra x ticks={3,6},
+			extra x tick style={tick label style={yshift=1mm, anchor=south}},
+			ytick={-3,...,3},
+			extra y ticks={0},
+			]
+			\foreach \y [count=\x] in {1,2,-3,1,0,-1} {
+				\edef\temp{\noexpand\draw[component={xcol\x}] (\x,0) -- (\x,\y);}
+				\temp
+			}
+		\end{axis}
+	\end{tikzpicture}
+\end{center}
+
+Now let's do the same with a vector in $\Rs[20]$, e.g.
+\begin{equation}
+	\vec{u} = \rowvec{5;-7;-7;-8;-5;5;8;-6;2;-6;-1;-1;7;9;8;-7;9;-1;-5;4}^{\top}:
+	\label{eq:}
+\end{equation}
+\begin{center}
+	\begin{tikzpicture}
+		\begin{axis}[
+			vector plane,
+			width=10cm, height=8cm,
+			xmin=0, xmax=21,
+			ymin=-9, ymax=9,
+			xlabel={$i$},
+			ylabel={$u_{i}$},
+			x axis line style={-stealth, thick},
+			xtick={},
+			xticklabels={},
+			ytick={-10,-8,...,10},
+			extra y ticks={0},
+			]
+			\foreach \y [count=\x] in {5,-7,-7,-8,-5,5,8,-6,2,-6,-1,-1,7,9,8,-7,9,-1,-5,4} {
+				\pgfmathsetmacro{\k}{int(mod(\x,8))}
+				\edef\temp{\noexpand\draw[component={xcol\k}] (\x,0) -- (\x,\y);}
+				\temp
+			}
+		\end{axis}
+	\end{tikzpicture}
+\end{center}
+
+...and for some vector $\vec{w}\in\Rs[90]$:
+\begin{center}
+	\begin{tikzpicture}
+		\begin{axis}[
+			vector plane,
+			width=10cm, height=8cm,
+			xmin=0, xmax=91,
+			ymin=-1.5, ymax=1.5,
+			xlabel={$i$},
+			ylabel={$w_{i}$},
+			x axis line style={-stealth, thick},
+			xticklabels={},
+			ytick={-1.5,-1,...,1.5},
+			extra y ticks={0},
+			]
+			\foreach \y [count=\x] in {0,2,...,180} {
+				\pgfmathsetmacro{\k}{int(mod(\x,8))}
+				\edef\temp{\noexpand\draw[component={xblue}, ultra thick] (\x,0) -- (\x,{sin(4*\x)});}
+				\temp
+			}
+		\end{axis}
+	\end{tikzpicture}
+\end{center}
+
+What we see here is that we can use this method for any natural number. We can also easily generalize it for any integer by shifting our indexing to include negative integers. In fact, we can expand it to any real number by taking this idea to the continuous limit: given any $x\in\Rs$, we assign it some $f(x)\in\Rs$ and say that $f(x)$ is the component corresponding to the index $x$\ldots and we just defined a real function! For example, the function $f(x)=\sin(x)$:
+
+\begin{center}
+	\begin{tikzpicture}
+		\begin{axis}[
+			vector plane,
+			width=10cm, height=8cm,
+			xmin=0, xmax=91,
+			ymin=-1.5, ymax=1.5,
+			xlabel={$x$},
+			ylabel={$f(x)$},
+			x axis line style={-stealth, thick},
+			xticklabels={},
+			ytick={-1.5,-1,...,1.5},
+			extra y ticks={0},
+			domain={0:92},
+			]
+			\addplot[function, xblue] {sin(4*x)};
+		\end{axis}
+	\end{tikzpicture}
+\end{center}
+
+% Adding, scaling, etc.
+We saw in the comparison between vectors in functions how scaling and addition behave in functions in a similar way to their behavior in vectors. Now we will describe how to view these operations in a similar way to their component-wise depiction in vectors (\autoref{eq:scaling vectors} and \autoref{eq:adding vectors}):
+\begin{descitemize}
+	\item[Scaling] given a scalar $\alpha\in\Rs$ and a function $f$ which is smooth on an interval $I$, for each component $x\in I$, if $x$ is mapped by $f$ to $y\in\Rs$, then the function $\alpha f$ maps $x$ to $\alpha y$, i.e.
+		\[
+			x\overset{f}{\mapsto} y\ \Rightarrow\ x\overset{\alpha f}{\mapsto} \alpha y.
+		\]
+		\underline{Example}: for $f(x)=x^{2},\ x\overset{f}{\mapsto} x^{2}$. Therefore for $\alpha f,\ x\overset{\alpha f}{\mapsto}\alpha x^{2}$.
+
+	\item[Addition] given two functions $f,g$ which are smooth on an interval $I$, for any $x\in I$ if $x\overset{f}{\mapsto}y_{f}$ and $x\overset{g}{\mapsto}y_{g}$, then
+		\[
+			x\overset{f+g}{\mapsto} y_{f}+y_{g}.
+		\]
+		\underline{Example}: for $f(x)=3x^{2}$ and $g(x)=-7x$, $x\overset{f+g}{\mapsto}3x^{2}-7x$.
+\end{descitemize}
+
+\subsection{Scalar product, norm}
+Given two vectors $\vec{u},\vec{v}\in\Rs[n]$, the scalar product $\vec{u}\cdot\vec{v}$ is defined using the respective components of the vectors as
+\[
+	\vec{u}\cdot\vec{v}=\sum\limits_{i=1}^{n}u_{i}v_{i}.
+\]
+The natural extension of this sum of products to the continuous realm is via an integral (see \autoref{XXX}), i.e. given two functions $f,g$ which are smooth on the interval $(a,b)$ (where $a,b\in\Rs$), then
+\begin{equation}
+	f\cdot g = \int\limits_{a}^{b}f(x)g(x)\dif x.
+	\label{eq:scalar_product_functions}
+\end{equation}
+
+\begin{example}{Scalar product of two functions}{}
+	Given the functions $f(x)=x^{3}+3x^{2}$ and $g(x)=\frac{1}{x}$, the scalar product $f\cdot g$ in the interval $I=\left[-1,1\right]$ is
+	\begin{align*}
+		f\cdot g &= \int\limits_{-1}^{1}f(x)g(x)\dif x\\
+				 &= \int\limits_{-1}^{1}\frac{x^{3}+3x^{2}}{x}\dif x\\
+				 &= \int\limits_{-1}^{1}\left(x^{2}+3x\right)\dif x\\
+				 &= \left.\left(\frac{1}{3}x^{3}+\frac{3}{2}x^{2}\right) \right|_{-1}^{1}\\
+				 &= \frac{1}{3}+\frac{3}{2} - \frac{-1}{3} - \frac{3}{2} \\
+				 &= \frac{2}{3}.
+	\end{align*}
+\end{example}
+
+This brings up an interesting question: what does it mean when the scalar product of two functions is $0$? For example, consider the two functions $f(x)=\sin(x)$ and $g(x)=\cos(x)$. Their scalar product $f\cdot g$ on the interval $I=\left(-\pi,\pi\right)$ is
+	\begin{align*}
+		f\cdot g &= \int\limits_{-\pi}^{\pi}f(x)g(x)\dif x  = \int\limits_{-\pi}^{\pi}\sin(x)\cos(x)\dif x  = \left.\frac{\sin^{2}(x)}{2}\right|_{-\pi}^{\pi}\nonumber\\
+				 &= \frac{1}{2} \left( \sin^{2}(\pi)-\sin^{2}(-\pi) \right)  = \frac{1}{2} \left( 0-0 \right)  = 0.
+	\end{align*}
+	Much like with vectors in $\Rs[n]$ we say that these two functions are orthogonal. In turn, this means that we can use them to form an orthonormal basis set to express all smooth functions on the same interval. In fact - a very similar idea, i.e. using infinite series of trigonometric functions to construct other functions, is used to form the \emph{Fourier series}, which we explore in greater depth in \autoref{chapter:fourier}).
+
+The \emph{Legendre polynomial} are an infinite set of orthogonal polynomials defined on the interval $[-1,1]$, which arise in many different situations throughout science such as the wave functions of the electrons in a Hydrogen-like atom. The first few Legendre polynomials are
+\begin{align}
+	P_{0}(x) &= 1,\nonumber\\
+	P_{1}(x) &= x,\nonumber\\
+	P_{2}(x) &= \frac{1}{2}\left(3x^{2}-1\right),\nonumber\\
+	P_{3}(x) &= \frac{1}{2}\left(5x^{3}-3x\right),\nonumber\\
+	P_{4}(x) &= \frac{1}{8}\left(35x^{4}-30x^{2}+3\right),\nonumber\\
+	P_{5}(x) &= \frac{1}{8}\left(63x^{5}-70x^{3}+15x\right),\nonumber\\
+	P_{6}(x) &= \frac{1}{16}\left(231x^{6}-315x^{4}+105x^{2}-5\right),\\
+	\vdots\nonumber
+	\label{eq:Legendre_polynomials_first_7}
+\end{align}
+
+with the general formula for the $n$-th Legendre polynomial being
+\begin{equation}
+	P_{n}(x) = \frac{1}{2^{n}}\sum\limits_{k=0}^{n}\binom{n}{k}\left(x-1\right)^{n-k}\left(x+1\right)^{k}.
+	\label{eq:Legendre_polynomial_general}
+\end{equation}
+
+Let's check two combinations from the first $7$ Legendre polynomials to see that they functions are indeed orthogonal:
+\begin{listitemize}
+	\item[${P_{1}}$ and $P_{3}$]
+		\[
+			P_{1}\cdot P_{3} = \frac{1}{2}\int\limits_{-1}^{1}\left(5x^{4}-3x^{2}\right)\dif x = \frac{1}{2}\left.\left(x^{5}-x^{3}\right)\right|_{-1}^{1} = 1-1-1+1 = 0.
+		\]
+	\item[$P_{2}$ and $P_{5}$]
+		\begin{align*}
+			P_{2}\cdot P_{5} &= \frac{1}{16}\int\limits_{-1}^{1}\left( 3x^{2}-1 \right)(63x^{5}-70x^{3}+15x)\dif x\\
+							 &= \frac{1}{16} \int_{-1}^{1}\left(189x^{7}-210x^{5}+45x^{3}-63x^{5}+70x^{3}-15x\right) \dif x\\
+							 &= \frac{1}{16}\left.\left(27x^{8}-42x^{6}+15x^{4}-12x^{6}+23x^{4}-7.5x^{2}\right)\right|_{-1}^{1}\\
+							 &= \frac{1}{16}\left[\left(27-42+15-12+23-7.5\right) - \left(27-42+15-12+23-7.5\right)\right]\\
+							 &= 0.
+		\end{align*}
+\end{listitemize}
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			width=10cm, height=10cm,
+			xlabel={$x$},
+			ylabel={$y$},
+			xmin=-1.2, xmax=1.2,
+			ymin=-1.2, ymax=1.2,
+			xtick={-1,-0.5,...,1},
+			ytick={-1,-0.5,...,1},
+			samples=100,
+			grid=major,
+			major grid style={black!10},
+			% !!!!!!! ------ ADD LEGEND ------ !!!!!!! %
+			]
+			% \foreach \k in {0,...,5}{
+			% 	\edef\drawplot{\noexpand
+			% 		\addplot[function, xcol\k, domain=-1:1] {legendre(x, \k)};
+			% 	}
+			% 	\drawplot
+			% }
+		\end{axis}
+	\end{tikzpicture}
+	\caption{The first $6$ Legendre polynomials.}
+	\label{fig:first_n_Legendre_polynomials}
+\end{figure}
+
+\subsection{Basis sets}
+
+\subsection{Operators}
+In the context of vectors, linear transformations are functions that obey the two properties of scalability and additivity (\autoref{sec:intuitive_linear_trans}). With smooth real functions we can introduce a similar idea: \emph{linear operators}. In our context, an operator is itself a function, however instead of being applied to vectors it is applied to smooth functions in some interval $[a,b]$, i.e.
+\begin{equation}
+	O:C^{\infty}\to C^{\infty}.
+	\label{eq:operator_definition}
+\end{equation}
+
+\begin{example}{Operator}{}
+	Let $O$ be an operator $O:C^{\infty}\to C^{\infty}$ defined as
+	\[
+		O \left( f(x) \right) = 2\left[f(x)\right]^{2}.
+	\]
+	The following table shows some results of applying $O$ to different smooth functions:
+	\begin{center}
+		\begin{NiceTabular}{ll}[
+			cell-space-limits=3pt, code-before=\rowcolors{1}{\tabcol!15}{\tabcol!10} \rowcolor{\tabcol!50}{1}
+			]
+			\toprule
+			\RowStyle{\bfseries}$f(x)$ & $O \left( f(x) \right)$\\
+			\midrule
+			$x$ & $2x^{2}$\\
+			$x^{2}$ & $2x^{4}$\\
+			$x^{2}+1$ & $2 \left( x^{2}+1 \right)^{2}$\\
+			$\sqrt{\frac{x}{2}}$ & $x$\\
+			$e^{x}$ & $2e^{2x}$\\
+			$\sin(x)$ & $2\sin^{2}(x)$\\
+			\bottomrule
+		\end{NiceTabular}
+	\end{center}
+\end{example}
+
+A \emph{linear operator} is therefore an operator which behaves like a linear transformation, i.e. given the operator $O:C^{\infty}\to C^{\infty}$ it is linear if it obeys the following two criteria:
+\begin{descitemize}
+	\item[Scalability] for any $\alpha\in\Rs$ and $f\in C^{\infty}$,
+		\[
+			O \left( \alpha f(x) \right) = \alpha O \left( f(x) \right).
+		\]
+	\item[Additivity] for any $f,g\in C^{\infty}$,
+		\[
+			O \left( f(x)+g(x) \right) = O \left( f(x) \right) + O \left( g(x) \right).
+		\]
+\end{descitemize}
+
+One very well known operator which obeys these two criteria is the derivative operator: recall that for any real number $\alpha$ and smooth functions $f,g$,
+\begin{align}
+	f' \left( \alpha x \right) &= \alpha f'(x)\nonumber,\\
+	\left( f(x)+g(x) \right)' &= f'(x) + g'(x).
+	\label{eq:derivative_as_linear_opeator}
+\end{align}
+
+We can therefore apply to derivatives all the general ideas we learned about linear transformations! This is very useful, and will be used in later chapters.
+
+In fact, in some cases we can even express the derivative opeator as a matrix: consider the following set of real smooth functions:
+\begin{equation}
+	B = \left\{1, x, x^{2}, x^{3}, \dots \right\}.
+	\label{eq:polynomial_basis_set}
+\end{equation}
+We can write any smooth function as an infinite sum of the functions in $B$, i.e. a Maclaurin expansion (\autoref{sec:taylor_series}). Therefore, the set spans $C^{\infty}$. For example,
+\[
+	\eu^{x} = 1 + x + \frac{1}{2}x^{2} + \frac{1}{3!}x^{3} + \frac{1}{4!}x^{4} + \dots
+\]
+Since all the terms of the series are needed in order to express all the possible functions in $C^{\infty}$, it is also has a minimal set which spans $C^{\infty}$ - and thus $B$ is a basis set of $C^{\infty}$.
+
+\begin{note}{Orthogonality of $\bm{B}$}{}
+	$B$ is not an orthogonal set on $\Rs$, since e.g.
+	\[
+		x\cdot x^{2} = \int\limits_{-\infty}^{\infty}x^{3}\dif x = \left.\frac{1}{4}x^{4}\right|_{-\infty}^{\infty} = \infty+\infty = \infty.
+	\]
+\end{note}
+
+We can represent any function spanned by $B$ as an infinite column vector, where each component is the respective coefficient of $1, x, x^{2}, \dots$ in the function's Maclaurin expansion. For example,
+\[
+	{\NiceMatrixOptions{cell-space-limits=3pt}
+		\eu^{x}=
+		\begin{bNiceMatrix}
+			1 \\ 1 \\ \frac{1}{2} \\ \frac{1}{3!} \\ \frac{1}{4!} \\ \vdots
+		\end{bNiceMatrix}
+	}
+\]
+
+The basis functions in $B$ can then be written as
+\[
+	1=\colvec{1;0;0;0;\vdots},\quad x=\colvec{0;1;0;0;\vdots},\quad x^{2} = \colvec{0;0;1;0;\vdots}, \quad x^{3}=\colvec{0;0;0;1;\vdots},\quad\dots
+\]
+
+Recall that the first derivative of a general $n$-degree polynomial
+\[
+	P(x)=a_{0}+a_{1}x+a_{2}x^{2}+a_{3}x^{3}+\dots+a_{n}x^{n}
+\]
+
+is
+
+\[
+	P'(x) = a_{1} + 2a_{2}x + 3a_{3}x^{2} + 4a_{4}x^{3} + \dots + na^{n}x^{n-1}.
+\]
+(\autoref{eq:polynomial_1st_derivative})
+
+We can describe the derivative as follows: for any $n$ we set the coefficient of $x^{n-1}$ in the derivative to $na_{n}$, and set the coefficient of $x^{n}$ to be zero:
+\[
+	\colvec{a_{0};a_{1};a_{2};a_{3};\vdots} \mapsto \colvec{a_{1};2a_{2};3a_{3};4a_{4};\vdots},
+\]
+and the effect on the basis vector is then
+\[
+	\begin{tabular}{lcccc}
+		$P(x)$ & $\colvec{1;0;0;0;\vdots}$ & $\colvec{0;1;0;0;\vdots}$ & $\colvec{0;0;1;0;\vdots}$ & $\colvec{0;0;0;1;\vdots}$ \\
+		& $\downmapsto$ & $\downmapsto$ & $\downmapsto$ & $\downmapsto$ \\
+		$P'(x)$ & $\colvec{0;0;0;0;\vdots}$ & $\colvec{1;0;0;0;\vdots}$ & $\colvec{0;2;0;0;\vdots}$ & $\colvec{0;0;3;0;\vdots}$ \\
+	\end{tabular}
+\]
+
+Now we can easily write the matrix representation of the derivative in this basis:
+\begin{equation}
+	D =
+	\begin{bmatrix}
+		0 & 1 & 0 & 0 & \dots\\
+		0 & 0 & 2 & 0 & \dots\\
+		0 & 0 & 0 & 3 & \dots\\
+		\vdots & \vdots & \vdots & \vdots & \ddots\\
+	\end{bmatrix}
+	\label{eq:derivative_matrix}
+\end{equation}
+
+Since the derivative transforms the first basis vector into the zero vector (i.e. the derivative of all constants is always zero), $D$ has a column of zeros. Having a zero column means that the determinant of the derivative is zero. This makes sense: the derivative ``looses'' a dimension, i.e. it isn't an injection: as mentioned, all constants are transformed into zero - and thus the derivative isn't invertible. The closest we get to recover an original function given its derivative is by using the anti-derivative (i.e. indefinite integrals) - but this gives us only a family of functions and not the any specific one we used.
+
+\begin{note}{Infinite dimensions}{}
+It is important to note that we didn't define what infinite column vectors and matrices are, and a-priori there is no guarantee that we can even perform any of the operations we use for finite-dimensional vectors and matrices. However, what we showed here is correct - but a more advanced and rigorous linear algebra is needed in order to prove it.
+\end{note}
+
+We can use the Gram-Schmidt process to orthogonalize the basis $B$. In order to avoid infinite scalar products we use the interval $I=[-1,1]$. First, let's quickly calculate the first three square norms of $B$:
+\begin{align*}
+	\gnorm{1}^{2} &= \int\limits_{-1}^{1}1\cdot1\dif x = \left.x\phantom{\mid}\right|_{-1}^{1} = 2,\\
+	\gnorm{x}^{2} &= \int\limits_{-1}^{1}x\cdot x\dif x = \int\limits_{-1}^{1}x^{2}\dif x = \left.\frac{1}{3}x^{3}\right|_{-1}^{1} = \frac{2}{3},\\
+	\gnorm{x^{2}}^{2} &= \int\limits_{-1}^{1}x^{4}\cdot x\dif x = \left.\frac{1}{5}x^{5}\right|_{-1}^{1} = \frac{2}{5},\\
+	\vdots\\
+	\gnorm{x^{n}}^{2} &= \int\limits_{-1}^{1}x^{2n}\cdot x\dif x = \left.\frac{1}{2n+1}x^{2n}\right|_{-1}^{1} = \frac{2}{2n+1}.
+\end{align*}
+The following table summarizes the dot product of any two of the basis functions $1,x,x^{2}$ and $x^{3}$ on $[-1,1]$:
+
+\begin{center}
+	\begin{NiceTabular}{>{\columncolor{\tabcol!50}}l|llll}[
+		cell-space-limits=4pt, code-before=\rowcolors{1}{\tabcol!15}{\tabcol!10} \rowcolor{\tabcol!50}{1}
+		]
+		\toprule
+		\RowStyle{\bfseries}& $1$ & $x$ & $x^{2}$ & $x^{3}$\\
+		\midrule
+		$1$ &   $2$ & $0$ & $\frac{2}{3}$ & $0$ \\
+		$x$ &   $0$ & $\frac{2}{3}$ & $0$ & $\frac{2}{5}$ \\
+		$x^{2}$ & $\frac{2}{3}$ & $0$ & $\frac{2}{5}$ & $0$ \\
+		$x^{3}$ & $0$ & $\frac{2}{5}$ & $0$ & $\frac{2}{7}$ \\
+		\bottomrule
+	\end{NiceTabular}
+\end{center}
+
+Using these values we can now apply the GSP (we use the braket notation as to not confuse the scalar product with the regular product):
+\begin{align*}
+	1 &\longrightarrow 1,\\
+	x &\longrightarrow x - \frac{\inpr{1}{x}}{2} = x-0 = x,\\
+	x^{2} &\longrightarrow x^{2} - \frac{\inpr{1}{x^{2}}}{2} - \frac{\inpr{x}{x^{2}}}{\frac{2}{3}}x = x^{2}-\frac{1}{3},\\
+	x^{3} &\longrightarrow x^{3} - \frac{\inpr{1}{x^{3}}}{2} - \frac{\inpr{x}{x^{3}}}{\frac{2}{3}}x - \frac{\inpr{x^{2}}{x^{3}}}{\frac{2}{5}}x^{2} = x^{3}-\frac{\frac{2}{5}}{\frac{2}{3}}x = x^{3} - \frac{3}{5}x.
+\end{align*}
+
+The resulting orthogonal basis set is exactly the Legendre polynomials, up to scaling! This is not really suprising, as the Legendre polynomials are orthogonal, after all.
+
+\subsection{Eigenfunctions}
+Some operators have \emph{eigenfunctions}: functions that are scaled when the operator is applied to them. In the case of the derivative operator, for example, one such function is the exponent function, since
+\begin{equation}
+	\left[ \eu^{\alpha x} \right]' = \alpha \eu^{\alpha x}.
+	\label{eq:exponent_derivative_fspace}
+\end{equation}
+The corresponding eigenvalue of $\eu^{\alpha x}$ is therefore $\alpha$.

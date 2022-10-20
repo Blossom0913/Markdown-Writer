@@ -1,0 +1,103 @@
+\section{Vector spaces}
+As we've seen in \autoref{chapter:linear algebra intuitive} vectors are found at the heart of linear algebra. We first defined them in a geometric way as objects with magnitude and direction, and later as lists of real numbers, analyzing the connections between these two mostly parallel definitions. We also spoke about vector spaces of the type $\Rs{n}$ as the structures vectors exist in. However, we haven't defined vectors nor vector spaces formally - which is exactly what we do in this section, by defining the concept of \emph{vector spaces}.
+
+\begin{note}{$\bm{\Rs{n}}$ as a guide to general vector spaces}{}
+	While reading the definition below, it is worthwhile to reflect on each of the given axioms as it relates to the familiar vector space $\Rs{n}$.
+\end{note}
+
+\begin{definition}{Vector space}{vector space}
+	A vector space over a field $\mathbb{F}$ is a set $V$ which, together with two operations described below, fulfils a list of axioms. The two operations are
+	\begin{listitemize}
+	\item[Vector addition] an operation which takes two elements of $V$ and returns a single element of $V$, i.e. $+:V\times V\to V$.
+	\item[Scalar multiplication] an operation which takes a single element of $\mathbb{F}$ and a single element of $V$ and returns a single element of $V$, i.e. $\cdot:\mathbb{F},V \to V$.
+	\end{listitemize}
+
+	The axioms to be fulfilled are:
+	\begin{descitemize}
+		\item[Commutativity of vector addition] for any $u,v\in V$,
+			\[
+				u+v=v+u.
+			\]
+
+		\item[Associativity of vector addition] for any $u,v,w\in V$,
+			\[
+				u+(v+w) = (u+v)+w.
+			\]
+		
+		\item[Additive identity] there exist an element $0\in V$ for which, for any $v\in V$,
+			\[
+				v+0 = v.
+			\]
+		
+		\item[Scalar multiplicative identity] for any $v\in V$
+			\[
+				1\cdot v = v,
+			\]
+			where $1$ is the multiplicative identity in $\mathbb{F}$.
+
+		\item[Additive inverse] for any $v\in V$ there exist an element $u\in V$ for which
+			\[
+				v+u = 0.
+			\]
+
+		\item[Associativity of scalar multiplication] for any $\alpha,\beta\in\mathbb{F}$ and $v\in V$
+			\[
+				\alpha\cdot(\beta\cdot v) = (\alpha\beta)\cdot v,
+			\]
+			where $\alpha\beta$ is the multiplication defined for $\mathbb{F}$.
+
+		\item[Distributivity of vector addition] for any $\alpha\in\mathbb{F}$ and $u,v\in V$,
+			\[
+				\alpha\cdot(u+v) = (\alpha\cdot u) + (\alpha\cdot v).
+			\]
+		
+		\item[Distributivity of scalar addition] for any $\alpha,\beta\in\mathbb{F}$ and $v\in V$,
+			\[
+				(\alpha+\beta)\cdot v = (\alpha\cdot v) + (\beta\cdot v).
+			\]
+	\end{descitemize}
+
+	The elements of $V$ are then called \emph{vectors}, and the elements of $\mathbb{F}$ are called \emph{scalars}.
+\end{definition}
+
+Since we discussed $\Rs{n}$ thoroughly in \autoref{chapter:linear algebra intuitive}, let's prove that it is indeed a vector space under the above definition. First, the claim:
+
+\begin{theorem}{$\bm{\Rs{n}}$ is a vector space}{Rn vector space}
+	The set of elements of the form
+	\[
+		\vec{v} = \colvec{v_{1};v_{2};\vdots;v_{n}}
+	\]
+	where $v_{i}\in\mathbb{R}$, forms a vector space over $\mathbb{R}$ together with the following two operations:
+	\begin{descitemize}
+		\item[Vector addition]
+			\[
+				\vec{u}+\vec{v} = \colvec{u_{1};u_{2};\vdots;u_{n}} + \colvec{v_{1};v_{2};\vdots;v_{n}} = \colvec{u_{1}+v_{1};u_{2}+v_{2};\vdots;u_{n}+v_{n}}.
+			\]
+		\item[Scalar multiplication]
+			\[
+				\alpha\cdot\vec{v} = \colvec{\alpha v_{1};\alpha v_{2};\vdots;\alpha v_{n}}.
+			\]
+	\end{descitemize}
+\end{theorem}
+
+The proof itself is pretty easy, based on the fact that $\mathbb{R}$ is a field:
+
+\begin{proof}{$\bm{\Rs{n}}$ is a vector space}{Rn vector space}
+	Since the results of both operations defined for $\Rs{n}$ only depend on the respective components of a vector $v\in\Rs{n}$, all the axioms of a vector space apply, since they derive directly from the fact that $\mathbb{R}$ is a field. As an example, we will elaborate on two of the axioms:
+	\begin{descitemize}
+	\item[Additive inverse] Given a vector $\vec{v}\in\Rs{n}$, each of its components $v_{i}$ has an inverse under $\mathbb{R}$, namely $-v_{i}$. Therefore,
+		\[
+			\colvec{v_{1};v_{2};\vdots;v_{n}} + \colvec{-v_{1};-v_{2};\vdots;-v_{n}} = \colvec{v_{1}-v_{1};v_{2}-v_{2};\vdots;v_{n}-v_{n}} = \colvec{0;0;\vdots;0} = \vec{0},
+		\]
+		which is the additive identity in $\Rs{n}$.
+
+	\item[Distributivity of vector addition] for each component of two vectors $\vec{u},\vec{v}\in\Rs{n}$, given the rules for vector addition and scalar multiplication, together with the distributivity of numbers in $\mathbb{R}$:
+		\begin{align*}
+			\alpha (\vec{u}+\vec{v}) &= \alpha\left(\colvec{u_{1};u_{2};\vdots;u_{n}} + \colvec{v_{1};v_{2};\vdots;v_{n}}\right) = \alpha\colvec{u_{1}+v_{1};u_{2}+v_{2};\vdots;u_{n}+v_{n}}\\
+			&= \colvec{\alpha u_{1}+\alpha v_{1};\alpha u_{2} + \alpha v_{2};\vdots;\alpha u_{n} + \alpha v_{n}} = \colvec{\alpha u_{1};\alpha u_{2};\vdots;\alpha u_{n}} + \colvec{\alpha v_{1};\alpha v_{2};\vdots;\alpha v_{n}} = \alpha\vec{u} + \alpha\vec{v}.
+		\end{align*}
+	\end{descitemize}
+\end{proof}
+(it is adviceable for the reader to go over the rest of the axioms and prove them for $\Rs{n}$)
+
+
