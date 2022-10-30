@@ -1,3 +1,4 @@
+#! https://zhuanlan.zhihu.com/p/578802594
 # SICP阅读笔记
 
 <center> 2022.10.10 
@@ -61,3 +62,55 @@
      2. 语法糖——用统一形式描述的东西给出的另一种表面结构，给某个`Procedure`取外号方便调用
      3. 黑箱抽象——从原问题到子问题的分解：分解中的每一个过程完成了一件可以清楚标明的工作。这使它们可以被用作定义其他过程的模块。
      4. 所有的`尾递归`都可以用`循环`来代替。
+
+
+- `Fibonacci`算法的不同复杂度实现：
+
+    1. ```c
+        //指数复杂度实现
+        int Fib(int n){
+            if(n==0){return 0;}
+            else if(n==1){return 1;}
+            else return Fib(n - 2) + Fib(n - 1);
+        }
+        ```
+    2. ```c
+        //线性复杂度实现
+        int Fib(int n){
+            int a = 1;
+            int b = 0;
+            while(n > 0){
+                a = a + b;
+                b = a;  //Core Algorithm
+                n--;
+            }
+            return b; 
+        }
+        ```
+
+    3. ```c
+        //对数复杂度实现
+        int Fib(int n){
+            int a = 1;
+            int b = 0;
+            int p = 0;
+            int q = 1;
+            while(n > 0){
+                if(!n&1){ //如果是偶数
+                    int tmp = p;
+                    p = p*p + q*q;
+                    q = 2*tmp*q + q*q;
+                    n /= 2;
+                }
+                else{
+                    a = (a + b)*q + a*p;
+                    b = b*p + a*q;
+                    n--;
+                }
+            }
+            return b;
+        }
+
+
+        ```
+
